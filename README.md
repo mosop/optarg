@@ -2,6 +2,8 @@
 
 Yet another library for parsing command-line options and arguments, written in the Crystal language.
 
+[![Build Status](https://travis-ci.org/mosop/optarg.svg?branch=master)](https://travis-ci.org/mosop/optarg)
+
 ## Installation
 
 Add this to your application's `shard.yml`:
