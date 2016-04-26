@@ -61,7 +61,7 @@ dependencies:
   result.b? # => true
   ```
 
-* Nagation
+* Negation
 
   ```crystal
   class Model < Optarg::Model
@@ -83,6 +83,25 @@ dependencies:
   result = Model.parse(%w(-s foo -b bar -- baz))
   result.args # => ["bar"]
   result.unparsed_args # => ["baz"]
+  ```
+
+* Inheritance (Reusable Model)
+
+  ```crystal
+  class Animal < Optarg::Model
+    bool "--sleep"
+  end
+
+  class Cat < Animal
+    bool "--mew"
+  end
+
+  class Dog < Animal
+    bool "--woof"
+  end
+
+  result = Cat.parse(%w(--sleep --mew))
+  result = Dog.parse(%w(--sleep --woof))
   ```
 
 ## Usage
