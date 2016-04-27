@@ -100,8 +100,8 @@ dependencies:
     bool "--woof"
   end
 
-  result = Cat.parse(%w(--sleep --mew))
-  result = Dog.parse(%w(--sleep --woof))
+  cat = Cat.parse(%w(--sleep --mew))
+  dog = Dog.parse(%w(--sleep --woof))
   ```
 
 ## Usage
