@@ -84,7 +84,7 @@ dependencies:
   result.b? # => false
   ```
 
-* Non-option Arguments
+* Non-defined Arguments
 
   ```crystal
   class Model < Optarg::Model
