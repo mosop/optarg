@@ -2,10 +2,6 @@ module Optarg
   class Parser
     @index = 0
 
-    def initialize
-      @index = 0
-    end
-
     def parse(definition_set, result)
       args = result.__optarg_args_to_be_parsed
 
