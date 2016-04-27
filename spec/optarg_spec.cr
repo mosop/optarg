@@ -19,6 +19,14 @@ module Optarg_
     string "--default-string", default: "default"
     bool "--default-bool", default: true, not: "--Default-bool"
   end
+
+  class HandlerModel < ::Optarg::Model
+    on("--on") { handle }
+
+    def handle
+      raise self.class.name
+    end
+  end
 end
 
 describe Optarg do
@@ -97,6 +105,13 @@ describe Optarg do
       result = Optarg_::DefaultModel.parse(argv)
       result.default_string.should eq "notdefault"
       result.default_bool?.should be_false
+    end
+  end
+
+  describe "Handler" do
+    it "runs block in instance's context" do
+      argv = %w(--on)
+      expect_raises(::Exception, "Optarg_::HandlerModel") { Optarg_::HandlerModel.parse(argv) }
     end
   end
 end

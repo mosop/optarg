@@ -104,6 +104,20 @@ dependencies:
   dog = Dog.parse(%w(--sleep --woof))
   ```
 
+* Handler
+
+  ```crystal
+  class Model < Optarg::Model
+    on("--goodbye") { world! }
+
+    def world!
+      raise "Goodbye, world!"
+    end
+  end
+
+  Model.parse %w(--goodbye) # raises "Goodbye, world!"
+  ```
+
 ## Usage
 
 ```crystal
@@ -111,6 +125,11 @@ require "optarg"
 ```
 
 and see Features.
+
+## Releases
+
+* v0.1.1
+  * Handler
 
 ## Development
 

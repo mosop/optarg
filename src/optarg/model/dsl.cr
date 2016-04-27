@@ -57,10 +57,13 @@ module Optarg
           class String < ::{{@type.id}}::OptionBases::String
             def parse(args, index, result)
               return index unless result.responds_to?(:__optarg_string_options)
-              return index unless is_name?(args[index])
-              raise ::Optarg::MissingValue.new(args[index]) unless index + 1 < args.size
-              result.__optarg_string_options[key] = args[index+1]
-              index + 2
+              if is_name?(args[index])
+                raise ::Optarg::MissingValue.new(args[index]) unless index + 1 < args.size
+                result.__optarg_string_options[key] = args[index + 1]
+                index + 2
+              else
+                index
+              end
             end
           end
         end
@@ -84,8 +87,7 @@ module Optarg
         @__optarg_string_options[{{key}}]?
       end
 
-      %option = Options::String.new({{names}}, desc: {{desc}}, default: {{default}})
-      self.option_set.items << %option
+      self.definition_set << Options::String.new({{names}}, desc: {{desc}}, default: {{default}})
     end
 
     macro define_bool_type(options)
@@ -134,8 +136,35 @@ module Optarg
         !!@__optarg_bool_options[{{key}}]?
       end
 
-      %option = Options::Bool.new({{names}}, desc: {{desc}}, default: {{default}}, not: {{not}})
-      self.option_set.items << %option
+      self.definition_set << Options::Bool.new({{names}}, desc: {{desc}}, default: {{default}}, not: {{not}})
+    end
+
+    macro on(names, desc = "", &block)
+      {%
+        names = [names] unless names.class_name == "ArrayLiteral"
+        key = names[0]
+        method_name = key.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")
+        class_name = method_name.split("_").map{|i| i.capitalize}.join("")
+      %}
+
+      def __optarg_on_{{method_name.id}}
+        __optarg_yield {{block}}
+      end
+
+      module Handlers
+        class {{class_name.id}} < ::{{@type.id}}::Handler
+          def parse(args, index, result)
+            if is_name?(args[index])
+              result.__optarg_on_{{method_name.id}} if result.responds_to?(:__optarg_on_{{method_name.id}})
+              index + 1
+            else
+              index
+            end
+          end
+        end
+      end
+
+      self.definition_set << Handlers::{{class_name.id}}.new({{names}}, desc: {{desc}})
     end
   end
 end
