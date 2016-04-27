@@ -27,6 +27,11 @@ module Optarg_
       raise self.class.name
     end
   end
+
+  class SynonymModel < ::Optarg::Model
+    string %w[-s --string]
+    bool %w[-b --bool]
+  end
 end
 
 describe Optarg do
@@ -112,6 +117,21 @@ describe Optarg do
     it "runs block in instance's context" do
       argv = %w(--on)
       expect_raises(::Exception, "Optarg_::HandlerModel") { Optarg_::HandlerModel.parse(argv) }
+    end
+  end
+
+  describe "Synonyms" do
+    it "defines multiple accessors" do
+      argv = %w(-s v --bool)
+      result = Optarg_::SynonymModel.parse(argv)
+      result.responds_to?(:s).should be_true
+      result.responds_to?(:string).should be_true
+      result.responds_to?(:b?).should be_true
+      result.responds_to?(:bool?).should be_true
+      result.s.should eq "v" if result.responds_to?(:s)
+      result.s.should eq "v" if result.responds_to?(:string)
+      result.b?.should be_true if result.responds_to?(:b?)
+      result.bool?.should be_true if result.responds_to?(:bool?)
     end
   end
 end

@@ -74,18 +74,19 @@ module Optarg
       define_string_type ::{{@type.id}}::Options
 
       {%
-        names = [names] unless names.is_a?(::ArrayLiteral)
-        key = names[0]
-        method_name = key.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")
+        names = [names] unless names.class_name == "ArrayLiteral"
+        method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
       %}
 
-      def {{method_name.id}}
-        @__optarg_string_options[{{key}}]
-      end
+      {% for method_name, index in method_names %}
+        def {{method_name.id}}
+          @__optarg_string_options[{{names[0]}}]
+        end
 
-      def {{method_name.id}}?
-        @__optarg_string_options[{{key}}]?
-      end
+        def {{method_name.id}}?
+          @__optarg_string_options[{{names[0]}}]?
+        end
+      {% end %}
 
       self.definition_set << Options::String.new({{names}}, desc: {{desc}}, default: {{default}})
     end
@@ -127,14 +128,15 @@ module Optarg
 
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
-        key = names[0]
+        method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
         not = [not] unless not.class_name == "ArrayLiteral"
-        method_name = key.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")
       %}
 
-      def {{method_name.id}}?
-        !!@__optarg_bool_options[{{key}}]?
-      end
+      {% for method_name, index in method_names %}
+        def {{method_name.id}}?
+          !!@__optarg_bool_options[{{names[0]}}]?
+        end
+      {% end %}
 
       self.definition_set << Options::Bool.new({{names}}, desc: {{desc}}, default: {{default}}, not: {{not}})
     end
@@ -142,12 +144,11 @@ module Optarg
     macro on(names, desc = "", &block)
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
-        key = names[0]
-        method_name = key.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")
-        class_name = method_name.split("_").map{|i| i.capitalize}.join("")
+        method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
+        class_name = method_names[0].split("_").map{|i| i.capitalize}.join("")
       %}
 
-      def __optarg_on_{{method_name.id}}
+      def __optarg_on_{{method_names[0].id}}
         __optarg_yield {{block}}
       end
 
@@ -155,7 +156,7 @@ module Optarg
         class {{class_name.id}} < ::{{@type.id}}::Handler
           def parse(args, index, result)
             if is_name?(args[index])
-              result.__optarg_on_{{method_name.id}} if result.responds_to?(:__optarg_on_{{method_name.id}})
+              result.__optarg_on_{{method_names[0].id}} if result.responds_to?(:__optarg_on_{{method_names[0].id}})
               index + 1
             else
               index

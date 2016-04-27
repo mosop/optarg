@@ -39,6 +39,18 @@ dependencies:
   result.foo # raises KeyError
   ```
 
+* Synonyms
+
+  ```crystal
+  class Model < Optarg::Model
+    string %w(-f --file)
+  end
+
+  result = Model.parse(%w(-f foo.cr))
+  result.f # => "foo.cr"
+  result.file # => "foo.cr"
+  ```
+
 * Default Value
 
   ```crystal
