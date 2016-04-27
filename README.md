@@ -140,6 +140,8 @@ and see Features.
 
 ## Releases
 
+* v0.1.2
+  * Synonyms
 * v0.1.1
   * Handler
 
