@@ -130,6 +130,8 @@ dependencies:
   Model.parse %w(--goodbye) # raises "Goodbye, world!"
   ```
 
+* [WIP] Documentation
+
 ## Usage
 
 ```crystal
