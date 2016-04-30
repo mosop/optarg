@@ -147,7 +147,7 @@ dependencies:
     on("--goodbye") { raise @the.message }
   end
 
-  Model.new(%w(--goodbye), The.new) # raises "Someday again!"
+  Model.new(%w(--goodbye), The.new).parse # raises "Someday again!"
   ```
 
 * [WIP] Documentation
