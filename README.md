@@ -130,6 +130,26 @@ dependencies:
   Model.parse %w(--goodbye) # raises "Goodbye, world!"
   ```
 
+* Custom Initializer
+
+  ```crystal
+  class The
+    def message
+      "Someday again!"
+    end
+  end
+
+  class Model < Optarg::Model
+    def initialize(argv, @the : The)
+      super argv
+    end
+
+    on("--goodbye") { raise @the.message }
+  end
+
+  Model.new(%w(--goodbye), The.new) # raises "Someday again!"
+  ```
+
 * [WIP] Documentation
 
 ## Usage
@@ -142,6 +162,8 @@ and see Features.
 
 ## Releases
 
+* v0.1.3
+  * Custom Initializer
 * v0.1.2
   * Synonyms
 * v0.1.1
