@@ -38,9 +38,12 @@ module Optarg
       end
 
       def self.parse(argv)
-        o = new(argv)
-        ::Optarg::Parser.new.parse(definition_set, o)
-        o
+        new(argv).parse
+      end
+
+      def parse
+        ::Optarg::Parser.new.parse(self.class.definition_set, self)
+        self
       end
     end
 

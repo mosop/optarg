@@ -32,6 +32,14 @@ module Optarg_
     string %w[-s --string]
     bool %w[-b --bool]
   end
+
+  class CustomModel < ::Optarg::Model
+    def initialize(argv, @custom : ::String)
+      super argv
+    end
+
+    on("--custom") { raise @custom }
+  end
 end
 
 describe Optarg do
@@ -132,6 +140,13 @@ describe Optarg do
       result.s.should eq "v" if result.responds_to?(:string)
       result.b?.should be_true if result.responds_to?(:b?)
       result.bool?.should be_true if result.responds_to?(:bool?)
+    end
+  end
+
+  describe "Custom Initialization" do
+    it "accepts self-initializing model" do
+      argv = %w(--custom)
+      expect_raises(::Exception, "custom") { Optarg_::CustomModel.new(argv, "custom").parse }
     end
   end
 end
