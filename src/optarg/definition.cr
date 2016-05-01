@@ -1,13 +1,12 @@
 module Optarg
   abstract class Definition
     @names : ::Array(::String)
-    @description : ::String
+    @description : ::String?
 
     getter :names
     getter :description
 
-    def initialize(@names, desc = "")
-      @description = desc
+    private def initialize(@names, @description = nil)
     end
 
     def key

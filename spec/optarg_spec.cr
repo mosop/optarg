@@ -40,6 +40,11 @@ module Optarg_
 
     on("--custom") { raise @custom }
   end
+
+  class DefaultStringModel < ::Optarg::Model
+    string "--string", default: "default"
+    bool "--bool", default: true
+  end
 end
 
 describe Optarg do
@@ -147,6 +152,13 @@ describe Optarg do
     it "accepts self-initializing model" do
       argv = %w(--custom)
       expect_raises(::Exception, "custom") { Optarg_::CustomModel.new(argv, "custom").parse }
+    end
+  end
+
+  describe "Default String" do
+    it "has default string" do
+      Optarg_::DefaultStringModel.definition_set.options[0].default_string.should eq "default"
+      Optarg_::DefaultStringModel.definition_set.options[1].default_string.should eq "true"
     end
   end
 end

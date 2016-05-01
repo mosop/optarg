@@ -16,30 +16,17 @@ module Optarg
 
       module OptionBases
         abstract class {{type.id}} < ::{{@type.id}}::Option
-          alias Value = ::{{type.id}}
-          alias DefaultProc = ::Optarg::Model -> Value
+          @default : ::{{type.id}}?
+          getter :default
 
-          @default : Value | DefaultProc | ::Nil
-
-          def default
-            @default
-          end
-
-          @names = [] of ::String
-          @description = ""
-
-          def initialize(names, desc = "", @default = nil)
-            super names, desc: desc
+          def initialize(names, description = nil, @default = nil)
+            super names, description: description, default_string: @default.nil? ? nil : @default.to_s
           end
 
           def set_default(result)
             return unless result.responds_to?(:__optarg_{{downcase.id}}_options)
             return if @default.nil?
-            result.__optarg_{{downcase.id}}_options[key] = if @default.is_a?(DefaultProc)
-              (default = @default as DefaultProc).call(result)
-            else
-              default = @default as Value
-            end
+            result.__optarg_{{downcase.id}}_options[key] = @default as ::{{type.id}}
           end
         end
       end
@@ -70,7 +57,7 @@ module Optarg
       {% end %}
     end
 
-    macro string(names, desc = "", default = nil)
+    macro string(names, desc = nil, default = nil)
       define_string_type ::{{@type.id}}::Options
 
       {%
@@ -88,7 +75,7 @@ module Optarg
         end
       {% end %}
 
-      self.definition_set << Options::String.new({{names}}, desc: {{desc}}, default: {{default}})
+      self.definition_set << Options::String.new({{names}}, description: {{desc}}, default: {{default}})
     end
 
     macro define_bool_type(options)
@@ -98,8 +85,8 @@ module Optarg
           class Bool < ::{{@type.id}}::OptionBases::Bool
             @not = [] of ::String
 
-            def initialize(names, desc = "", default = nil, @not = [] of ::String)
-              super names, desc: desc, default: default
+            def initialize(names, description = nil, default = nil, @not = [] of ::String)
+              super names, description: description, default: default
             end
 
             def parse(args, index, result)
@@ -123,7 +110,7 @@ module Optarg
       {% end %}
     end
 
-    macro bool(names, desc = "", default = nil, not = %w())
+    macro bool(names, desc = nil, default = nil, not = %w())
       define_bool_type ::{{@type.id}}::Options
 
       {%
@@ -138,10 +125,10 @@ module Optarg
         end
       {% end %}
 
-      self.definition_set << Options::Bool.new({{names}}, desc: {{desc}}, default: {{default}}, not: {{not}})
+      self.definition_set << Options::Bool.new({{names}}, description: {{desc}}, default: {{default}}, not: {{not}})
     end
 
-    macro on(names, desc = "", &block)
+    macro on(names, desc = nil, &block)
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
@@ -165,7 +152,7 @@ module Optarg
         end
       end
 
-      self.definition_set << Handlers::{{class_name.id}}.new({{names}}, desc: {{desc}})
+      self.definition_set << Handlers::{{class_name.id}}.new({{names}}, description: {{desc}})
     end
   end
 end
