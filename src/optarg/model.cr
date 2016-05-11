@@ -13,7 +13,7 @@ module Optarg
           super_option = "#{@type.superclass.id}::Option"
           super_handler = "#{@type.superclass.id}::Handler"
           super_definition_set = "#{@type.superclass.id}::DefinitionSet"
-          definition_set_base = "::#{@type.superclass.id}.definition_set"
+          definition_set_base = "::#{@type.superclass.id}.definitions"
         end %}
 
       module Options
@@ -31,10 +31,10 @@ module Optarg
         end
       end
 
-      @@definition_set = DefinitionSet.new
+      @@definitions = DefinitionSet.new
 
-      def self.definition_set
-        @@definition_set
+      def self.definitions
+        @@definitions
       end
 
       def self.parse(argv)
@@ -42,7 +42,7 @@ module Optarg
       end
 
       def parse
-        ::Optarg::Parser.new.parse(self.class.definition_set, self)
+        ::Optarg::Parser.new.parse(self.class.definitions, self)
         self
       end
     end

@@ -75,7 +75,7 @@ module Optarg
         end
       {% end %}
 
-      self.definition_set << Options::String.new({{names}}, description: {{desc}}, default: {{default}})
+      self.definitions << Options::String.new({{names}}, description: {{desc}}, default: {{default}})
     end
 
     macro define_bool_type(options)
@@ -125,7 +125,7 @@ module Optarg
         end
       {% end %}
 
-      self.definition_set << Options::Bool.new({{names}}, description: {{desc}}, default: {{default}}, not: {{not}})
+      self.definitions << Options::Bool.new({{names}}, description: {{desc}}, default: {{default}}, not: {{not}})
     end
 
     macro on(names, desc = nil, &block)
@@ -152,7 +152,7 @@ module Optarg
         end
       end
 
-      self.definition_set << Handlers::{{class_name.id}}.new({{names}}, description: {{desc}})
+      self.definitions << Handlers::{{class_name.id}}.new({{names}}, description: {{desc}})
     end
   end
 end
