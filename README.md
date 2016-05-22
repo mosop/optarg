@@ -16,141 +16,141 @@ dependencies:
 
 ## Features
 
-* Easy Access
+<a name="features"></a>
 
-  ```crystal
-  class Model < Optarg::Model
-    string "--foo"
+### Accessor
+
+```crystal
+class Model < Optarg::Model
+  string "--foo"
+end
+
+result = Model.parse(%w(--foo bar))
+result.foo # => "bar"
+```
+
+### Nilable Accessor
+
+```crystal
+class Model < Optarg::Model
+  string "--foo"
+end
+
+result = Model.parse(%w())
+result.foo? # => nil
+result.foo # raises KeyError
+```
+
+### Synonyms
+
+```crystal
+class Model < Optarg::Model
+  string %w(-f --file)
+end
+
+result = Model.parse(%w(-f foo.cr))
+result.f # => "foo.cr"
+result.file # => "foo.cr"
+```
+
+### Default Value
+
+```crystal
+class Model < Optarg::Model
+  string "--foo", default: "bar"
+end
+
+result = Model.parse(%w())
+result.foo # => "bar"
+```
+
+### Boolean Value
+
+```crystal
+class Model < Optarg::Model
+  bool "-b"
+end
+
+result = Model.parse(%w(-b))
+result.b? # => true
+```
+
+### Negation
+
+```crystal
+class Model < Optarg::Model
+  bool "-b", default: true, not: "-B"
+end
+
+result = Model.parse(%w(-B))
+result.b? # => false
+```
+
+### Arguments
+
+```crystal
+class Model < Optarg::Model
+  string "-s"
+  bool "-b"
+end
+
+result = Model.parse(%w(-s foo -b bar -- baz))
+result.args # => ["bar"]
+result.unparsed_args # => ["baz"]
+```
+
+### Inheritance (Reusable Model)
+
+```crystal
+class Animal < Optarg::Model
+  bool "--sleep"
+end
+
+class Cat < Animal
+  bool "--mew"
+end
+
+class Dog < Animal
+  bool "--woof"
+end
+
+Cat.parse(%w()).responds_to?(:sleep?) # => true
+Dog.parse(%w()).responds_to?(:sleep?) # => true
+```
+
+### Handler
+
+```crystal
+class Model < Optarg::Model
+  on("--goodbye") { goodbye! }
+
+  def goodbye!
+    raise "Goodbye, world!"
+  end
+end
+
+Model.parse %w(--goodbye) # raises "Goodbye, world!"
+```
+
+### Custom Initializer
+
+```crystal
+class The
+  def message
+    "Someday again!"
+  end
+end
+
+class Model < Optarg::Model
+  def initialize(argv, @the : The)
+    super argv
   end
 
-  result = Model.parse(%w(--foo bar))
-  result.foo # => "bar"
-  ```
+  on("--goodbye") { raise @the.message }
+end
 
-* Nilable Accessor
-
-  ```crystal
-  class Model < Optarg::Model
-    string "--foo"
-  end
-
-  result = Model.parse(%w())
-  result.foo? # => nil
-  result.foo # raises KeyError
-  ```
-
-* Synonyms
-
-  ```crystal
-  class Model < Optarg::Model
-    string %w(-f --file)
-  end
-
-  result = Model.parse(%w(-f foo.cr))
-  result.f # => "foo.cr"
-  result.file # => "foo.cr"
-  ```
-
-* Default Value
-
-  ```crystal
-  class Model < Optarg::Model
-    string "--foo", default: "bar"
-  end
-
-  result = Model.parse(%w())
-  result.foo # => "bar"
-  ```
-
-* Boolean Value
-
-  ```crystal
-  class Model < Optarg::Model
-    bool "-b"
-  end
-
-  result = Model.parse(%w(-b))
-  result.b? # => true
-  ```
-
-* Negation
-
-  ```crystal
-  class Model < Optarg::Model
-    bool "-b", not: "-B"
-  end
-
-  result = Model.parse(%w(-B))
-  result.b? # => false
-  ```
-
-* Non-defined Arguments
-
-  ```crystal
-  class Model < Optarg::Model
-    string "-s"
-    bool "-b"
-  end
-
-  result = Model.parse(%w(-s foo -b bar -- baz))
-  result.args # => ["bar"]
-  result.unparsed_args # => ["baz"]
-  ```
-
-* Inheritance (Reusable Model)
-
-  ```crystal
-  class Animal < Optarg::Model
-    bool "--sleep"
-  end
-
-  class Cat < Animal
-    bool "--mew"
-  end
-
-  class Dog < Animal
-    bool "--woof"
-  end
-
-  cat = Cat.parse(%w(--sleep --mew))
-  dog = Dog.parse(%w(--sleep --woof))
-  ```
-
-* Handler
-
-  ```crystal
-  class Model < Optarg::Model
-    on("--goodbye") { world! }
-
-    def world!
-      raise "Goodbye, world!"
-    end
-  end
-
-  Model.parse %w(--goodbye) # raises "Goodbye, world!"
-  ```
-
-* Custom Initializer
-
-  ```crystal
-  class The
-    def message
-      "Someday again!"
-    end
-  end
-
-  class Model < Optarg::Model
-    def initialize(argv, @the : The)
-      super argv
-    end
-
-    on("--goodbye") { raise @the.message }
-  end
-
-  Model.new(%w(--goodbye), The.new).parse # raises "Someday again!"
-  ```
-
-* [WIP] Documentation
+Model.new(%w(--goodbye), The.new).parse # raises "Someday again!"
+```
 
 ## Usage
 
@@ -158,9 +158,9 @@ dependencies:
 require "optarg"
 ```
 
-and see Features.
+and see [Features](#features).
 
-## Releases
+## Release Notes
 
 * v0.1.3
   * Custom Initializer

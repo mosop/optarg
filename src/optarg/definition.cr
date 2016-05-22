@@ -1,12 +1,13 @@
+require "./metadata"
+
 module Optarg
   abstract class Definition
     @names : ::Array(::String)
-    @description : ::String?
+    @metadata : ::Optarg::Metadata?
 
     getter :names
-    getter :description
 
-    private def initialize(@names, @description = nil)
+    def initialize(@names, @metadata)
     end
 
     def key

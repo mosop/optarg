@@ -2,18 +2,16 @@ module Optarg
   class Parser
     @index = 0
 
-    def parse(definition_set, result)
+    def parse(result)
       args = result.__optarg_args_to_be_parsed
 
-      definition_set.each_set do |set|
-        set.options.each do |option|
-          option.set_default result
-        end
+      result.class.options.values.each do |option|
+        option.set_default result
       end
 
       while @index < args.size
         i = @index
-        definition_set.each do |definition|
+        (result.class.options.values + result.class.handlers.values).each do |definition|
           j = definition.parse(args, i, result)
           if j != i
             result.__optarg_parsed_nodes << args[i..(j-1)]

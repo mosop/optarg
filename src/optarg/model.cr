@@ -7,34 +7,50 @@ module Optarg
         if @type.superclass == ::Optarg::Model
           super_option = "Optarg::Option"
           super_handler = "Optarg::Handler"
-          super_definition_set = "Optarg::DefinitionSet"
-          definition_set_base = "nil"
+          super_option_metadata = "Optarg::Metadata"
+          super_handler_metadata = "Optarg::Metadata"
+          merge_of_options = "@@self_options"
+          merge_of_handlers = "@@self_handlers"
         else
           super_option = "#{@type.superclass.id}::Option"
           super_handler = "#{@type.superclass.id}::Handler"
-          super_definition_set = "#{@type.superclass.id}::DefinitionSet"
-          definition_set_base = "::#{@type.superclass.id}.definitions"
+          super_option_metadata = "#{@type.superclass.id}::Option::Metadata"
+          super_handler_metadata = "#{@type.superclass.id}::Handler::Metadata"
+          merge_of_options = "::#{@type.superclass.id}.options.merge(@@self_options)"
+          merge_of_handlers = "::#{@type.superclass.id}.handlers.merge(@@self_handlers)"
         end %}
 
       module Options
       end
 
       abstract class Option < ::{{super_option.id}}
-      end
-
-      abstract class Handler < ::{{super_handler.id}}
-      end
-
-      class DefinitionSet < ::{{super_definition_set.id}}
-        def base
-          {{definition_set_base.id}}
+        abstract class Metadata < ::{{super_option_metadata.id}}
         end
       end
 
-      @@definitions = DefinitionSet.new
+      abstract class Handler < ::{{super_handler.id}}
+        abstract class Metadata < ::{{super_option_metadata.id}}
+        end
+      end
 
-      def self.definitions
-        @@definitions
+      @@self_options = {} of ::String => ::Optarg::Option
+      @@options = {} of ::String => ::Optarg::Option
+
+      def self.options
+        @@options = {{merge_of_options.id}} if @@options.empty?
+        @@options
+      end
+
+      @@self_handlers = {} of ::String => ::Optarg::Handler
+      @@handlers = {} of ::String => ::Optarg::Handler
+
+      def self.self_handlers
+        @@self_handlers
+      end
+
+      def self.handlers
+        @@handlers = {{merge_of_handlers.id}} if @@handlers.empty?
+        @@handlers
       end
 
       def self.parse(argv)
@@ -42,7 +58,7 @@ module Optarg
       end
 
       def parse
-        ::Optarg::Parser.new.parse(self.class.definitions, self)
+        ::Optarg::Parser.new.parse(self)
         self
       end
     end
