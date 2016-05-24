@@ -159,19 +159,27 @@ module Optarg
       @@self_handlers[%handler.key] = %handler
     end
 
-    macro __handler_metadata_class_of(names)
-      {%
-        names = [names] unless names.class_name == "ArrayLiteral"
-        method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
-        class_name = "Handler_" + method_names[0]
-      %}
-
-      Handlers::{{class_name.id}}::Metadata
-    end
-
     macro on(names, metadata = nil, &block)
       __define_handler {{names}} {{block}}
       __add_handler {{names}}, {{metadata}}
+    end
+
+    macro __option_metadata_class_of(names)
+      {%
+        names = [names] unless names.class_name == "ArrayLiteral"
+        class_name = "Option_" + names[0].split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")
+      %}
+
+      Options::{{class_name.id}}::Metadata
+    end
+
+    macro __handler_metadata_class_of(names)
+      {%
+        names = [names] unless names.class_name == "ArrayLiteral"
+        class_name = "Handler_" + names[0].split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")
+      %}
+
+      Handlers::{{class_name.id}}::Metadata
     end
   end
 end
