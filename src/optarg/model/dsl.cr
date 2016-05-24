@@ -1,70 +1,49 @@
 module Optarg
   class Model
-    macro __define_value_container_for_type(type)
+    macro __define_value_container(type)
       {%
-        downcase = type.id.split("::").map(&.downcase).join("__")
+        snakecase = type.id.split("::").map{|i| i.gsub(/([A-Z])/, "_\\1")}.join("__").gsub(/^_/, "").downcase
+        attribute_name = "@__optarg_#{snakecase.id}_options"
       %}
 
-      @__optarg_{{downcase.id}}_options = ::Hash(::String, ::{{type.id}}).new
-      getter :__optarg_{{downcase.id}}_options
+      {% unless @type.has_attribute?(attribute_name) %}
+        @__optarg_{{snakecase.id}}_options = ::Hash(::String, ::{{type.id}}).new
+        getter :__optarg_{{snakecase.id}}_options
+      {% end %}
     end
 
-    macro __define_option_for_type(type)
+    macro __define_option(type, mixin, names)
       {%
-        downcase = type.id.split("::").map(&.downcase).join("__")
+        snakecase = type.id.split("::").map{|i| i.gsub(/([A-Z])/, "_\\1")}.join("__").gsub(/^_/, "").downcase
+        names = [names] unless names.class_name == "ArrayLiteral"
+        method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
+        class_name = "Option_" + method_names[0]
       %}
 
-      module OptionBases
-        abstract class {{type.id}} < ::{{@type.id}}::Option
-          abstract class Metadata < ::{{@type.id}}::Option::Metadata
+      module Options
+        class {{class_name.id}} < ::{{@type.id}}::Option
+          class Metadata < ::{{@type.id}}::Option::Metadata
           end
 
-          @default : ::{{type.id}}?
-          getter :default
+          include {{mixin.id}}
 
-          def initialize(names, metadata = nil, @default = nil)
-            super names, metadata: metadata
+          def metadata
+            @metadata as Metadata
+          end
+
+          def as_result(result)
+            if result.is_a?(::{{@type.id}})
+              result as ::{{@type.id}}
+            end
           end
 
           def set_default(result)
-            return unless result.responds_to?(:__optarg_{{downcase.id}}_options)
-            return if @default.nil?
-            result.__optarg_{{downcase.id}}_options[key] = @default as ::{{type.id}}
+            return unless default = @default
+            return unless result = as_result(result)
+            result.__optarg_{{snakecase.id}}_options[key] = default
           end
         end
       end
-    end
-
-    macro define_type(type)
-      __define_value_container_for_type {{type}}
-      __define_option_for_type {{type}}
-    end
-
-    macro define_string_type(options)
-      {% unless options.resolve.has_constant?("String") %}
-        define_type ::String
-        module Options
-          class String < ::{{@type.id}}::OptionBases::String
-            class Metadata < ::{{@type.id}}::OptionBases::String::Metadata
-            end
-
-            def metadata
-              @metadata as Metadata
-            end
-
-            def parse(args, index, result)
-              return index unless result.responds_to?(:__optarg_string_options)
-              if is_name?(args[index])
-                raise ::Optarg::MissingValue.new(args[index]) unless index + 1 < args.size
-                result.__optarg_string_options[key] = args[index + 1]
-                index + 2
-              else
-                index
-              end
-            end
-          end
-        end
-      {% end %}
     end
 
     macro __define_string_option(names)
@@ -73,7 +52,8 @@ module Optarg
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
       %}
 
-      define_string_type ::{{@type.id}}::Options
+      __define_value_container ::String
+      __define_option ::String, ::Optarg::OptionMixins::String, {{names}}
 
       {% for method_name, index in method_names %}
         def {{method_name.id}}
@@ -90,9 +70,10 @@ module Optarg
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
+        class_name = "Option_" + method_names[0]
       %}
 
-      %option = Options::String.new({{names}}, metadata: {{metadata}}, default: {{default}})
+      %option = Options::{{class_name.id}}.new({{names}}, metadata: {{metadata}}, default: {{default}})
       @@self_options[%option.key] = %option
     end
 
@@ -101,53 +82,15 @@ module Optarg
       __add_string_option {{names}}, metadata: {{metadata}}, default: {{default}}
     end
 
-    macro define_bool_type(options)
-      {% unless options.resolve.has_constant?("Bool") %}
-        define_type ::Bool
-        module Options
-          class Bool < ::{{@type.id}}::OptionBases::Bool
-            class Metadata < ::{{@type.id}}::OptionBases::Bool::Metadata
-            end
-
-            def metadata
-              @metadata as Metadata
-            end
-
-            @not = [] of ::String
-
-            def initialize(names, metadata = nil, default = nil, @not = [] of ::String)
-              super names, metadata: metadata, default: default
-            end
-
-            def parse(args, index, result)
-              return index unless result.responds_to?(:__optarg_bool_options)
-              if is_name?(args[index])
-                result.__optarg_bool_options[key] = true
-                index + 1
-              elsif is_not?(args[index])
-                result.__optarg_bool_options[key] = false
-                index + 1
-              else
-                index
-              end
-            end
-
-            def is_not?(name)
-              @not.includes?(name)
-            end
-          end
-        end
-      {% end %}
-    end
-
     macro __define_bool_option(names, default = nil, not = %w())
-      define_bool_type ::{{@type.id}}::Options
-
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
         not = [not] unless not.class_name == "ArrayLiteral"
       %}
+
+      __define_value_container ::Bool
+      __define_option ::Bool, ::Optarg::OptionMixins::Bool, {{names}}
 
       {% for method_name, index in method_names %}
         def {{method_name.id}}?
@@ -161,9 +104,10 @@ module Optarg
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
         not = [not] unless not.class_name == "ArrayLiteral"
+        class_name = "Option_" + method_names[0]
       %}
 
-      %option = Options::Bool.new({{names}}, metadata: {{metadata}}, default: {{default}}, not: {{not}})
+      %option = Options::{{class_name.id}}.new({{names}}, metadata: {{metadata}}, default: {{default}}, not: {{not}})
       @@self_options[%option.key] = %option
     end
 
@@ -176,7 +120,7 @@ module Optarg
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
-        class_name = method_names[0].split("_").map{|i| i.capitalize}.join("")
+        class_name = "Handler_" + method_names[0]
       %}
 
       def __optarg_on_{{method_names[0].id}}
@@ -208,7 +152,7 @@ module Optarg
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
-        class_name = method_names[0].split("_").map{|i| i.capitalize}.join("")
+        class_name = "Handler_" + method_names[0]
       %}
 
       %handler = Handlers::{{class_name.id}}.new({{names}}, metadata: {{metadata}})
@@ -219,7 +163,7 @@ module Optarg
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
-        class_name = method_names[0].split("_").map{|i| i.capitalize}.join("")
+        class_name = "Handler_" + method_names[0]
       %}
 
       Handlers::{{class_name.id}}::Metadata

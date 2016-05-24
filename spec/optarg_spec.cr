@@ -51,9 +51,9 @@ module Optarg::Test
     __define_string_option "-s"
     __define_bool_option "-b"
     __define_handler("--help") {}
-    __add_string_option "-s", metadata: Options::String::Metadata.new("string")
-    __add_bool_option "-b", metadata: Options::Bool::Metadata.new("bool")
-    __add_handler "--help", metadata: Handlers::Help::Metadata.new("handler")
+    __add_string_option "-s", metadata: Options::Option_s::Metadata.new("string")
+    __add_bool_option "-b", metadata: Options::Option_b::Metadata.new("bool")
+    __add_handler "--help", metadata: Handlers::Handler_help::Metadata.new("handler")
   end
 end
 
