@@ -10,4 +10,10 @@ module Optarg
       super "Missing value: #{message}"
     end
   end
+
+  class UnsupportedConcatenation < ::Exception
+    def initialize(message)
+      super "Unsupporeted concatenation: #{message}"
+    end
+  end
 end

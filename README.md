@@ -75,6 +75,19 @@ result = Model.parse(%w(-b))
 result.b? # => true
 ```
 
+### Concatenation
+
+```crystal
+class Model < Optarg::Model
+  bool "-a"
+  bool "-b"
+end
+
+result = Model.parse(%w(-ab))
+result.a? # => true
+result.b? # => true
+```
+
 ### Negation
 
 ```crystal

@@ -31,16 +31,16 @@ module Optarg
             @metadata as Metadata
           end
 
-          def as_result(result)
-            if result.is_a?(::{{@type.id}})
-              result as ::{{@type.id}}
+          def as_data(data)
+            if data.is_a?(::{{@type.id}})
+              data as ::{{@type.id}}
             end
           end
 
-          def set_default(result)
+          def set_default(data)
             return unless default = @default
-            return unless result = as_result(result)
-            result.__optarg_{{snakecase.id}}_options[key] = default
+            return unless data = as_data(data)
+            data.__optarg_{{snakecase.id}}_options[key] = default
           end
         end
       end
@@ -136,9 +136,17 @@ module Optarg
             @metadata as Metadata
           end
 
-          def parse(args, index, result)
-            if is_name?(args[index])
-              result.__optarg_on_{{method_names[0].id}} if result.responds_to?(:__optarg_on_{{method_names[0].id}})
+          def parse(arg, data)
+            if is_name?(arg)
+              data.__optarg_on_{{method_names[0].id}} if data.responds_to?(:__optarg_on_{{method_names[0].id}})
+              true
+            else
+              false
+            end
+          end
+
+          def parse(args, index, data)
+            if parse(args[index], data)
               index + 1
             else
               index

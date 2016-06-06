@@ -10,13 +10,21 @@ module Optarg::OptionMixins
         super names, metadata: metadata
       end
 
-      def parse(args, index, result)
-        return index unless result = as_result(result)
-        if is_name?(args[index])
-          result.__optarg_bool_options[key] = true
-          index + 1
-        elsif is_not?(args[index])
-          result.__optarg_bool_options[key] = false
+      def parse(arg, data)
+        return false unless data = as_data(data)
+        if is_name?(arg)
+          data.__optarg_bool_options[key] = true
+          true
+        elsif is_not?(arg)
+          data.__optarg_bool_options[key] = false
+          true
+        else
+          false
+        end
+      end
+
+      def parse(args, index, data)
+        if parse(args[index], data)
           index + 1
         else
           index

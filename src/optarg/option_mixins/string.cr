@@ -8,11 +8,15 @@ module Optarg::OptionMixins
         super names, metadata: metadata
       end
 
-      def parse(args, index, result)
-        return index unless result = as_result(result)
+      def parse(arg, data)
+        raise ::Optarg::UnsupportedConcatenation.new(arg)
+      end
+
+      def parse(args, index, data)
+        return index unless data = as_data(data)
         if is_name?(args[index])
           raise ::Optarg::MissingValue.new(args[index]) unless index + 1 < args.size
-          result.__optarg_string_options[key] = args[index + 1]
+          data.__optarg_string_options[key] = args[index + 1]
           index + 2
         else
           index
