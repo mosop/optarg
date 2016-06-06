@@ -20,9 +20,6 @@ module Optarg
           merge_of_handlers = "::#{@type.superclass.id}.handlers.merge(@@self_handlers)"
         end %}
 
-      module Options
-      end
-
       abstract class Option < ::{{super_option.id}}
         abstract class Metadata < ::{{super_option_metadata.id}}
         end
@@ -44,10 +41,6 @@ module Optarg
       @@self_handlers = {} of ::String => ::Optarg::Handler
       @@handlers = {} of ::String => ::Optarg::Handler
 
-      def self.self_handlers
-        @@self_handlers
-      end
-
       def self.handlers
         @@handlers = {{merge_of_handlers.id}} if @@handlers.empty?
         @@handlers
@@ -58,7 +51,7 @@ module Optarg
       end
 
       def parse
-        ::Optarg::Parser.new.parse(self)
+        ::Optarg::Parser.new.parse(::{{@type.id}}, self)
         self
       end
     end

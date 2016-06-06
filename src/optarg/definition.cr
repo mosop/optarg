@@ -3,9 +3,10 @@ require "./metadata"
 module Optarg
   abstract class Definition
     @names : ::Array(::String)
-    @metadata : ::Optarg::Metadata?
-
     getter :names
+
+    @metadata : ::Optarg::Metadata?
+    getter :metadata
 
     def initialize(@names, @metadata)
     end
