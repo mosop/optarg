@@ -6,8 +6,8 @@ module Optarg::NegationFeature
   end
 end
 
-describe "Features" do
-  it "Negation" do
+describe "Negation" do
+  it "" do
     result = Optarg::NegationFeature::Model.parse(%w(-B))
     result.b?.should be_false
   end

@@ -6,8 +6,8 @@ module Optarg::SynonymsFeature
   end
 end
 
-describe "Features" do
-  it "Synonyms" do
+describe "Synonyms" do
+  it "" do
     result = Optarg::SynonymsFeature::Model.parse(%w(-f foo.cr))
     result.f.should eq "foo.cr"
     result.file.should eq "foo.cr"

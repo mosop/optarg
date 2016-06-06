@@ -10,8 +10,8 @@ module Optarg::HandlerFeature
   end
 end
 
-describe "Features" do
-  it "Handler" do
+describe "Handler" do
+  it "" do
     expect_raises(Exception, "Goodbye, world!") { Optarg::HandlerFeature::Model.parse(%w(--goodbye)) }
   end
 end

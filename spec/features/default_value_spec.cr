@@ -6,8 +6,8 @@ module Optarg::DefaultValueFeature
   end
 end
 
-describe "Features" do
-  it "Default Value" do
+describe "Default Value" do
+  it "" do
     result = Optarg::DefaultValueFeature::Model.parse(%w())
     result.foo.should eq "bar"
   end

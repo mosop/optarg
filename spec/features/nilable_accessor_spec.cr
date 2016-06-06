@@ -6,8 +6,8 @@ module Optarg::NilableAccessorFeature
   end
 end
 
-describe "Features" do
-  it "Nilable Accessor" do
+describe "Nilable Accessor" do
+  it "" do
     result = Optarg::NilableAccessorFeature::Model.parse(%w())
     result.foo?.should be_nil
     expect_raises(KeyError) { result.foo }

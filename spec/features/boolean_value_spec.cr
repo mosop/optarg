@@ -6,8 +6,8 @@ module Optarg::BooleanValueFeature
   end
 end
 
-describe "Features" do
-  it "Boolean Value" do
+describe "Boolean Value" do
+  it "" do
     result = Optarg::BooleanValueFeature::Model.parse(%w(-b))
     result.b?.should be_true
   end

@@ -14,8 +14,8 @@ module Optarg::InheritanceFeature
   end
 end
 
-describe "Features" do
-  it "Inheritance" do
+describe "Inheritance" do
+  it "" do
     Optarg::InheritanceFeature::Cat.parse(%w()).responds_to?(:sleep?).should be_true
     Optarg::InheritanceFeature::Dog.parse(%w()).responds_to?(:sleep?).should be_true
   end

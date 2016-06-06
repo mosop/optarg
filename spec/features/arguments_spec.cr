@@ -7,8 +7,8 @@ module Optarg::ArgumentsFeature
   end
 end
 
-describe "Features" do
-  it "Arguments" do
+describe "Arguments" do
+  it "" do
     result = Optarg::ArgumentsFeature::Model.parse(%w(-s foo -b bar -- baz))
     result.args.should eq %w(bar)
     result.unparsed_args.should eq %w(baz)

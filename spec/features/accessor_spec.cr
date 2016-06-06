@@ -6,8 +6,8 @@ module Optarg::AccessorFeature
   end
 end
 
-describe "Features" do
-  it "Accessor" do
+describe "Accessor" do
+  it "" do
     result = Optarg::AccessorFeature::Model.parse(%w(--foo bar))
     result.foo.should eq "bar"
   end

@@ -16,8 +16,8 @@ module Optarg::CustomInitializerFeature
   end
 end
 
-describe "Features" do
-  it "Custom Initializer" do
+describe "Custom Initializer" do
+  it "" do
     argv = %w(--goodbye)
     the = Optarg::CustomInitializerFeature::The.new
     expect_raises(Exception, "Someday again!") { Optarg::CustomInitializerFeature::Model.new(argv, the).parse }
