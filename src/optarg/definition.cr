@@ -6,7 +6,6 @@ module Optarg
     getter :names
 
     @metadata : ::Optarg::Metadata?
-    getter :metadata
 
     def initialize(@names, @metadata)
     end

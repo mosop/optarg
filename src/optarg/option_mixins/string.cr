@@ -8,6 +8,10 @@ module Optarg::OptionMixins
         super names, metadata: metadata
       end
 
+      def type
+        :string
+      end
+
       def parse(arg, data)
         raise ::Optarg::UnsupportedConcatenation.new(arg)
       end

@@ -5,9 +5,14 @@ module Optarg::OptionMixins
       getter :default
 
       @not = \%w()
+      getter :not
 
       def initialize(names, metadata = nil, @default = nil, @not = \%w())
         super names, metadata: metadata
+      end
+
+      def type
+        :bool
       end
 
       def parse(arg, data)
