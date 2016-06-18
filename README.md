@@ -175,6 +175,8 @@ and see [Features](#features).
 
 ## Release Notes
 
+* v0.1.9
+  * Concatenation
 * v0.1.3
   * Custom Initializer
 * v0.1.2
