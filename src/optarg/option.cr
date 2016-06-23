@@ -1,5 +1,7 @@
 module Optarg
   abstract class Option < ::Optarg::Definition
-    abstract def set_default(result)
+    def set_default(result)
+      raise "Not implemeted."
+    end
   end
 end

@@ -17,5 +17,13 @@ module Optarg
     def is_name?(name)
       @names.includes?(name)
     end
+
+    def parse(arg, data)
+      raise "Not implemeted."
+    end
+
+    def parse(args, index, data)
+      raise "Not implemeted."
+    end
   end
 end
