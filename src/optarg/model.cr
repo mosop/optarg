@@ -9,15 +9,15 @@ module Optarg
           super_handler = "Optarg::Handler"
           super_option_metadata = "Optarg::Metadata"
           super_handler_metadata = "Optarg::Metadata"
-          merge_of_options = "@@self_options"
-          merge_of_handlers = "@@self_handlers"
+          merge_of_options = "@@__self_options"
+          merge_of_handlers = "@@__self_handlers"
         else
           super_option = "#{@type.superclass.id}::Option"
           super_handler = "#{@type.superclass.id}::Handler"
           super_option_metadata = "#{@type.superclass.id}::Option::Metadata"
           super_handler_metadata = "#{@type.superclass.id}::Handler::Metadata"
-          merge_of_options = "::#{@type.superclass.id}.options.merge(@@self_options)"
-          merge_of_handlers = "::#{@type.superclass.id}.handlers.merge(@@self_handlers)"
+          merge_of_options = "::#{@type.superclass.id}.__options.merge(@@__self_options)"
+          merge_of_handlers = "::#{@type.superclass.id}.__handlers.merge(@@__self_handlers)"
         end %}
 
       abstract class Option < ::{{super_option.id}}
@@ -30,69 +30,81 @@ module Optarg
         end
       end
 
-      @@self_options = {} of ::String => ::Optarg::Option
-      @@options = {} of ::String => ::Optarg::Option
+      @@__self_options = {} of ::String => ::Optarg::Option
+      @@__options = {} of ::String => ::Optarg::Option
 
-      def self.options
-        @@options = {{merge_of_options.id}} if @@options.empty?
-        @@options
+      def self.__options
+        @@__options = {{merge_of_options.id}} if @@__options.empty?
+        @@__options
       end
 
-      @@self_handlers = {} of ::String => ::Optarg::Handler
-      @@handlers = {} of ::String => ::Optarg::Handler
+      @@__self_handlers = {} of ::String => ::Optarg::Handler
+      @@__handlers = {} of ::String => ::Optarg::Handler
 
-      def self.handlers
-        @@handlers = {{merge_of_handlers.id}} if @@handlers.empty?
-        @@handlers
+      def self.__handlers
+        @@__handlers = {{merge_of_handlers.id}} if @@__handlers.empty?
+        @@__handlers
       end
 
       def self.parse(argv)
-        new(argv).parse
+        new(argv).__parse
       end
 
-      def parse
+      def __parse
         ::Optarg::Parser.new.parse(::{{@type.id}}, self)
         self
       end
     end
 
-    @__optarg_argv : ::Array(::String)
-    @__optarg_args_to_be_parsed : ::Array(::String)
-    @__optarg_parsed_args = [] of ::String
-    @__optarg_unparsed_args : ::Array(::String)
-    @__optarg_parsed_nodes = [] of ::Array(::String)
+    @__argv : ::Array(::String)
+    @__args_to_be_parsed : ::Array(::String)
+    @__parsed_args = [] of ::String
+    @__unparsed_args : ::Array(::String)
+    @__parsed_nodes = [] of ::Array(::String)
 
-    getter :__optarg_argv
-    getter :__optarg_args_to_be_parsed
-    getter :__optarg_parsed_args
-    getter :__optarg_unparsed_args
-    getter :__optarg_parsed_nodes
+    getter :__argv
+    getter :__args_to_be_parsed
+    getter :__parsed_args
+    getter :__unparsed_args
+    getter :__parsed_nodes
 
-    def initialize(@__optarg_argv)
-      @__optarg_args_to_be_parsed, @__optarg_unparsed_args = __optarg_split_by_double_dash
+    def initialize(@__argv)
+      @__args_to_be_parsed, @__unparsed_args = __split_by_double_dash
+    end
+
+    def __args
+      @__parsed_args
     end
 
     def args
-      @__optarg_parsed_args
+      __args
+    end
+
+    def __unparsed_args
+      @__unparsed_args
     end
 
     def unparsed_args
-      @__optarg_unparsed_args
+      __unparsed_args
     end
 
-    private def __optarg_split_by_double_dash
-      if i_or_nil = @__optarg_argv.index("--")
+    private def __split_by_double_dash
+      if i_or_nil = @__argv.index("--")
         i = i_or_nil.to_i
-        parsed = i == 0 ? [] of ::String : @__optarg_argv[0..(i-1)]
-        unparsed = i == @__optarg_argv.size-1 ? [] of ::String : @__optarg_argv[(i+1)..-1]
+        parsed = i == 0 ? [] of ::String : @__argv[0..(i-1)]
+        unparsed = i == @__argv.size-1 ? [] of ::String : @__argv[(i+1)..-1]
         {parsed, unparsed}
       else
-        {@__optarg_argv, [] of ::String}
+        {@__argv, %w()}
       end
     end
 
-    private def __optarg_yield
+    private def __yield
       yield
+    end
+
+    def parse
+      __parse
     end
   end
 end

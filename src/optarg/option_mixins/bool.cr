@@ -2,7 +2,6 @@ module Optarg::OptionMixins
   module Bool
     macro included
       @default : ::Bool?
-      getter :default
 
       @not = \%w()
       getter :not
@@ -15,13 +14,17 @@ module Optarg::OptionMixins
         :bool
       end
 
+      def get_default
+        @default
+      end
+
       def parse(arg, data)
         return false unless data = as_data(data)
         if is_name?(arg)
-          data.__optarg_bool_options[key] = true
+          data.__options__bool[key] = true
           true
         elsif is_not?(arg)
-          data.__optarg_bool_options[key] = false
+          data.__options__bool[key] = false
           true
         else
           false

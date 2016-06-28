@@ -1,20 +1,35 @@
 module Optarg
   class Model
-    macro __define_value_container(type)
+    macro __define_hashed_value_container(type)
       {%
-        snakecase = type.id.split("::").map{|i| i.gsub(/([A-Z])/, "_\\1")}.join("__").gsub(/^_/, "").downcase
-        attribute_name = "@__optarg_#{snakecase.id}_options"
+        snake = type.id.split("::").map{|i| i.underscore}.join("__").gsub(/^_+/, "")
+        attribute_name = "__options__#{snake.id}"
+        variable_name = "@#{attribute_name.id}"
       %}
 
-      {% unless @type.has_attribute?(attribute_name) %}
-        @__optarg_{{snakecase.id}}_options = ::Hash(::String, ::{{type.id}}).new
-        getter :__optarg_{{snakecase.id}}_options
+      {% unless @type.has_attribute?(variable_name) %}
+        {{variable_name.id}} = ::Hash(::String, ::{{type.id}}).new
+        getter :{{attribute_name.id}}
       {% end %}
     end
 
-    macro __define_option(type, mixin, names)
+    macro __define_hashed_array_value_container(type)
       {%
-        snakecase = type.id.split("::").map{|i| i.gsub(/([A-Z])/, "_\\1")}.join("__").gsub(/^_/, "").downcase
+        snake = type.id.split("::").map{|i| i.underscore}.join("__").gsub(/^_+/, "")
+        attribute_name = "__array_options__#{snake.id}"
+        variable_name = "@#{attribute_name.id}"
+      %}
+
+      {% unless @type.has_attribute?(variable_name) %}
+        {{variable_name.id}} = ::Hash(::String, ::Array(::{{type.id}})).new
+        getter :{{attribute_name.id}}
+      {% end %}
+    end
+
+    macro __define_hashed_value_option(type, mixin, names)
+      {%
+        snake = type.id.split("::").map{|i| i.underscore}.join("__").gsub(/^_+/, "")
+        attribute_name = "__options__#{snake.id}"
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
         class_name = "Option_" + method_names[0]
@@ -32,15 +47,46 @@ module Optarg
           end
 
           def as_data(data)
-            if data.is_a?(::{{@type.id}})
-              data as ::{{@type.id}}
-            end
+            data.as?(::{{@type.id}})
           end
 
           def set_default(data)
-            return unless default = @default
+            return unless default = get_default
             return unless data = as_data(data)
-            data.__optarg_{{snakecase.id}}_options[key] = default
+            data.{{attribute_name.id}}[key] = default
+          end
+        end
+      end
+    end
+
+    macro __define_hashed_array_value_option(type, mixin, names)
+      {%
+        snake = type.id.split("::").map{|i| i.underscore}.join("__").gsub(/^_+/, "")
+        attribute_name = "__array_options__#{snake.id}"
+        names = [names] unless names.class_name == "ArrayLiteral"
+        method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
+        class_name = "Option_" + method_names[0]
+      %}
+
+      module Options
+        class {{class_name.id}} < ::{{@type.id}}::Option
+          class Metadata < ::{{@type.id}}::Option::Metadata
+          end
+
+          include {{mixin.id}}
+
+          def metadata
+            @metadata as Metadata
+          end
+
+          def as_data(data)
+            data.as?(::{{@type.id}})
+          end
+
+          def set_default(data)
+            return unless default = get_default
+            return unless data = as_data(data)
+            data.{{attribute_name.id}}[key] = default
           end
         end
       end
@@ -52,16 +98,16 @@ module Optarg
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
       %}
 
-      __define_value_container ::String
-      __define_option ::String, ::Optarg::OptionMixins::String, {{names}}
+      __define_hashed_value_container ::String
+      __define_hashed_value_option ::String, ::Optarg::OptionMixins::String, {{names}}
 
       {% for method_name, index in method_names %}
         def {{method_name.id}}
-          @__optarg_string_options[{{names[0]}}]
+          @__options__string[{{names[0]}}]
         end
 
         def {{method_name.id}}?
-          @__optarg_string_options[{{names[0]}}]?
+          @__options__string[{{names[0]}}]?
         end
       {% end %}
     end
@@ -74,7 +120,7 @@ module Optarg
       %}
 
       %option = Options::{{class_name.id}}.new({{names}}, metadata: {{metadata}}, default: {{default}})
-      @@self_options[%option.key] = %option
+      @@__self_options[%option.key] = %option
     end
 
     macro string(names, metadata = nil, default = nil)
@@ -89,12 +135,12 @@ module Optarg
         not = [not] unless not.class_name == "ArrayLiteral"
       %}
 
-      __define_value_container ::Bool
-      __define_option ::Bool, ::Optarg::OptionMixins::Bool, {{names}}
+      __define_hashed_value_container ::Bool
+      __define_hashed_value_option ::Bool, ::Optarg::OptionMixins::Bool, {{names}}
 
       {% for method_name, index in method_names %}
         def {{method_name.id}}?
-          !!@__optarg_bool_options[{{names[0]}}]?
+          !!@__options__bool[{{names[0]}}]?
         end
       {% end %}
     end
@@ -108,12 +154,44 @@ module Optarg
       %}
 
       %option = Options::{{class_name.id}}.new({{names}}, metadata: {{metadata}}, default: {{default}}, not: {{not}})
-      @@self_options[%option.key] = %option
+      @@__self_options[%option.key] = %option
     end
 
     macro bool(names, metadata = nil, default = nil, not = %w())
       __define_bool_option {{names}}
       __add_bool_option {{names}}, metadata: {{metadata}}, default: {{default}}, not: {{not}}
+    end
+
+    macro __define_string_array_option(names)
+      {%
+        names = [names] unless names.class_name == "ArrayLiteral"
+        method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
+      %}
+
+      __define_hashed_array_value_container ::String
+      __define_hashed_array_value_option ::String, ::Optarg::OptionMixins::Array(String), {{names}}
+
+      {% for method_name, index in method_names %}
+        def {{method_name.id}}
+          @__array_options__string[{{names[0]}}]
+        end
+      {% end %}
+    end
+
+    macro __add_string_array_option(names, default = nil, metadata = nil)
+      {%
+        names = [names] unless names.class_name == "ArrayLiteral"
+        method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
+        class_name = "Option_" + method_names[0]
+      %}
+
+      %option = Options::{{class_name.id}}.new({{names}}, metadata: {{metadata}}, default: {{default}})
+      @@__self_options[%option.key] = %option
+    end
+
+    macro array(names, metadata = nil, default = nil)
+      __define_string_array_option {{names}}
+      __add_string_array_option {{names}}, metadata: {{metadata}}, default: {{default}}
     end
 
     macro __define_handler(names, &block)
@@ -123,8 +201,8 @@ module Optarg
         class_name = "Handler_" + method_names[0]
       %}
 
-      def __optarg_on_{{method_names[0].id}}
-        __optarg_yield {{block}}
+      def __handle_{{method_names[0].id}}
+        __yield {{block}}
       end
 
       module Handlers
@@ -138,7 +216,7 @@ module Optarg
 
           def parse(arg, data)
             if is_name?(arg)
-              data.__optarg_on_{{method_names[0].id}} if data.responds_to?(:__optarg_on_{{method_names[0].id}})
+              data.__handle_{{method_names[0].id}} if data.responds_to?(:__handle_{{method_names[0].id}})
               true
             else
               false
@@ -164,7 +242,7 @@ module Optarg
       %}
 
       %handler = Handlers::{{class_name.id}}.new({{names}}, metadata: {{metadata}})
-      @@self_handlers[%handler.key] = %handler
+      @@__self_handlers[%handler.key] = %handler
     end
 
     macro on(names, metadata = nil, &block)

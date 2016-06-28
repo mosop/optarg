@@ -112,6 +112,17 @@ result.args # => ["bar"]
 result.unparsed_args # => ["baz"]
 ```
 
+### Array
+
+```crystal
+class Model < Optarg::Model
+  array "-e"
+end
+
+result = Model.parse(%w(-e foo -e bar -e baz))
+result.e # => ["foo", "bar", "baz"]
+```
+
 ### Inheritance (Reusable Model)
 
 ```crystal

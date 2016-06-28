@@ -1,18 +1,22 @@
 module Optarg::OptionMixins
-  module String
+  module Array(T)
     macro included
-      @default : ::String?
+      {%
+        snake = T.id.split("::").map{|i| i.underscore}.join("__").gsub(/^_+/, "")
+      %}
+
+      @default : ::Array(T)?
 
       def initialize(names, metadata = nil, @default = nil)
         super names, metadata: metadata
       end
 
       def type
-        :string
+        :array
       end
 
       def get_default
-        @default
+        @default ? @default.dup : Array(T).new
       end
 
       def parse(arg, data)
@@ -23,7 +27,7 @@ module Optarg::OptionMixins
         return index unless data = as_data(data)
         if is_name?(args[index])
           raise ::Optarg::MissingValue.new(args[index]) unless index + 1 < args.size
-          data.__options__string[key] = args[index + 1]
+          data.__array_options__{{snake.id}}[key] << args[index + 1]
           index + 2
         else
           index

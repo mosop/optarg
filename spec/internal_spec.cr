@@ -50,9 +50,11 @@ module Optarg::Test
 
     __define_string_option "-s"
     __define_bool_option "-b"
+    __define_string_array_option "-a"
     __define_handler("--help") {}
     __add_string_option "-s", metadata: Options::Option_s::Metadata.new("string")
     __add_bool_option "-b", metadata: Options::Option_b::Metadata.new("bool")
+    __add_string_array_option "-a", metadata: Options::Option_a::Metadata.new("array")
     __add_handler "--help", metadata: Handlers::Handler_help::Metadata.new("handler")
   end
 end
@@ -66,7 +68,7 @@ describe Optarg do
     result.b?.should be_true
     result.args.should eq %w(parsed)
     result.unparsed_args.should eq %w(unparsed)
-    result.__optarg_parsed_nodes.should eq [%w(-s v), %w(-b), %w(parsed)]
+    result.__parsed_nodes.should eq [%w(-s v), %w(-b), %w(parsed)]
   end
 
   it "parses nothing" do
@@ -77,7 +79,7 @@ describe Optarg do
     result.b?.should be_false
     result.args.should eq %w()
     result.unparsed_args.should eq %w()
-    result.__optarg_parsed_nodes.should eq [] of Array(String)
+    result.__parsed_nodes.should eq [] of Array(String)
   end
 
   describe "Inheritance" do
@@ -145,9 +147,10 @@ describe Optarg do
 
   describe "Metadata" do
     it "preserves metadata" do
-      Optarg::Test::MetadataModel.options["-s"].metadata.as(Optarg::Test::MetadataModel::Option::Metadata).data.should eq "string"
-      Optarg::Test::MetadataModel.options["-b"].metadata.as(Optarg::Test::MetadataModel::Option::Metadata).data.should eq "bool"
-      Optarg::Test::MetadataModel.handlers["--help"].metadata.as(Optarg::Test::MetadataModel::Handler::Metadata).data.should eq "handler"
+      Optarg::Test::MetadataModel.__options["-s"].metadata.as(Optarg::Test::MetadataModel::Option::Metadata).data.should eq "string"
+      Optarg::Test::MetadataModel.__options["-b"].metadata.as(Optarg::Test::MetadataModel::Option::Metadata).data.should eq "bool"
+      Optarg::Test::MetadataModel.__options["-a"].metadata.as(Optarg::Test::MetadataModel::Option::Metadata).data.should eq "array"
+      Optarg::Test::MetadataModel.__handlers["--help"].metadata.as(Optarg::Test::MetadataModel::Handler::Metadata).data.should eq "handler"
     end
   end
 end
