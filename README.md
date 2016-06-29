@@ -53,18 +53,7 @@ result.f # => "foo.cr"
 result.file # => "foo.cr"
 ```
 
-### Default Value
-
-```crystal
-class Model < Optarg::Model
-  string "--foo", default: "bar"
-end
-
-result = Model.parse(%w())
-result.foo # => "bar"
-```
-
-### Boolean Value
+### Boolean
 
 ```crystal
 class Model < Optarg::Model
@@ -73,6 +62,17 @@ end
 
 result = Model.parse(%w(-b))
 result.b? # => true
+```
+
+### Array
+
+```crystal
+class Model < Optarg::Model
+  array "-e"
+end
+
+result = Model.parse(%w(-e foo -e bar -e baz))
+result.e # => ["foo", "bar", "baz"]
 ```
 
 ### Concatenation
@@ -86,6 +86,21 @@ end
 result = Model.parse(%w(-ab))
 result.a? # => true
 result.b? # => true
+```
+
+### Default Value
+
+```crystal
+class Model < Optarg::Model
+  string "-s", default: "string"
+  bool "-b", default: false
+  array "-a", default: %w(1 2 3)
+end
+
+result = Model.parse(%w())
+result.s  # => "string"
+result.b? # => false
+result.a  # => ["1", "2", "3"]
 ```
 
 ### Negation
@@ -110,17 +125,6 @@ end
 result = Model.parse(%w(-s foo -b bar -- baz))
 result.args # => ["bar"]
 result.unparsed_args # => ["baz"]
-```
-
-### Array
-
-```crystal
-class Model < Optarg::Model
-  array "-e"
-end
-
-result = Model.parse(%w(-e foo -e bar -e baz))
-result.e # => ["foo", "bar", "baz"]
 ```
 
 ### Inheritance (Reusable Model)
