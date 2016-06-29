@@ -3,6 +3,7 @@ module Optarg::OptionMixins
     macro included
       {%
         snake = T.id.split("::").map{|i| i.underscore}.join("__").gsub(/^_+/, "")
+        type = T.id.split("::").map{|i| i.underscore}.join("_") + "_array"
       %}
 
       @default : ::Array(T)?
@@ -12,7 +13,7 @@ module Optarg::OptionMixins
       end
 
       def type
-        :array
+        :{{type.id}}
       end
 
       def get_default
