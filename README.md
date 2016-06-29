@@ -190,6 +190,8 @@ and see [Features](#features).
 
 ## Release Notes
 
+* v0.1.12
+  * Array
 * v0.1.9
   * Concatenation
 * v0.1.3
