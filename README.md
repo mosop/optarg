@@ -2,6 +2,8 @@
 
 Yet another library for parsing command-line options and arguments, written in the Crystal language.
 
+optarg is good enough for parsing options. However there's no feature for formatting help, subcommands... etc. If you prefer a more feature-rich library, try [cli](https://github.com/mosop/cli).
+
 [![Build Status](https://travis-ci.org/mosop/optarg.svg?branch=master)](https://travis-ci.org/mosop/optarg)
 
 ## Installation
@@ -125,6 +127,20 @@ end
 result = Model.parse(%w(-s foo -b bar -- baz))
 result.args # => ["bar"]
 result.unparsed_args # => ["baz"]
+```
+
+### Accessible Arguments
+
+```crystal
+class Model < Optarg::Model
+  arg "src_dir"
+  arg "build_dir"
+end
+
+result = Model.parse(%w(/path/to/src /path/to/build and more))
+result.src_dir # => "/path/to/src"
+result.build_dir # => "/path/to/build"
+result.args # => ["and", "more"]
 ```
 
 ### Inheritance (Reusable Model)

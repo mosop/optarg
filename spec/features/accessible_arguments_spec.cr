@@ -7,9 +7,9 @@ module Optarg::AccessibleArgumentsFeature
   end
 
   it "Accessible Arguments" do
-    result = Model.parse(%w(/path/to/src /path/to/build more args))
+    result = Model.parse(%w(/path/to/src /path/to/build and more))
     result.src_dir.should eq "/path/to/src"
     result.build_dir.should eq "/path/to/build"
-    result.args.should eq %w(more args)
+    result.args.should eq %w(and more)
   end
 end
