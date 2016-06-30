@@ -306,6 +306,14 @@ module Optarg
       Options::{{class_name.id}}::Metadata
     end
 
+    macro __argument_metadata_class_of(name)
+      {%
+        class_name = "Argument_" + name.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")
+      %}
+
+      Arguments::{{class_name.id}}::Metadata
+    end
+
     macro __handler_metadata_class_of(names)
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
