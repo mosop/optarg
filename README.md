@@ -129,7 +129,7 @@ result.args # => ["bar"]
 result.unparsed_args # => ["baz"]
 ```
 
-### Accessible Arguments
+### Accessible Argument
 
 ```crystal
 class Model < Optarg::Model
@@ -206,6 +206,8 @@ and see [Features](#features).
 
 ## Release Notes
 
+* v0.1.13
+  * Accessible Argument
 * v0.1.12
   * Array
 * v0.1.9
