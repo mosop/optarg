@@ -14,7 +14,6 @@ module Optarg
 
     def set_default(data)
       return unless default = get_default
-      return unless data = as_data(data)
       data.__arguments[key] = default
     end
 
