@@ -20,11 +20,15 @@ module Optarg
     end
 
     def parse(arg, data)
-      raise "Not implemeted."
+      raise "Should never be called."
     end
 
     def parse(args, index, data)
-      raise "Not implemeted."
+      raise "Should never be called."
+    end
+
+    def type
+      raise "Should never be called."
     end
   end
 end

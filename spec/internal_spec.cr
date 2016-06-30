@@ -4,6 +4,7 @@ module Optarg::Test
   class Model < ::Optarg::Model
     string "-s"
     bool "-b"
+    arg "arg"
   end
 
   class Supermodel < ::Optarg::Model
@@ -39,6 +40,15 @@ module Optarg::Test
       end
     end
 
+    class Argument
+      class Metadata
+        getter :data
+
+        def initialize(@data : ::String)
+        end
+      end
+    end
+
     class Handler
       class Metadata
         getter :data
@@ -51,24 +61,27 @@ module Optarg::Test
     __define_string_option "-s"
     __define_bool_option "-b"
     __define_string_array_option "-a"
+    __define_argument "arg"
     __define_handler("--help") {}
     __add_string_option "-s", metadata: Options::Option_s::Metadata.new("string")
     __add_bool_option "-b", metadata: Options::Option_b::Metadata.new("bool")
     __add_string_array_option "-a", metadata: Options::Option_a::Metadata.new("array")
+    __add_argument "arg", metadata: Arguments::Argument_arg::Metadata.new("arg")
     __add_handler "--help", metadata: Handlers::Handler_help::Metadata.new("handler")
   end
 end
 
 describe Optarg do
-  it "-s v -b parsed -- unparsed" do
-    argv = %w{-s v -b parsed -- unparsed}
+  it "-s v -b arg parsed -- unparsed" do
+    argv = %w{-s v -b arg parsed -- unparsed}
     result = Optarg::Test::Model.parse(argv)
+    result.arg.should eq "arg"
     result.s.should eq "v"
     result.s?.should eq "v"
     result.b?.should be_true
     result.args.should eq %w(parsed)
     result.unparsed_args.should eq %w(unparsed)
-    result.__parsed_nodes.should eq [%w(-s v), %w(-b), %w(parsed)]
+    result.__parsed_nodes.should eq [%w(-s v), %w(-b), %w(arg), %w(parsed)]
   end
 
   it "parses nothing" do
@@ -150,6 +163,7 @@ describe Optarg do
       Optarg::Test::MetadataModel.__options["-s"].metadata.as(Optarg::Test::MetadataModel::Option::Metadata).data.should eq "string"
       Optarg::Test::MetadataModel.__options["-b"].metadata.as(Optarg::Test::MetadataModel::Option::Metadata).data.should eq "bool"
       Optarg::Test::MetadataModel.__options["-a"].metadata.as(Optarg::Test::MetadataModel::Option::Metadata).data.should eq "array"
+      Optarg::Test::MetadataModel.__arguments["ARG"].metadata.as(Optarg::Test::MetadataModel::Argument::Metadata).data.should eq "arg"
       Optarg::Test::MetadataModel.__handlers["--help"].metadata.as(Optarg::Test::MetadataModel::Handler::Metadata).data.should eq "handler"
     end
   end

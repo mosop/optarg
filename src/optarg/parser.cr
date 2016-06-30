@@ -1,10 +1,15 @@
 module Optarg
   class Parser
     def parse(model, data)
+      argument_index = 0
       args = data.__args_to_be_parsed
 
       model.__options.values.each do |option|
         option.set_default data
+      end
+
+      model.__arguments.values.each do |argument|
+        argument.set_default data
       end
 
       index = 0
@@ -32,8 +37,13 @@ module Optarg
             end
           end
           if i == index
-            raise ::Optarg::UnknownOption.new(args[i]) if args[i].starts_with?("-")
-            data.__parsed_args << args[i]
+            if argument_index < model.__arguments.size
+              data.__arguments[model.__arguments.values[argument_index].key] = args[i]
+              argument_index += 1
+            else
+              raise ::Optarg::UnknownOption.new(args[i]) if args[i].starts_with?("-")
+              data.__parsed_args << args[i]
+            end
             data.__parsed_nodes << [args[i]]
             i += 1
           end
