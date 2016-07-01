@@ -16,4 +16,13 @@ module Optarg
       super "Unsupporeted concatenation: #{message}"
     end
   end
+
+  abstract class ValidationError < ::Exception
+  end
+
+  class RequiredError < ValidationError
+    def initialize(key)
+      super "#{key} is required."
+    end
+  end
 end

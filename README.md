@@ -176,6 +176,20 @@ end
 Model.parse %w(--goodbye) # raises "Goodbye, world!"
 ```
 
+### Required Arguments
+
+```crystal
+class Birthday < Optarg::Model
+  string "--when", required: true
+
+  def run
+    puts "your birth date: #{options.when}"
+  end
+end
+
+Birthday.parse %w() # raises a Required exception.
+```
+
 ### Custom Initializer
 
 ```crystal

@@ -9,5 +9,8 @@ module Optarg
     def set_default(result)
       raise "Should never be called."
     end
+
+    def validate(data)
+    end
   end
 end

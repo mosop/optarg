@@ -1,10 +1,33 @@
 require "./spec_helper"
 
-module Optarg::Test
-  class Model < ::Optarg::Model
+module Optarg::InternalFeatures
+  class ParseModel < ::Optarg::Model
     string "-s"
     bool "-b"
     arg "arg"
+  end
+
+  it "-s v -b arg parsed -- unparsed" do
+    argv = %w{-s v -b arg parsed -- unparsed}
+    result = ParseModel.parse(argv)
+    result.arg.should eq "arg"
+    result.s.should eq "v"
+    result.s?.should eq "v"
+    result.b?.should be_true
+    result.args.should eq %w(parsed)
+    result.unparsed_args.should eq %w(unparsed)
+    result.__parsed_nodes.should eq [%w(-s v), %w(-b), %w(arg), %w(parsed)]
+  end
+
+  it "parses nothing" do
+    argv = %w{}
+    result = ParseModel.parse(argv)
+    expect_raises(KeyError) { result.s }
+    result.s?.should be_nil
+    result.b?.should be_false
+    result.args.should eq %w()
+    result.unparsed_args.should eq %w()
+    result.__parsed_nodes.should eq [] of Array(String)
   end
 
   class Supermodel < ::Optarg::Model
@@ -25,11 +48,59 @@ module Optarg::Test
     arg "argument"
   end
 
+  describe "Inheritance 1" do
+    it "inherits options" do
+      argv = %w{-s v -b --string value --bool}
+      result = Submodel.parse(argv)
+      result.s.should eq "v"
+      result.b?.should be_true
+      result.string.should eq "value"
+      result.bool?.should be_true
+    end
+
+    it "does not apply to parent" do
+      argv = %w{--string}
+      expect_raises(Optarg::UnknownOption) { Supermodel.parse(argv) }
+      argv = %w{--bool}
+      expect_raises(Optarg::UnknownOption) { Supermodel.parse(argv) }
+    end
+  end
+
+  describe "Inheritance 2" do
+    it "inherits arguments" do
+      argv = %w(foo bar)
+      result = Submodel2.parse(argv)
+      result.arg.should eq "foo"
+      result.argument.should eq "bar"
+    end
+
+    it "does not apply to parent" do
+      result = Supermodel2.parse(%w(foo bar))
+      result.responds_to?(:argument).should be_false
+      result.arg.should eq "foo"
+      result.args.should eq %w(bar)
+    end
+  end
+
   class EmptyModel < ::Optarg::Model
+  end
+
+  describe "Unknown Option" do
+    it "--unknown" do
+      argv = %w(--unknown)
+      expect_raises(Optarg::UnknownOption) { EmptyModel.parse(argv) }
+    end
   end
 
   class MissingModel < ::Optarg::Model
     string "-s"
+  end
+
+  describe "Missing Value" do
+    it "-s" do
+      argv = %w(-s)
+      expect_raises(Optarg::MissingValue) { MissingModel.parse(argv) }
+    end
   end
 
   class DefaultModel < ::Optarg::Model
@@ -37,9 +108,40 @@ module Optarg::Test
     bool "--default-bool", default: true, not: "--Default-bool"
   end
 
+  describe "Default Value" do
+    it "sets default value" do
+      argv = %w()
+      result = DefaultModel.parse(argv)
+      result.default_string.should eq "default"
+      result.default_bool?.should be_true
+    end
+
+    it "--default-string notdefault --Default-bool" do
+      argv = %w(--default-string notdefault --Default-bool)
+      result = DefaultModel.parse(argv)
+      result.default_string.should eq "notdefault"
+      result.default_bool?.should be_false
+    end
+  end
+
   class SynonymsModel < ::Optarg::Model
     string %w(-s --string)
     bool %w(-b --bool)
+  end
+
+  describe "Synonyms" do
+    it "defines multiple accessors" do
+      argv = %w(-s v --bool)
+      result = SynonymsModel.parse(argv)
+      result.responds_to?(:s).should be_true
+      result.responds_to?(:string).should be_true
+      result.responds_to?(:b?).should be_true
+      result.responds_to?(:bool?).should be_true
+      result.s.should eq "v" if result.responds_to?(:s)
+      result.string.should eq "v" if result.responds_to?(:string)
+      result.b?.should be_true if result.responds_to?(:b?)
+      result.bool?.should be_true if result.responds_to?(:bool?)
+    end
   end
 
   class MetadataModel < ::Optarg::Model
@@ -102,108 +204,6 @@ module Optarg::Test
     end
   end
 
-  it "-s v -b arg parsed -- unparsed" do
-    argv = %w{-s v -b arg parsed -- unparsed}
-    result = Model.parse(argv)
-    result.arg.should eq "arg"
-    result.s.should eq "v"
-    result.s?.should eq "v"
-    result.b?.should be_true
-    result.args.should eq %w(parsed)
-    result.unparsed_args.should eq %w(unparsed)
-    result.__parsed_nodes.should eq [%w(-s v), %w(-b), %w(arg), %w(parsed)]
-  end
-
-  it "parses nothing" do
-    argv = %w{}
-    result = Model.parse(argv)
-    expect_raises(KeyError) { result.s }
-    result.s?.should be_nil
-    result.b?.should be_false
-    result.args.should eq %w()
-    result.unparsed_args.should eq %w()
-    result.__parsed_nodes.should eq [] of Array(String)
-  end
-
-  describe "Inheritance 1" do
-    it "inherits options" do
-      argv = %w{-s v -b --string value --bool}
-      result = Submodel.parse(argv)
-      result.s.should eq "v"
-      result.b?.should be_true
-      result.string.should eq "value"
-      result.bool?.should be_true
-    end
-
-    it "does not apply to parent" do
-      argv = %w{--string}
-      expect_raises(Optarg::UnknownOption) { Supermodel.parse(argv) }
-      argv = %w{--bool}
-      expect_raises(Optarg::UnknownOption) { Supermodel.parse(argv) }
-    end
-  end
-
-  describe "Inheritance 2" do
-    it "inherits arguments" do
-      argv = %w(foo bar)
-      result = Submodel2.parse(argv)
-      result.arg.should eq "foo"
-      result.argument.should eq "bar"
-    end
-
-    it "does not apply to parent" do
-      result = Supermodel2.parse(%w(foo bar))
-      result.responds_to?(:argument).should be_false
-      result.arg.should eq "foo"
-      result.args.should eq %w(bar)
-    end
-  end
-
-  describe "Unknown Option" do
-    it "--unknown" do
-      argv = %w(--unknown)
-      expect_raises(Optarg::UnknownOption) { EmptyModel.parse(argv) }
-    end
-  end
-
-  describe "Missing Value" do
-    it "-s" do
-      argv = %w(-s)
-      expect_raises(Optarg::MissingValue) { MissingModel.parse(argv) }
-    end
-  end
-
-  describe "Default Value" do
-    it "sets default value" do
-      argv = %w()
-      result = DefaultModel.parse(argv)
-      result.default_string.should eq "default"
-      result.default_bool?.should be_true
-    end
-
-    it "--default-string notdefault --Default-bool" do
-      argv = %w(--default-string notdefault --Default-bool)
-      result = DefaultModel.parse(argv)
-      result.default_string.should eq "notdefault"
-      result.default_bool?.should be_false
-    end
-  end
-
-  describe "Synonyms" do
-    it "defines multiple accessors" do
-      argv = %w(-s v --bool)
-      result = SynonymsModel.parse(argv)
-      result.responds_to?(:s).should be_true
-      result.responds_to?(:string).should be_true
-      result.responds_to?(:b?).should be_true
-      result.responds_to?(:bool?).should be_true
-      result.s.should eq "v" if result.responds_to?(:s)
-      result.string.should eq "v" if result.responds_to?(:string)
-      result.b?.should be_true if result.responds_to?(:b?)
-      result.bool?.should be_true if result.responds_to?(:bool?)
-    end
-  end
-
   describe "Metadata" do
     it "preserves metadata" do
       MetadataModel.__options["-s"].metadata.as(MetadataModel::Option::Metadata).data.should eq "string"
@@ -220,5 +220,18 @@ module Optarg::Test
       (MetadataModel.argument_metadata_class == MetadataModel::Arguments::Argument_arg::Metadata).should be_true
       (MetadataModel.handler_metadata_class == MetadataModel::Handlers::Handler_help::Metadata).should be_true
     end
+  end
+
+  class RequiredArgModel < ::Optarg::Model
+    arg "required_arg", required: true
+  end
+
+  class RequiredStringModel < ::Optarg::Model
+    string "--required-option", required: true
+  end
+
+  it "Required" do
+    expect_raises(RequiredError) { RequiredArgModel.parse %w() }
+    expect_raises(RequiredError) { RequiredStringModel.parse %w() }
   end
 end

@@ -2,8 +2,10 @@ module Optarg::OptionMixins
   module String
     macro included
       @default : ::String?
+      @required : Bool
 
-      def initialize(names, metadata = nil, @default = nil)
+      def initialize(names, metadata = nil, @default = nil, required = nil)
+        @required = !!required
         super names, metadata: metadata
       end
 
@@ -28,6 +30,11 @@ module Optarg::OptionMixins
         else
           index
         end
+      end
+
+      def validate(data)
+        return unless data = as_data(data)
+        raise ::Optarg::RequiredError.new(key) if @required && !data.__options__string[key]?
       end
     end
   end

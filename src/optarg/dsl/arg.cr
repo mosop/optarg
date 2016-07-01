@@ -31,20 +31,20 @@ module Optarg
       end
     end
 
-    macro __add_argument(name, metadata = nil)
+    macro __add_argument(name, metadata = nil, required = nil)
       {%
         upcase = name.upcase
         method_name = name.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")
         class_name = "Argument_" + method_name
       %}
 
-      %arg = Arguments::{{class_name.id}}.new({{upcase}}, metadata: {{metadata}})
+      %arg = Arguments::{{class_name.id}}.new({{upcase}}, metadata: {{metadata}}, required: {{required}})
       @@__self_arguments[%arg.key] = %arg
     end
 
-    macro arg(name, metadata = nil)
+    macro arg(name, metadata = nil, required = nil)
       __define_argument {{name}}
-      __add_argument {{name}}, {{metadata}}
+      __add_argument {{name}}, {{metadata}}, {{required}}
     end
   end
 end

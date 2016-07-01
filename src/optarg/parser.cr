@@ -50,6 +50,14 @@ module Optarg
         end
         index = i
       end
+
+      model.__options.values.each do |option|
+        option.validate data
+      end
+
+      model.__arguments.values.each do |argument|
+        argument.validate data
+      end
     end
   end
 end
