@@ -1,4 +1,5 @@
-require "./model/*"
+require "./macros/*"
+require "./dsl/*"
 
 module Optarg
   abstract class Model
