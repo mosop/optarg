@@ -75,7 +75,7 @@ module Optarg
 
     @__argv : ::Array(::String)
     @__args_to_be_parsed : ::Array(::String)
-    @__parsed_args = [] of ::String
+    @__parsed_args = ::Optarg::ArgumentValueList.new
     @__unparsed_args : ::Array(::String)
     @__parsed_nodes = [] of ::Array(::String)
     @__arguments = {} of String => String
@@ -97,10 +97,6 @@ module Optarg
 
     def args
       __args
-    end
-
-    def __unparsed_args
-      @__unparsed_args
     end
 
     def unparsed_args
