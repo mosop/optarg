@@ -28,7 +28,7 @@ module Optarg
 
   class MinimumLengthError < ValidationError
     def initialize(key, min)
-      super "#{key} length is less than #{min}."
+      super "#{key}'s length is less than #{min}."
     end
   end
 end
