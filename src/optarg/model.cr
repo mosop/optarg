@@ -12,6 +12,7 @@ module Optarg
           super_option_metadata = "Optarg::Metadata"
           super_argument_metadata = "Optarg::Metadata"
           super_handler_metadata = "Optarg::Metadata"
+          super_argument_value_list = "Optarg::ArgumentValueList"
           merge_of_options = "@@__self_options"
           merge_of_arguments = "@@__self_arguments"
           merge_of_handlers = "@@__self_handlers"
@@ -22,6 +23,7 @@ module Optarg
           super_option_metadata = "#{@type.superclass.id}::Option::Metadata"
           super_argument_metadata = "#{@type.superclass.id}::Argument::Metadata"
           super_handler_metadata = "#{@type.superclass.id}::Handler::Metadata"
+          super_argument_value_list = "#{@type.superclass.id}::ArgumentValueList"
           merge_of_options = "::#{@type.superclass.id}.__options.merge(@@__self_options)"
           merge_of_arguments = "::#{@type.superclass.id}.__arguments.merge(@@__self_arguments)"
           merge_of_handlers = "::#{@type.superclass.id}.__handlers.merge(@@__self_handlers)"
@@ -40,6 +42,14 @@ module Optarg
       abstract class Handler < ::{{super_handler.id}}
         abstract class Metadata < ::{{super_handler_metadata.id}}
         end
+      end
+
+      class ArgumentValueList < ::{{super_argument_value_list.id}}
+      end
+
+      def __parsed_args
+        @__parsed_args ||= ArgumentValueList.new
+        @__parsed_args as ArgumentValueList
       end
 
       @@__self_options = {} of ::String => ::Optarg::Option
@@ -75,24 +85,22 @@ module Optarg
 
     @__argv : ::Array(::String)
     @__args_to_be_parsed : ::Array(::String)
-    @__parsed_args = ::Optarg::ArgumentValueList.new
+    @__parsed_args : ::Optarg::ArgumentValueList?
     @__unparsed_args : ::Array(::String)
     @__parsed_nodes = [] of ::Array(::String)
-    @__arguments = {} of String => String
 
     getter :__argv
     getter :__args_to_be_parsed
     getter :__parsed_args
     getter :__unparsed_args
     getter :__parsed_nodes
-    getter :__arguments
 
     def initialize(@__argv)
       @__args_to_be_parsed, @__unparsed_args = __split_by_double_dash
     end
 
     def __args
-      @__parsed_args
+      __parsed_args
     end
 
     def args

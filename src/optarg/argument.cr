@@ -16,7 +16,7 @@ module Optarg
 
     def set_default(data)
       return unless default = get_default
-      data.__arguments[key] = default
+      data.__args.__named[key] = default
     end
 
     def type
@@ -24,7 +24,7 @@ module Optarg
     end
 
     def validate(data)
-      raise ::Optarg::RequiredError.new(key) if @required && !data.__arguments[key]?
+      raise ::Optarg::RequiredError.new(key) if @required && !data.__args.__named[key]?
     end
   end
 end

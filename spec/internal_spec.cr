@@ -11,10 +11,13 @@ module Optarg::InternalFeatures
     argv = %w{-s v -b arg parsed -- unparsed}
     result = ParseModel.parse(argv)
     result.arg.should eq "arg"
+    result.args.arg.should eq "arg"
     result.s.should eq "v"
     result.s?.should eq "v"
     result.b?.should be_true
-    result.args.should eq %w(parsed)
+    result.args.should eq %w(arg parsed)
+    result.args.named.should eq({"arg" => "arg"})
+    result.args.nameless.should eq %w(parsed)
     result.unparsed_args.should eq %w(unparsed)
     result.__parsed_nodes.should eq [%w(-s v), %w(-b), %w(arg), %w(parsed)]
   end
@@ -77,8 +80,6 @@ module Optarg::InternalFeatures
     it "does not apply to parent" do
       result = Supermodel2.parse(%w(foo bar))
       result.responds_to?(:argument).should be_false
-      result.arg.should eq "foo"
-      result.args.should eq %w(bar)
     end
   end
 
@@ -209,7 +210,7 @@ module Optarg::InternalFeatures
       MetadataModel.__options["-s"].metadata.as(MetadataModel::Option::Metadata).data.should eq "string"
       MetadataModel.__options["-b"].metadata.as(MetadataModel::Option::Metadata).data.should eq "bool"
       MetadataModel.__options["-a"].metadata.as(MetadataModel::Option::Metadata).data.should eq "array"
-      MetadataModel.__arguments["ARG"].metadata.as(MetadataModel::Argument::Metadata).data.should eq "arg"
+      MetadataModel.__arguments["arg"].metadata.as(MetadataModel::Argument::Metadata).data.should eq "arg"
       MetadataModel.__handlers["--help"].metadata.as(MetadataModel::Handler::Metadata).data.should eq "handler"
     end
 

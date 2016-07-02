@@ -2,7 +2,6 @@ module Optarg
   class Model
     macro __define_argument(name)
       {%
-        upcase = name.upcase
         method_name = name.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")
         class_name = "Argument_" + method_name
       %}
@@ -22,23 +21,32 @@ module Optarg
         end
       end
 
+      class ArgumentValueList
+        def {{method_name.id}}
+          __named[{{name}}]
+        end
+
+        def {{method_name.id}}?
+          __named[{{name}}]?
+        end
+      end
+
       def {{method_name.id}}
-        @__arguments[{{upcase}}]
+        __args.{{method_name.id}}
       end
 
       def {{method_name.id}}?
-        @__arguments[{{upcase}}]?
+        __args.{{method_name.id}}?
       end
     end
 
     macro __add_argument(name, metadata = nil, required = nil)
       {%
-        upcase = name.upcase
         method_name = name.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")
         class_name = "Argument_" + method_name
       %}
 
-      %arg = Arguments::{{class_name.id}}.new({{upcase}}, metadata: {{metadata}}, required: {{required}})
+      %arg = Arguments::{{class_name.id}}.new({{name}}, metadata: {{metadata}}, required: {{required}})
       @@__self_arguments[%arg.key] = %arg
     end
 
