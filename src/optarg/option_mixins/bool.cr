@@ -3,6 +3,7 @@ module Optarg::OptionMixins
     macro included
       @default : ::Bool?
       @not : ::Array(::String)
+      getter :not
 
       def initialize(names, metadata = nil, @default = nil, not = nil)
         @not = not || \%w()
