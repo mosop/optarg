@@ -7,8 +7,10 @@ module Optarg::OptionMixins
       %}
 
       @default : ::Array(T)?
+      @min : Int32
 
-      def initialize(names, metadata = nil, @default = nil)
+      def initialize(names, metadata = nil, @default = nil, min = nil)
+        @min = min || 0
         super names, metadata: metadata
       end
 
@@ -33,6 +35,11 @@ module Optarg::OptionMixins
         else
           index
         end
+      end
+
+      def validate(data)
+        return unless data = as_data(data)
+        raise ::Optarg::MinimumLengthError.new(key, @min) if @min > 0 && data.__array_options__string[key].size < @min
       end
     end
   end
