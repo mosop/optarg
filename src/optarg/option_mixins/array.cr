@@ -8,6 +8,7 @@ module Optarg::OptionMixins
 
       @default : ::Array(T)?
       @min : Int32
+      getter :min
 
       def initialize(names, metadata = nil, @default = nil, min = nil)
         @min = min || 0
