@@ -176,18 +176,32 @@ end
 Model.parse %w(--goodbye) # raises "Goodbye, world!"
 ```
 
-### Required Arguments
+### Required Options
 
 ```crystal
-class Birthday < Optarg::Model
-  string "--when", required: true
+class Profile < Optarg::Model
+  string "--birth", required: true
 
   def run
-    puts "your birth date: #{options.when}"
+    puts "birth date: #{options.birth}"
   end
 end
 
 Birthday.parse %w() # raises a Required exception.
+```
+
+### Minimum Length of Array
+
+```crystal
+class Multiply < Optarg::Model
+  array "-n", min: 2
+
+  def run
+    puts options.n.reduce{|n1, n2| n1 * n2}
+  end
+end
+
+Multiply.parse %w(-n 794) # raises a MinimumLength exception.
 ```
 
 ### Custom Initializer
