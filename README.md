@@ -176,7 +176,7 @@ end
 Model.parse %w(--goodbye) # raises "Goodbye, world!"
 ```
 
-### Required Options
+### Required Arguments and Options
 
 ```crystal
 class Profile < Optarg::Model
@@ -188,6 +188,18 @@ class Profile < Optarg::Model
 end
 
 Birthday.parse %w() # raises a Required exception.
+```
+
+```crystal
+class Compile < Optarg::Model
+  arg "source_file", required: true
+
+  def run
+    Compiler.compile options.source_file
+  end
+end
+
+Compile.parse %w() # raises a Required exception.
 ```
 
 ### Minimum Length of Array
@@ -234,6 +246,9 @@ and see [Features](#features).
 
 ## Release Notes
 
+* v0.1.14
+  * Required Arguments and Options
+  * Minimum Length of Array
 * v0.1.13
   * Accessible Argument
 * v0.1.12
