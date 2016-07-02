@@ -129,7 +129,7 @@ result.args # => ["bar"]
 result.unparsed_args # => ["baz"]
 ```
 
-### Accessible Argument
+### Named Argument
 
 ```crystal
 class Model < Optarg::Model
@@ -139,8 +139,12 @@ end
 
 result = Model.parse(%w(/path/to/src /path/to/build and more))
 result.src_dir # => "/path/to/src"
+result.args.src_dir # => "/path/to/src"
 result.build_dir # => "/path/to/build"
-result.args # => ["and", "more"]
+result.args.build_dir # => "/path/to/build"
+result.args # => ["/path/to/src", "/path/to/build", "and", "more"]
+result.args.named # => {"src_dir" => "/path/to/src", "build_dir" => "/path/to/build"}
+result.args.nameless # => ["and", "more"]
 ```
 
 ### Inheritance (Reusable Model)
@@ -180,23 +184,15 @@ Model.parse %w(--goodbye) # raises "Goodbye, world!"
 
 ```crystal
 class Profile < Optarg::Model
-  string "--birth", required: true
-
-  def run
-    puts "birth date: #{options.birth}"
-  end
+  string "--birthday", required: true
 end
 
-Birthday.parse %w() # raises a Required exception.
+Profile.parse %w() # raises a Required exception.
 ```
 
 ```crystal
 class Compile < Optarg::Model
   arg "source_file", required: true
-
-  def run
-    Compiler.compile options.source_file
-  end
 end
 
 Compile.parse %w() # raises a Required exception.
@@ -246,6 +242,8 @@ and see [Features](#features).
 
 ## Release Notes
 
+* v0.2.0
+  * (Breaking Change) Model#args separates values into nameless and named.
 * v0.1.14
   * Required Arguments and Options
   * Minimum Length of Array

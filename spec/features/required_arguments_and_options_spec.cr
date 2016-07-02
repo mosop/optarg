@@ -10,7 +10,7 @@ module Optarg::RequiredArgumentsAndOptionsFeature
   end
 
   class Profile < Optarg::Model
-    string "--birth", required: true
+    string "--birthday", required: true
   end
 
   it "Required Options" do
