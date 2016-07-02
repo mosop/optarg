@@ -2,11 +2,10 @@ module Optarg::OptionMixins
   module Bool
     macro included
       @default : ::Bool?
+      @not : ::Array(::String)
 
-      @not = \%w()
-      getter :not
-
-      def initialize(names, metadata = nil, @default = nil, @not = \%w())
+      def initialize(names, metadata = nil, @default = nil, not = nil)
+        @not = not || \%w()
         super names, metadata: metadata
       end
 
