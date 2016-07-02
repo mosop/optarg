@@ -243,7 +243,7 @@ and see [Features](#features).
 ## Release Notes
 
 * v0.2.0
-  * (Breaking Change) Model#args separates values into nameless and named.
+  * (Breaking Change) Model#args separates arguments into named and nameless. #args itself returns both named and nameless arguments.
 * v0.1.14
   * Required Arguments and Options
   * Minimum Length of Array
