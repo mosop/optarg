@@ -10,7 +10,7 @@ module Optarg
       {% elsif call.name == "[]=" %}
         @__array[{{call.args[0..-2].map{|i| i.id}.join(", ").id}}] = {{call.args.last.id}}
       {% elsif call.name =~ /^\w/ %}
-        @__array.{{call.name.id}} {{args.id}}{{call.block}}
+        @__array.{{call}}
       {% else %}
         @__array {{call.name.id}} {{args.id}}
       {% end %}
