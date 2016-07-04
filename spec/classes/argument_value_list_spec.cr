@@ -10,6 +10,11 @@ module Optarg::ArgumentValueListFeature
     list[0].should eq "arg"
   end
 
+  it "#[]?" do
+    list = Model::ArgumentValueList.new
+    list[0]?.should be_nil
+  end
+
   it "#<<" do
     list = Model::ArgumentValueList.new
     list << "arg"
