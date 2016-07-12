@@ -40,20 +40,20 @@ module Optarg
       end
     end
 
-    macro __add_handler(names, metadata = nil)
+    macro __add_handler(names, metadata = nil, group = nil)
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
         class_name = "Handler_" + method_names[0]
       %}
 
-      %handler = Handlers::{{class_name.id}}.new({{names}}, metadata: {{metadata}})
+      %handler = Handlers::{{class_name.id}}.new({{names}}, metadata: {{metadata}}, group: {{group}})
       @@__self_handlers[%handler.key] = %handler
     end
 
-    macro on(names, metadata = nil, &block)
+    macro on(names, metadata = nil, group = nil, &block)
       __define_handler {{names}} {{block}}
-      __add_handler {{names}}, {{metadata}}
+      __add_handler {{names}}, {{metadata}}, {{group}}
     end
   end
 end

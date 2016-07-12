@@ -8,7 +8,9 @@ module Optarg
     @metadata : ::Optarg::Metadata?
     def metadata; @metadata as ::Optarg::Metadata; end
 
-    def initialize(@names, @metadata)
+    getter group : Symbol?
+
+    def initialize(@names, @metadata, @group = nil)
     end
 
     def key

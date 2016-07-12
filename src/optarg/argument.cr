@@ -2,12 +2,12 @@ require "./option_base"
 
 module Optarg
   abstract class Argument < ::Optarg::OptionBase
-    @default : ::String?
-    @required : ::Bool
+    @default : String?
+    @required : Bool
 
-    def initialize(name, metadata = nil, @default = nil, required = nil)
+    def initialize(name, metadata, @default = nil, required = nil, group = nil)
       @required = !!required
-      super [name], metadata: metadata
+      super [name], metadata: metadata, group: group
     end
 
     def get_default

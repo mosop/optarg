@@ -16,20 +16,20 @@ module Optarg
       {% end %}
     end
 
-    macro __add_string_array_option(names, metadata = nil, default = nil, min = nil)
+    macro __add_string_array_option(names, metadata = nil, default = nil, min = nil, group = nil)
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
         class_name = "Option_" + method_names[0]
       %}
 
-      %option = Options::{{class_name.id}}.new({{names}}, metadata: {{metadata}}, default: {{default}}, min: {{min}})
+      %option = Options::{{class_name.id}}.new({{names}}, metadata: {{metadata}}, default: {{default}}, min: {{min}}, group: {{group}})
       @@__self_options[%option.key] = %option
     end
 
-    macro array(names, metadata = nil, default = nil, min = nil)
+    macro array(names, metadata = nil, default = nil, min = nil, group = nil)
       __define_string_array_option {{names}}
-      __add_string_array_option {{names}}, {{metadata}}, {{default}}, {{min}}
+      __add_string_array_option {{names}}, {{metadata}}, {{default}}, {{min}}, {{group}}
     end
   end
 end

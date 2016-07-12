@@ -2,11 +2,11 @@ module Optarg::OptionMixins
   module String
     macro included
       @default : ::String?
-      @required : Bool
+      @required : ::Bool
 
-      def initialize(names, metadata = nil, @default = nil, required = nil)
+      def initialize(names, metadata = nil, @default = nil, required = nil, group = nil)
         @required = !!required
-        super names, metadata: metadata
+        super names, metadata: metadata, group: group
       end
 
       def type
