@@ -5,11 +5,11 @@ module Optarg
       args = data.__args_to_be_parsed
 
       model.__options.values.each do |option|
-        option.set_default_to data
+        option.preset_default_to data
       end
 
       model.__arguments.values.each do |argument|
-        argument.set_default_to data
+        argument.preset_default_to data
       end
 
       index = 0
@@ -51,6 +51,14 @@ module Optarg
           end
         end
         index = i
+      end
+
+      model.__options.values.each do |option|
+        option.postset_default_to data
+      end
+
+      model.__arguments.values.each do |argument|
+        argument.postset_default_to data
       end
 
       model.__options.values.each do |option|

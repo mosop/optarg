@@ -28,12 +28,15 @@ module Optarg
             yield data if data = as_data?(data)
           end
 
-          def set_default_to(data)
+          def preset_default_to(data)
             with_default? do |default|
               with_data?(data) do |data|
                 data.{{attribute_name.id}}[key] = default
               end
             end
+          end
+
+          def postset_default_to(data)
           end
         end
       end
@@ -67,10 +70,16 @@ module Optarg
             yield data if data = as_data?(data)
           end
 
-          def set_default_to(data)
+          def preset_default_to(data)
+            with_data?(data) do |data|
+              data.{{attribute_name.id}}[key] = ::Array(::{{type.id}}).new
+            end
+          end
+
+          def postset_default_to(data)
             with_default? do |default|
               with_data?(data) do |data|
-                data.{{attribute_name.id}}[key] = default
+                data.{{attribute_name.id}}[key] += default if data.{{attribute_name.id}}[key].empty?
               end
             end
           end

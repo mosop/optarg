@@ -12,7 +12,11 @@ module Optarg
       raise "Should never be called."
     end
 
-    def set_default_to(result)
+    def preset_default_to(data)
+      raise "Should never be called."
+    end
+
+    def postset_default_to(data)
       raise "Should never be called."
     end
 
