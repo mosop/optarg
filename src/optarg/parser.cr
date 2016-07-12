@@ -37,12 +37,12 @@ module Optarg
             end
           end
           if i == index
+            raise ::Optarg::UnknownOption.new(args[i]) if args[i].starts_with?("-")
             if argument_index < model.__arguments.size
               data.__parsed_args.__named[model.__arguments.values[argument_index].key] = args[i]
               data.__parsed_args << args[i]
               argument_index += 1
             else
-              raise ::Optarg::UnknownOption.new(args[i]) if args[i].starts_with?("-")
               data.__parsed_args.__nameless << args[i]
               data.__parsed_args << args[i]
             end
