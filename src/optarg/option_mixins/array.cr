@@ -10,7 +10,7 @@ module Optarg::OptionMixins
       getter min : Int32
 
       def initialize(names, metadata = nil, default = nil, min = nil, group = nil)
-        @default = default.try(&.dup) || ::Array(T).new
+        @default = default || ::Array(T).new
         @min = min || 0
         super names, metadata: metadata, group: group
       end
