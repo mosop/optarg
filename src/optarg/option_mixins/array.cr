@@ -39,6 +39,10 @@ module Optarg::OptionMixins
           raise ::Optarg::MinimumLengthError.new(key, @min) if @min > 0 && data.__array_options__string[key].size < @min
         end
       end
+
+      def required?
+        min > 0
+      end
     end
   end
 end

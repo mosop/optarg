@@ -33,6 +33,10 @@ module Optarg::OptionMixins
           raise ::Optarg::RequiredError.new(key) if @required && !data.__options__string[key]?
         end
       end
+
+      def required?
+        @required
+      end
     end
   end
 end

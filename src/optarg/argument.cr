@@ -27,5 +27,9 @@ module Optarg
     def display_name
       key
     end
+
+    def required?
+      @required
+    end
   end
 end

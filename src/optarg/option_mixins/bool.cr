@@ -37,6 +37,10 @@ module Optarg::OptionMixins
       def is_not?(name)
         @not.includes?(name)
       end
+
+      def required?
+        false
+      end
     end
   end
 end
