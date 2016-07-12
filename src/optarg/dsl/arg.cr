@@ -15,8 +15,12 @@ module Optarg
             @metadata as Metadata
           end
 
-          def as_data(data)
+          def as_data?(data)
             data.as?(::{{@type.id}})
+          end
+
+          def with_data(data)
+            yield data if data = as_data?(data)
           end
         end
       end

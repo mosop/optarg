@@ -1,9 +1,8 @@
 module Optarg::OptionMixins
   module Bool
     macro included
-      @default : ::Bool?
-      @not : ::Array(::String)
-      getter :not
+      getter default : ::Bool?
+      getter not : ::Array(::String)
 
       def initialize(names, metadata = nil, @default = nil, not = nil, group = nil)
         @not = not || \%w()
@@ -14,12 +13,8 @@ module Optarg::OptionMixins
         :bool
       end
 
-      def get_default
-        @default
-      end
-
       def parse(arg, data)
-        return false unless data = as_data(data)
+        return false unless data = as_data?(data)
         if is_name?(arg)
           data.__options__bool[key] = true
           true

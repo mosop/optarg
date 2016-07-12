@@ -6,11 +6,11 @@ module Optarg::OptionMixins
         type = T.id.split("::").map{|i| i.underscore}.join("_") + "_array"
       %}
 
-      @default : ::Array(T)?
-      @min : Int32
-      getter :min
+      getter default : ::Array(T)
+      getter min : Int32
 
-      def initialize(names, metadata = nil, @default = nil, min = nil, group = nil)
+      def initialize(names, metadata = nil, default = nil, min = nil, group = nil)
+        @default = default.try(&.dup) || ::Array(T).new
         @min = min || 0
         super names, metadata: metadata, group: group
       end
@@ -19,16 +19,12 @@ module Optarg::OptionMixins
         :{{type.id}}
       end
 
-      def get_default
-        @default ? @default.dup : Array(T).new
-      end
-
       def parse(arg, data)
         raise ::Optarg::UnsupportedConcatenation.new(arg)
       end
 
       def parse(args, index, data)
-        return index unless data = as_data(data)
+        return index unless data = as_data?(data)
         if is_name?(args[index])
           raise ::Optarg::MissingValue.new(args[index]) unless index + 1 < args.size
           data.__array_options__{{snake.id}}[key] << args[index + 1]
@@ -39,8 +35,9 @@ module Optarg::OptionMixins
       end
 
       def validate(data)
-        return unless data = as_data(data)
-        raise ::Optarg::MinimumLengthError.new(key, @min) if @min > 0 && data.__array_options__string[key].size < @min
+        with_data?(data) do |data|
+          raise ::Optarg::MinimumLengthError.new(key, @min) if @min > 0 && data.__array_options__string[key].size < @min
+        end
       end
     end
   end

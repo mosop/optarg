@@ -1,7 +1,7 @@
 module Optarg::OptionMixins
   module String
     macro included
-      @default : ::String?
+      getter default : ::String?
       @required : ::Bool
 
       def initialize(names, metadata = nil, @default = nil, required = nil, group = nil)
@@ -13,16 +13,12 @@ module Optarg::OptionMixins
         :string
       end
 
-      def get_default
-        @default
-      end
-
       def parse(arg, data)
         raise ::Optarg::UnsupportedConcatenation.new(arg)
       end
 
       def parse(args, index, data)
-        return index unless data = as_data(data)
+        return index unless data = as_data?(data)
         if is_name?(args[index])
           raise ::Optarg::MissingValue.new(args[index]) unless index + 1 < args.size
           data.__options__string[key] = args[index + 1]
@@ -33,8 +29,9 @@ module Optarg::OptionMixins
       end
 
       def validate(data)
-        return unless data = as_data(data)
-        raise ::Optarg::RequiredError.new(key) if @required && !data.__options__string[key]?
+        with_data?(data) do |data|
+          raise ::Optarg::RequiredError.new(key) if @required && !data.__options__string[key]?
+        end
       end
     end
   end

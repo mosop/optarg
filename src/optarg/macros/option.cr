@@ -17,17 +17,23 @@ module Optarg
           include {{mixin.id}}
 
           def metadata
-            @metadata as Metadata
+            super as Metadata
           end
 
-          def as_data(data)
+          def as_data?(data)
             data.as?(::{{@type.id}})
           end
 
-          def set_default(data)
-            return unless default = get_default
-            return unless data = as_data(data)
-            data.{{attribute_name.id}}[key] = default
+          def with_data?(data)
+            yield data if data = as_data?(data)
+          end
+
+          def set_default_to(data)
+            with_default? do |default|
+              with_data?(data) do |data|
+                data.{{attribute_name.id}}[key] = default
+              end
+            end
           end
         end
       end
@@ -53,14 +59,20 @@ module Optarg
             @metadata as Metadata
           end
 
-          def as_data(data)
+          def as_data?(data)
             data.as?(::{{@type.id}})
           end
 
-          def set_default(data)
-            return unless default = get_default
-            return unless data = as_data(data)
-            data.{{attribute_name.id}}[key] = default
+          def with_data?(data)
+            yield data if data = as_data?(data)
+          end
+
+          def set_default_to(data)
+            with_default? do |default|
+              with_data?(data) do |data|
+                data.{{attribute_name.id}}[key] = default
+              end
+            end
           end
         end
       end
