@@ -4,10 +4,11 @@ module Optarg
   abstract class Definition
     getter names : ::Array(::String)
     getter metadata : Metadata
-    getter group : Symbol?
+    getter group : Symbol
 
-    def initialize(@names, metadata = nil, @group = nil)
+    def initialize(@names, metadata = nil, group = nil)
       @metadata = metadata || Metadata.new
+      @group = group || :default
     end
 
     def key
