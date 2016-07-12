@@ -2,15 +2,12 @@ require "./metadata"
 
 module Optarg
   abstract class Definition
-    @names : ::Array(::String)
-    getter :names
-
-    @metadata : ::Optarg::Metadata?
-    def metadata; @metadata as ::Optarg::Metadata; end
-
+    getter names : ::Array(::String)
+    getter metadata : Metadata
     getter group : Symbol?
 
-    def initialize(@names, @metadata, @group = nil)
+    def initialize(@names, metadata = nil, @group = nil)
+      @metadata = metadata || Metadata.new
     end
 
     def key

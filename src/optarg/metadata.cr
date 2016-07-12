@@ -1,4 +1,4 @@
 module Optarg
-  abstract class Metadata
+  class Metadata
   end
 end
