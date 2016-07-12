@@ -23,5 +23,9 @@ module Optarg
     def validate(data)
       raise ::Optarg::RequiredError.new(key) if @required && !data.__args.__named[key]?
     end
+
+    def display_name
+      key
+    end
   end
 end
