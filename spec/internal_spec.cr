@@ -232,7 +232,7 @@ module Optarg::InternalFeatures
   end
 
   it "Required" do
-    expect_raises(RequiredError) { RequiredArgModel.parse %w() }
-    expect_raises(RequiredError) { RequiredStringModel.parse %w() }
+    expect_raises(RequiredArgumentError) { RequiredArgModel.parse %w() }
+    expect_raises(RequiredOptionError) { RequiredStringModel.parse %w() }
   end
 end

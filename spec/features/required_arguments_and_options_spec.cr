@@ -6,7 +6,7 @@ module Optarg::RequiredArgumentsAndOptionsFeature
   end
 
   it "Required Arguments" do
-    expect_raises(Optarg::RequiredError) { Compile.parse %w() }
+    expect_raises(Optarg::RequiredArgumentError) { Compile.parse %w() }
   end
 
   class Profile < Optarg::Model
@@ -14,6 +14,6 @@ module Optarg::RequiredArgumentsAndOptionsFeature
   end
 
   it "Required Options" do
-    expect_raises(Optarg::RequiredError) { Profile.parse %w() }
+    expect_raises(Optarg::RequiredOptionError) { Profile.parse %w() }
   end
 end

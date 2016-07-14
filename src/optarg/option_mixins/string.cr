@@ -30,7 +30,7 @@ module Optarg::OptionMixins
 
       def validate(data)
         with_data?(data) do |data|
-          raise ::Optarg::RequiredError.new(key) if @required && !data.__options__string[key]?
+          raise ::Optarg::RequiredOptionError.new(key) if @required && !data.__options__string[key]?
         end
       end
 

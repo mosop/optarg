@@ -36,7 +36,8 @@ module Optarg::OptionMixins
 
       def validate(data)
         with_data?(data) do |data|
-          raise ::Optarg::MinimumLengthError.new(key, @min) if @min > 0 && data.__array_options__string[key].size < @min
+          size = data.__array_options__string[key].size
+          raise ::Optarg::MinimumLengthError.new(key, @min, size) if @min > 0 && size < @min
         end
       end
 

@@ -1,34 +1,43 @@
 module Optarg
-  class UnknownOption < ::Exception
-    def initialize(message)
-      super "Unknown option: #{message}"
-    end
+  class ParsingError < ::Exception
   end
 
-  class MissingValue < ::Exception
-    def initialize(message)
-      super "Missing value: #{message}"
-    end
-  end
-
-  class UnsupportedConcatenation < ::Exception
-    def initialize(message)
-      super "Unsupporeted concatenation: #{message}"
-    end
-  end
-
-  abstract class ValidationError < ::Exception
-  end
-
-  class RequiredError < ValidationError
+  class UnknownOption < ParsingError
     def initialize(key)
-      super "#{key} is required."
+      super "The #{key} option is unknown."
+    end
+  end
+
+  class MissingValue < ParsingError
+    def initialize(key)
+      super "The #{key} option has no value."
+    end
+  end
+
+  class UnsupportedConcatenation < ParsingError
+    def initialize(key)
+      super "The #{key} option can not be concatenated."
+    end
+  end
+
+  abstract class ValidationError < ParsingError
+  end
+
+  class RequiredOptionError < ValidationError
+    def initialize(key)
+      super "The #{key} option is required."
+    end
+  end
+
+  class RequiredArgumentError < ValidationError
+    def initialize(key)
+      super "The #{key} argument is required."
     end
   end
 
   class MinimumLengthError < ValidationError
-    def initialize(key, min)
-      super "#{key}'s length is less than #{min}."
+    def initialize(key, expected, actual)
+      super "The #{key} option's length is #{actual}, but #{expected} or more is expected."
     end
   end
 end

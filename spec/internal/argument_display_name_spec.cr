@@ -15,6 +15,6 @@ module OptargArugmentDisplayNamesFeature
   it name do
     Model.__arguments["arg1"].display_name.should eq "arg1"
     Model.__arguments["arg2"].display_name.should eq "ARG2"
-    expect_raises(Optarg::RequiredError, Optarg::RequiredError.new("ARG2").message) { Model.parse %w()}
+    expect_raises(Optarg::RequiredArgumentError, Optarg::RequiredArgumentError.new("ARG2").message) { Model.parse %w()}
   end
 end
