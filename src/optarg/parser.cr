@@ -18,8 +18,8 @@ module Optarg
         arg = args[i]
         if arg =~ /^-\w\w/
           letters = arg[1..-1].split("").map{|i| "-#{i}"}
-          matched = true
           letters.each do |letter|
+            matched = false
             (model.__options.values + model.__handlers.values).each do |definition|
               break if matched = definition.parse(letter, data)
             end
