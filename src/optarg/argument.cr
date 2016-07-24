@@ -5,9 +5,9 @@ module Optarg
     getter default : String?
     @required : Bool
 
-    def initialize(name, metadata, @default = nil, required = nil, group = nil)
+    def initialize(name, metadata, @default = nil, required = nil, group = nil, stop = nil)
       @required = !!required
-      super [name], metadata: metadata, group: group
+      super [name], metadata: metadata, group: group, stop: stop
     end
 
     def preset_default_to(data)

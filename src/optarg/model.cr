@@ -6,6 +6,7 @@ module Optarg
     macro inherited
       {%
         if @type.superclass == ::Optarg::Model
+          is_root = true
           super_option = "Optarg::Option"
           super_argument = "Optarg::Argument"
           super_handler = "Optarg::Handler"
@@ -13,10 +14,8 @@ module Optarg
           super_argument_metadata = "Optarg::Metadata"
           super_handler_metadata = "Optarg::Metadata"
           super_argument_value_list = "Optarg::ArgumentValueList"
-          merge_of_options = "@@__self_options"
-          merge_of_arguments = "@@__self_arguments"
-          merge_of_handlers = "@@__self_handlers"
         else
+          is_root = false
           super_option = "#{@type.superclass.id}::Option"
           super_argument = "#{@type.superclass.id}::Argument"
           super_handler = "#{@type.superclass.id}::Handler"
@@ -24,9 +23,6 @@ module Optarg
           super_argument_metadata = "#{@type.superclass.id}::Argument::Metadata"
           super_handler_metadata = "#{@type.superclass.id}::Handler::Metadata"
           super_argument_value_list = "#{@type.superclass.id}::ArgumentValueList"
-          merge_of_options = "::#{@type.superclass.id}.__options.merge(@@__self_options)"
-          merge_of_arguments = "::#{@type.superclass.id}.__arguments.merge(@@__self_arguments)"
-          merge_of_handlers = "::#{@type.superclass.id}.__handlers.merge(@@__self_handlers)"
         end %}
 
       abstract class Option < ::{{super_option.id}}
@@ -47,30 +43,48 @@ module Optarg
       class ArgumentValueList < ::{{super_argument_value_list.id}}
       end
 
+      @__parsed_args = ArgumentValueList.new
       def __parsed_args
-        @__parsed_args ||= ArgumentValueList.new
         @__parsed_args as ArgumentValueList
       end
 
       @@__self_options = {} of ::String => ::Optarg::Option
-      @@__options = {} of ::String => ::Optarg::Option
+      @@__options : ::Hash(::String, ::Optarg::Option)?
       def self.__options
-        @@__options = {{merge_of_options.id}} if @@__options.empty?
-        @@__options
+        @@__options ||= begin
+          {% if is_root %}
+            h = {} of ::String => ::Optarg::Option
+          {% else %}
+            h = ::{{@type.superclass}}.__options.dup
+          {% end %}
+          h.merge(@@__self_options)
+        end
       end
 
       @@__self_arguments = {} of ::String => ::Optarg::Argument
-      @@__arguments = {} of ::String => ::Optarg::Argument
+      @@__arguments : ::Hash(::String, ::Optarg::Argument)?
       def self.__arguments
-        @@__arguments = {{merge_of_arguments.id}} if @@__arguments.empty?
-        @@__arguments
+        @@__arguments ||= begin
+          {% if is_root %}
+            h = {} of ::String => ::Optarg::Argument
+          {% else %}
+            h = ::{{@type.superclass}}.__arguments.dup
+          {% end %}
+          h.merge(@@__self_arguments)
+        end
       end
 
       @@__self_handlers = {} of ::String => ::Optarg::Handler
-      @@__handlers = {} of ::String => ::Optarg::Handler
+      @@__handlers : ::Hash(::String, ::Optarg::Handler)?
       def self.__handlers
-        @@__handlers = {{merge_of_handlers.id}} if @@__handlers.empty?
-        @@__handlers
+        @@__handlers ||= begin
+          {% if is_root %}
+            h = {} of ::String => ::Optarg::Handler
+          {% else %}
+            h = ::{{@type.superclass}}.__handlers.dup
+          {% end %}
+          h.merge(@@__self_handlers)
+        end
       end
 
       def self.parse(argv, completes = false)
@@ -83,17 +97,12 @@ module Optarg
       end
     end
 
-    @__argv : ::Array(::String)
-    @__args_to_be_parsed : ::Array(::String)
-    @__parsed_args : ::Optarg::ArgumentValueList?
-    @__unparsed_args : ::Array(::String)
-    @__parsed_nodes = [] of ::Array(::String)
-
-    getter :__argv
-    getter :__args_to_be_parsed
-    getter :__parsed_args
-    getter :__unparsed_args
-    getter :__parsed_nodes
+    getter __argv : ::Array(::String)
+    getter __args_to_be_parsed : ::Array(::String)
+    getter __parsed_args : ::Optarg::ArgumentValueList?
+    getter __left_args = [] of ::String
+    getter __unparsed_args : ::Array(::String)
+    getter __parsed_nodes = [] of ::Array(::String)
 
     def initialize(@__argv)
       @__args_to_be_parsed, @__unparsed_args = __split_by_double_dash
@@ -105,6 +114,10 @@ module Optarg
 
     def args
       __args
+    end
+
+    def left_args
+      __left_args
     end
 
     def unparsed_args

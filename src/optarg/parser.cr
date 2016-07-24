@@ -13,7 +13,8 @@ module Optarg
       end
 
       index = 0
-      while index < args.size
+      stopped = false
+      while !stopped && index < args.size
         i = index
         arg = args[i]
         if arg =~ /^-\w\w/
@@ -21,7 +22,10 @@ module Optarg
           letters.each do |letter|
             matched = false
             (model.__options.values + model.__handlers.values).each do |definition|
-              break if matched = definition.parse(letter, data)
+              if matched = definition.parse(letter, data)
+                stopped ||= definition.stops?
+                break
+              end
             end
             raise ::Optarg::UnknownOption.new(letter) unless matched
           end
@@ -31,6 +35,7 @@ module Optarg
           (model.__options.values + model.__handlers.values).each do |definition|
             j = definition.parse(args, i, data)
             if j != i
+              stopped ||= definition.stops?
               data.__parsed_nodes << args[i..(j-1)]
               i = j
               break
@@ -39,7 +44,9 @@ module Optarg
           if i == index
             raise ::Optarg::UnknownOption.new(args[i]) if args[i].starts_with?("-")
             if argument_index < model.__arguments.size
-              data.__parsed_args.__named[model.__arguments.values[argument_index].key] = args[i]
+              argument = model.__arguments.values[argument_index]
+              stopped ||= argument.stops?
+              data.__parsed_args.__named[argument.key] = args[i]
               data.__parsed_args << args[i]
               argument_index += 1
             else
@@ -52,6 +59,7 @@ module Optarg
         end
         index = i
       end
+      data.__left_args.concat args[index..-1] if index < args.size
 
       model.__options.values.each do |option|
         option.postset_default_to data

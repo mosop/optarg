@@ -44,19 +44,19 @@ module Optarg
       end
     end
 
-    macro __add_argument(name, metadata = nil, required = nil, group = nil)
+    macro __add_argument(name, metadata = nil, required = nil, group = nil, stop = nil)
       {%
         method_name = name.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")
         class_name = "Argument_" + method_name
       %}
 
-      %arg = Arguments::{{class_name.id}}.new({{name}}, metadata: {{metadata}}, required: {{required}}, group: {{group}})
+      %arg = Arguments::{{class_name.id}}.new({{name}}, metadata: {{metadata}}, required: {{required}}, group: {{group}}, stop: {{stop}})
       @@__self_arguments[%arg.key] = %arg
     end
 
-    macro arg(name, metadata = nil, required = nil, group = nil)
+    macro arg(name, metadata = nil, required = nil, group = nil, stop = nil)
       __define_argument {{name}}
-      __add_argument {{name}}, {{metadata}}, {{required}}, {{group}}
+      __add_argument {{name}}, {{metadata}}, {{required}}, {{group}}, {{stop}}
     end
   end
 end
