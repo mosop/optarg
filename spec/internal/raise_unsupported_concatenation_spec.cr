@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module OptargRaiseUnknownOptionIfConcatenatedOptionsNotMatchedFeature
+module OptargRaiseUnsupportedConcatenationFeature
   class Model < Optarg::Model
     string "-s"
   end
