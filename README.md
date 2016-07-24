@@ -187,7 +187,7 @@ class Profile < Optarg::Model
   string "--birthday", required: true
 end
 
-Profile.parse %w() # raises a Required exception.
+Profile.parse %w() # raises a RequiredArgumentError exception.
 ```
 
 ```crystal
@@ -195,7 +195,7 @@ class Compile < Optarg::Model
   arg "source_file", required: true
 end
 
-Compile.parse %w() # raises a Required exception.
+Compile.parse %w() # raises a RequiredOptionError exception.
 ```
 
 ### Minimum Length of Array
@@ -209,7 +209,7 @@ class Multiply < Optarg::Model
   end
 end
 
-Multiply.parse %w(-n 794) # raises a MinimumLength exception.
+Multiply.parse %w(-n 794) # raises a MinimumLengthError exception.
 ```
 
 ### Custom Initializer
