@@ -1,6 +1,6 @@
 module Optarg
   class Parser
-    def parse(model, data)
+    def parse(model, data, completes)
       argument_index = 0
       args = data.__args_to_be_parsed
 

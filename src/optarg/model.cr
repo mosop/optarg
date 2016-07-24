@@ -73,12 +73,12 @@ module Optarg
         @@__handlers
       end
 
-      def self.parse(argv)
-        new(argv).__parse
+      def self.parse(argv, completes = false)
+        new(argv).__parse(completes)
       end
 
-      def __parse
-        ::Optarg::Parser.new.parse(::{{@type.id}}, self)
+      def __parse(completes)
+        ::Optarg::Parser.new.parse(::{{@type.id}}, self, completes)
         self
       end
     end
@@ -126,8 +126,8 @@ module Optarg
       yield
     end
 
-    def parse
-      __parse
+    def parse(completes = false)
+      __parse(completes)
     end
   end
 end
