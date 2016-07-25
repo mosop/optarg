@@ -17,7 +17,7 @@ module Optarg
       {% end %}
     end
 
-    macro __add_bool_option(names, metadata = nil, default = nil, not = nil, group = nil)
+    macro __add_bool_option(names, metadata = nil, default = nil, not = nil, group = nil, stop = nil)
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
@@ -25,13 +25,13 @@ module Optarg
         class_name = "Option_" + method_names[0]
       %}
 
-      %option = Options::{{class_name.id}}.new({{names}}, metadata: {{metadata}}, default: {{default}}, not: {{not}}, group: {{group}})
+      %option = Options::{{class_name.id}}.new({{names}}, metadata: {{metadata}}, default: {{default}}, not: {{not}}, group: {{group}}, stop: {{stop}})
       @@__self_options[%option.key] = %option
     end
 
-    macro bool(names, metadata = nil, default = nil, not = nil, group = nil)
+    macro bool(names, metadata = nil, default = nil, not = nil, group = nil, stop = nil)
       __define_bool_option {{names}}
-      __add_bool_option {{names}}, {{metadata}}, {{default}}, {{not}}, {{group}}
+      __add_bool_option {{names}}, {{metadata}}, {{default}}, {{not}}, {{group}}, {{stop}}
     end
   end
 end

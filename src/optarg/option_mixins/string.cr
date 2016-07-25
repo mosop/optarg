@@ -4,9 +4,9 @@ module Optarg::OptionMixins
       getter default : ::String?
       @required : ::Bool
 
-      def initialize(names, metadata = nil, @default = nil, required = nil, group = nil)
+      def initialize(names, metadata = nil, @default = nil, required = nil, group = nil, stop = nil)
         @required = !!required
-        super names, metadata: metadata, group: group
+        super names, metadata: metadata, group: group, stop: stop
       end
 
       def type

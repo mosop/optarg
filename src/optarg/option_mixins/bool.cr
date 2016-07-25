@@ -4,9 +4,9 @@ module Optarg::OptionMixins
       getter default : ::Bool?
       getter not : ::Array(::String)
 
-      def initialize(names, metadata = nil, @default = nil, not = nil, group = nil)
+      def initialize(names, metadata = nil, @default = nil, not = nil, group = nil, stop = nil)
         @not = not || \%w()
-        super names, metadata: metadata, group: group
+        super names, metadata: metadata, group: group, stop: stop
       end
 
       def type
