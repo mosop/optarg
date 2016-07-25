@@ -4,5 +4,9 @@ module Optarg::CompletionCandidates
 
     def initialize(@string)
     end
+
+    def to_completion_string
+      string
+    end
   end
 end
