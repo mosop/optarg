@@ -1,6 +1,6 @@
 module Optarg
   class Parser
-    def parse(model, data, completes)
+    def parse(model, data, completes, stops_when_unknown)
       argument_index = 0
       args = data.__args_to_be_parsed
 
@@ -12,37 +12,45 @@ module Optarg
         argument.preset_default_to data
       end
 
+      defs = model.__options.values + model.__handlers.values
+
       index = 0
       stopped = false
-      while !stopped && index < args.size
+      unknown = false
+      while !stopped && !unknown && index < args.size
         i = index
         arg = args[i]
         if arg =~ /^-\w\w/
           letters = arg[1..-1].split("").map{|i| "-#{i}"}
+          if unknown = letters.find{|i| !defs.any?{|j| j.is_name?(i)}}
+            next if stops_when_unknown
+            raise ::Optarg::UnknownOption.new(unknown)
+          end
           letters.each do |letter|
-            matched = false
-            (model.__options.values + model.__handlers.values).each do |definition|
-              if matched = definition.parse(letter, data)
-                stopped ||= definition.stops?
+            defs.each do |df|
+              if df.parse(letter, data)
+                stopped ||= df.stops?
                 break
               end
             end
-            raise ::Optarg::UnknownOption.new(letter) unless matched
           end
           data.__parsed_nodes << [arg]
           i += 1
         else
-          (model.__options.values + model.__handlers.values).each do |definition|
-            j = definition.parse(args, i, data)
+          defs.each do |df|
+            j = df.parse(args, i, data)
             if j != i
-              stopped ||= definition.stops?
+              stopped ||= df.stops?
               data.__parsed_nodes << args[i..(j-1)]
               i = j
               break
             end
           end
           if i == index
-            raise ::Optarg::UnknownOption.new(args[i]) if args[i].starts_with?("-")
+            if unknown = args[i].starts_with?("-")
+              next if stops_when_unknown
+              raise ::Optarg::UnknownOption.new(args[i])
+            end
             if argument_index < model.__arguments.size
               argument = model.__arguments.values[argument_index]
               stopped ||= argument.stops?

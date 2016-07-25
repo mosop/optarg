@@ -87,12 +87,12 @@ module Optarg
         end
       end
 
-      def self.parse(argv, completes = false)
-        new(argv).__parse(completes)
+      def self.parse(argv, completes = false, stops_when_unknown = false)
+        new(argv).__parse(completes, stops_when_unknown)
       end
 
-      def __parse(completes)
-        ::Optarg::Parser.new.parse(::{{@type.id}}, self, completes)
+      def __parse(completes = false, stops_when_unknown = false)
+        ::Optarg::Parser.new.parse(::{{@type.id}}, self, completes, stops_when_unknown)
         self
       end
     end
@@ -139,8 +139,8 @@ module Optarg
       yield
     end
 
-    def parse(completes = false)
-      __parse(completes)
+    def parse(completes = false, stops_when_unknown = false)
+      __parse(completes, stops_when_unknown)
     end
   end
 end

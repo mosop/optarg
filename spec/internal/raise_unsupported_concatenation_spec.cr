@@ -3,6 +3,7 @@ require "../spec_helper"
 module OptargRaiseUnsupportedConcatenationFeature
   class Model < Optarg::Model
     string "-s"
+    array "-a"
   end
 
   it name do
