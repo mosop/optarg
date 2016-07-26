@@ -1,18 +1,15 @@
 module Optarg
   class Parser
-    def parse(model, data, completes, stops_when_unknown)
+    def parse(model, data)
       argument_index = 0
       args = data.__args_to_be_parsed
 
-      model.__options.values.each do |option|
-        option.preset_default_to data
-      end
+      options_and_arguments = model.__options.values + model.__arguments.values
+      options_and_handlers = model.__options.values + model.__handlers.values
 
-      model.__arguments.values.each do |argument|
-        argument.preset_default_to data
+      options_and_arguments.each do |df|
+        df.preset_default_to data
       end
-
-      defs = model.__options.values + model.__handlers.values
 
       index = 0
       stopped = false
@@ -22,12 +19,12 @@ module Optarg
         arg = args[i]
         if arg =~ /^-\w\w/
           letters = arg[1..-1].split("").map{|i| "-#{i}"}
-          if unknown = letters.find{|i| !defs.any?{|j| j.is_name?(i)}}
-            next if stops_when_unknown
+          if unknown = letters.find{|i| !options_and_handlers.any?{|j| j.is_name?(i)}}
+            next if data.stops_on_unknown?
             raise ::Optarg::UnknownOption.new(unknown)
           end
           letters.each do |letter|
-            defs.each do |df|
+            options_and_handlers.each do |df|
               if df.parse(letter, data)
                 stopped ||= df.stops?
                 break
@@ -37,7 +34,7 @@ module Optarg
           data.__parsed_nodes << [arg]
           i += 1
         else
-          defs.each do |df|
+          options_and_handlers.each do |df|
             j = df.parse(args, i, data)
             if j != i
               stopped ||= df.stops?
@@ -48,7 +45,7 @@ module Optarg
           end
           if i == index
             if unknown = args[i].starts_with?("-")
-              next if stops_when_unknown
+              next if data.stops_on_unknown?
               raise ::Optarg::UnknownOption.new(args[i])
             end
             if argument_index < model.__arguments.size
@@ -69,20 +66,12 @@ module Optarg
       end
       data.__left_args.concat args[index..-1] if index < args.size
 
-      model.__options.values.each do |option|
-        option.postset_default_to data
+      options_and_arguments.each do |df|
+        df.postset_default_to data
       end
 
-      model.__arguments.values.each do |argument|
-        argument.postset_default_to data
-      end
-
-      model.__options.values.each do |option|
-        option.validate data
-      end
-
-      model.__arguments.values.each do |argument|
-        argument.validate data
+      options_and_arguments.each do |df|
+        df.validate data
       end
     end
   end

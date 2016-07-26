@@ -87,12 +87,12 @@ module Optarg
         end
       end
 
-      def self.parse(argv, completes = false, stops_when_unknown = false)
-        new(argv).__parse(completes, stops_when_unknown)
+      def self.parse(argv, completes = false, stops_on_unknown = false)
+        new(argv, completes: completes, stops_on_unknown: stops_on_unknown).__parse
       end
 
-      def __parse(completes = false, stops_when_unknown = false)
-        ::Optarg::Parser.new.parse(::{{@type.id}}, self, completes, stops_when_unknown)
+      def __parse
+        ::Optarg::Parser.new.parse(::{{@type.id}}, self)
         self
       end
     end
@@ -104,8 +104,19 @@ module Optarg
     getter __unparsed_args : ::Array(::String)
     getter __parsed_nodes = [] of ::Array(::String)
 
-    def initialize(@__argv)
+    @__options : NamedTuple(completes: Bool, stops_on_unknown: Bool)
+
+    def initialize(@__argv, completes = false, stops_on_unknown = false)
       @__args_to_be_parsed, @__unparsed_args = __split_by_double_dash
+      @__options = {completes: completes, stops_on_unknown: stops_on_unknown}
+    end
+
+    def completes?
+      @__options[:completes]
+    end
+
+    def stops_on_unknown?
+      @__options[:stops_on_unknown]
     end
 
     def __args
@@ -139,8 +150,8 @@ module Optarg
       yield
     end
 
-    def parse(completes = false, stops_when_unknown = false)
-      __parse(completes, stops_when_unknown)
+    def parse
+      __parse
     end
   end
 end
