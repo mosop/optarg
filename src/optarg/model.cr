@@ -14,15 +14,17 @@ module Optarg
           super_argument_metadata = "Optarg::Metadata"
           super_handler_metadata = "Optarg::Metadata"
           super_argument_value_list = "Optarg::ArgumentValueList"
+          super_parser = "Optarg::Parser"
         else
           is_root = false
-          super_option = "#{@type.superclass.id}::Option"
-          super_argument = "#{@type.superclass.id}::Argument"
-          super_handler = "#{@type.superclass.id}::Handler"
-          super_option_metadata = "#{@type.superclass.id}::Option::Metadata"
-          super_argument_metadata = "#{@type.superclass.id}::Argument::Metadata"
-          super_handler_metadata = "#{@type.superclass.id}::Handler::Metadata"
-          super_argument_value_list = "#{@type.superclass.id}::ArgumentValueList"
+          super_option = "#{@type.superclass}::Option"
+          super_argument = "#{@type.superclass}::Argument"
+          super_handler = "#{@type.superclass}::Handler"
+          super_option_metadata = "#{@type.superclass}::Option::Metadata"
+          super_argument_metadata = "#{@type.superclass}::Argument::Metadata"
+          super_handler_metadata = "#{@type.superclass}::Handler::Metadata"
+          super_argument_value_list = "#{@type.superclass}::ArgumentValueList"
+          super_parser = "#{@type.superclass}::Parser"
         end %}
 
       abstract class Option < ::{{super_option.id}}
@@ -41,11 +43,6 @@ module Optarg
       end
 
       class ArgumentValueList < ::{{super_argument_value_list.id}}
-      end
-
-      @__parsed_args = ArgumentValueList.new
-      def __parsed_args
-        @__parsed_args as ArgumentValueList
       end
 
       @@__self_options = {} of ::String => ::Optarg::Option
@@ -87,64 +84,58 @@ module Optarg
         end
       end
 
-      def self.parse(argv, completes = false, stops_on_unknown = false)
-        new(argv, completes: completes, stops_on_unknown: stops_on_unknown).__parse
+      class Parser < ::{{super_parser.id}}
+        @parsed_args = ArgumentValueList.new
+        def parsed_args
+          @parsed_args as ArgumentValueList
+        end
+
+        def model
+          ::{{@type}}
+        end
+
+        def data
+          @data as ::{{@type}}
+        end
       end
 
-      def __parse
-        ::Optarg::Parser.new.parse(::{{@type.id}}, self)
+      def self.parse(argv, stops_on_error = false)
+        new(argv).__parse(stops_on_error)
+      end
+
+      def __parse(stops_on_error = false)
+        @__parser = Parser.new(self, stops_on_error)
+        __parser.parse
         self
       end
-    end
 
-    getter __argv : ::Array(::String)
-    getter __args_to_be_parsed : ::Array(::String)
-    getter __parsed_args : ::Optarg::ArgumentValueList?
-    getter __left_args = [] of ::String
-    getter __unparsed_args : ::Array(::String)
-    getter __parsed_nodes = [] of ::Array(::String)
+      def __parser
+        @__parser as Parser
+      end
 
-    @__options : NamedTuple(completes: Bool, stops_on_unknown: Bool)
-
-    def initialize(@__argv, completes = false, stops_on_unknown = false)
-      @__args_to_be_parsed, @__unparsed_args = __split_by_double_dash
-      @__options = {completes: completes, stops_on_unknown: stops_on_unknown}
-    end
-
-    def completes?
-      @__options[:completes]
-    end
-
-    def stops_on_unknown?
-      @__options[:stops_on_unknown]
-    end
-
-    def __args
-      __parsed_args
-    end
-
-    def args
-      __args
-    end
-
-    def left_args
-      __left_args
-    end
-
-    def unparsed_args
-      __unparsed_args
-    end
-
-    private def __split_by_double_dash
-      if i_or_nil = @__argv.index("--")
-        i = i_or_nil.to_i
-        parsed = i == 0 ? [] of ::String : @__argv[0..(i-1)]
-        unparsed = i == @__argv.size-1 ? [] of ::String : @__argv[(i+1)..-1]
-        {parsed, unparsed}
-      else
-        {@__argv, %w()}
+      def __new_parser(stops_on_error)
+        Parser.new(self, stops_on_error)
       end
     end
+
+    getter __argv : Array(String)
+    @__parser : Parser?
+
+    def initialize(@__argv, stops_on_error = false)
+      @__parser = __new_parser(stops_on_error: stops_on_error)
+    end
+
+    def __args; __parser.parsed_args; end
+    def args; __args; end
+
+    def __left_args; __parser.left_args; end
+    def left_args; __left_args; end
+
+    def __unparsed_args; __parser.unparsed_args; end
+    def unparsed_args; __unparsed_args; end
+
+    def __parsed_nodes; __parser.parsed_nodes; end
+    def parsed_nodes; __parsed_nodes; end
 
     private def __yield
       yield
