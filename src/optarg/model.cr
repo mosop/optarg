@@ -142,5 +142,9 @@ module Optarg
     def parse
       __parse
     end
+
+    def __parser
+      raise "Should never be called."
+    end
   end
 end
