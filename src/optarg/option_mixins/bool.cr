@@ -13,29 +13,26 @@ module Optarg::OptionMixins
         :bool
       end
 
-      def parse(arg, data)
-        return false unless data = as_data?(data)
-        if is_name?(arg)
-          data.__options__bool[key] = true
-          true
-        elsif is_not?(arg)
-          data.__options__bool[key] = false
-          true
-        else
-          false
-        end
+      def length
+        1
       end
 
-      def parse(args, index, data)
-        if parse(args[index], data)
-          index + 1
-        else
-          index
-        end
+      def matches?(name)
+        super || matches_to_not?(name)
       end
 
-      def is_not?(name)
+      def matches_to_not?(name)
         @not.includes?(name)
+      end
+
+      def parse(args, data)
+        if data.responds_to?(:__options__bool)
+          if matches_to_not?(args[0])
+            data.__options__bool[key] = false
+          else
+            data.__options__bool[key] = true
+          end
+        end
       end
 
       def required?

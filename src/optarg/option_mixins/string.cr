@@ -13,19 +13,12 @@ module Optarg::OptionMixins
         :string
       end
 
-      def parse(arg, data)
-        raise ::Optarg::UnsupportedConcatenation.new(arg)
+      def length
+        2
       end
 
-      def parse(args, index, data)
-        return index unless data = as_data?(data)
-        if is_name?(args[index])
-          raise ::Optarg::MissingValue.new(args[index]) unless index + 1 < args.size
-          data.__options__string[key] = args[index + 1]
-          index + 2
-        else
-          index
-        end
+      def parse(args, data)
+        data.__options__string[key] = args[1] if data.responds_to?(:__options__string)
       end
 
       def validate(data)

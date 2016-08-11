@@ -3,5 +3,9 @@ module Optarg
     def type
       :handler
     end
+
+    def length
+      1
+    end
   end
 end

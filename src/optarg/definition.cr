@@ -21,7 +21,7 @@ module Optarg
       @names[0]
     end
 
-    def is_name?(name)
+    def matches?(name)
       @names.includes?(name)
     end
 

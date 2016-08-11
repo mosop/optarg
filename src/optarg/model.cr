@@ -99,12 +99,11 @@ module Optarg
         end
       end
 
-      def self.parse(argv, stops_on_error = false)
-        new(argv).__parse(stops_on_error)
+      def self.parse(argv)
+        new(argv).__parse
       end
 
-      def __parse(stops_on_error = false)
-        @__parser = Parser.new(self, stops_on_error)
+      def __parse
         __parser.parse
         self
       end
@@ -113,16 +112,15 @@ module Optarg
         @__parser as Parser
       end
 
-      def __new_parser(stops_on_error)
-        Parser.new(self, stops_on_error)
+      def __new_parser(argv)
+        Parser.new(self, argv)
       end
     end
 
-    getter __argv : Array(String)
     @__parser : Parser?
 
-    def initialize(@__argv, stops_on_error = false)
-      @__parser = __new_parser(stops_on_error: stops_on_error)
+    def initialize(argv)
+      @__parser = __new_parser(argv)
     end
 
     def __args; __parser.parsed_args; end

@@ -1,17 +1,25 @@
 module Optarg
   abstract class Parser
+    struct Node
+      getter args : Array(String)
+      getter definitions : Array(Definition)
+
+      def initialize(@args, @definitions)
+      end
+    end
+
     @data : Model
-    getter argument_index = 0
-    getter index = 0
+    getter argv : Array(String)
+    @argument_index = 0
+    @index = 0
     getter args : Array(String)
     @parsed_args : ArgumentValueList?
     getter unparsed_args : Array(String)
-    getter parsed_nodes = [] of Array(String)
+    getter parsed_nodes = [] of Node
     getter left_args = %w()
 
-    def initialize(@data, stops_on_error = false)
-      @stops_on_error__p = stops_on_error
-      @args, @unparsed_args = split_argv_by_double_dash(data.__argv)
+    def initialize(@data, @argv)
+      @args, @unparsed_args = split_argv_by_double_dash(argv)
     end
 
     private def split_argv_by_double_dash(argv)
@@ -35,10 +43,6 @@ module Optarg
       @unknown__p
     end
 
-    def stops_on_error?
-      @stops_on_error__p
-    end
-
     @invalid__p = true
     def valid?
       !@invalid__p
@@ -59,8 +63,6 @@ module Optarg
       parse_args
       postset_default
       validate
-    rescue ex : ParsingError
-      raise ex unless stops_on_error?
     end
 
     def preset_default
@@ -83,67 +85,70 @@ module Optarg
 
     def parse_args
       while !stopped? && @index < args.size
-        i = parse_next(index, args[@index])
-        if i != @index
-          @parsed_nodes << args[@index...i]
-        end
-        @index = i
+        @index = parse_next
       end
     ensure
-      @left_args = args[index..-1] if @index < args.size
+      @left_args = args[@index..-1] if @index < args.size
     end
 
-    def parse_next(index, arg)
+    def parse_next
+      arg = args[@index]
       if arg =~ /^-\w\w/
-        parse_multiple_options(index, arg[1..-1].split("").map{|i| "-#{i}"})
+        parse_multiple_options
       elsif arg =~ /^-/
-        parse_single_option(index, arg)
+        parse_single_option
       else
-        parse_argument(index, arg)
+        parse_argument
       end
     end
 
-    def parse_multiple_options(index, names)
-      if unknown = names.find{|i| !options_and_handlers.any?{|j| j.is_name?(i)}}
-        @unknown__p = true
-        raise ::Optarg::UnknownOption.new(unknown)
-      end
-
+    def parse_multiple_options
+      names = args[@index][1..-1].split("").map{|i| "-#{i}"}
+      dfs = [] of Definition
+      parsed_nodes << Node.new([args[@index]], dfs)
+      stopped = false
       names.each do |name|
-        options_and_handlers.each do |df|
-          if df.parse(name, data)
-            if @stopped__p ||= df.stops?
-              return index + 1
-            end
-          end
+        if df = options_and_handlers.find{|i| i.matches?(name)}
+          raise UnsupportedConcatenation.new(name) if df.length >= 2
+          df.parse [name], data
+          stopped ||= df.stops?
+        else
+          raise UnknownOption.new(name)
         end
       end
-      return index + 1
+      @stopped__p = stopped
+      @index + 1
     end
 
-    def parse_single_option(index, arg)
-      options_and_handlers.each do |df|
-        i = df.parse(args, index, data)
-        if i != index
-          @stopped__p ||= df.stops?
-          return i
-        end
+    def parse_single_option
+      name = args[@index]
+      if df = options_and_handlers.find{|i| i.matches?(name)}
+        next_index = @index + df.length
+        parsed_nodes << Node.new(args[@index...([next_index, args.size].min)], [df])
+        raise MissingValue.new(df.key) unless next_index <= args.size
+        df.parse args[@index...next_index], data
+        @stopped__p ||= df.stops?
+        next_index
+      else
+        raise UnknownOption.new(name)
       end
-      raise ::Optarg::UnknownOption.new(arg)
     end
 
-    def parse_argument(index, arg)
+    def parse_argument
+      arg = args[@index]
       if @argument_index < model.__arguments.size
         df = model.__arguments.values[@argument_index]
         @stopped__p ||= df.stops?
         parsed_args.__named[df.key] = arg
         parsed_args << arg
+        parsed_nodes << Node.new([arg], [df] of Definition)
         @argument_index += 1
       else
         parsed_args.__nameless << arg
         parsed_args << arg
+        parsed_nodes << Node.new([arg], [] of Definition)
       end
-      index + 1
+      @index + 1
     end
   end
 end

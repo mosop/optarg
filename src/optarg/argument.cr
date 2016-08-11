@@ -10,6 +10,10 @@ module Optarg
       super [name], metadata: metadata, group: group, stop: stop
     end
 
+    def length
+      1
+    end
+
     def preset_default_to(data)
       with_default? do |default|
         data.__args.__named[key] = default

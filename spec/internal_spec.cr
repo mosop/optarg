@@ -19,7 +19,10 @@ module Optarg::InternalFeatures
     result.args.named.should eq({"arg" => "arg"})
     result.args.nameless.should eq %w(parsed)
     result.unparsed_args.should eq %w(unparsed)
-    result.__parsed_nodes.should eq [%w(-s v), %w(-b), %w(arg), %w(parsed)]
+    result.__parsed_nodes[0].should eq Optarg::Parser::Node.new(%w(-s v), [ParseModel.__options["-s"]] of Optarg::Definition)
+    result.__parsed_nodes[1].should eq Optarg::Parser::Node.new(%w(-b), [ParseModel.__options["-b"]] of Optarg::Definition)
+    result.__parsed_nodes[2].should eq Optarg::Parser::Node.new(%w(arg), [ParseModel.__arguments["arg"]] of Optarg::Definition)
+    result.__parsed_nodes[3].should eq Optarg::Parser::Node.new(%w(parsed), [] of Optarg::Definition)
   end
 
   it "parses nothing" do
