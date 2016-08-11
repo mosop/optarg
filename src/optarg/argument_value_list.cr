@@ -6,30 +6,32 @@ module Optarg
       %}
 
       {% if call.name == "[]" %}
-        @__array[{{args.id}}]
+        @__values[{{args.id}}]
       {% elsif call.name == "[]?" %}
-        @__array[{{args.id}}]?
+        @__values[{{args.id}}]?
       {% elsif call.name == "[]=" %}
-        @__array[{{call.args[0..-2].map{|i| i.id}.join(", ").id}}] = {{call.args.last.id}}
+        @__values[{{call.args[0..-2].map{|i| i.id}.join(", ").id}}] = {{call.args.last.id}}
       {% elsif call.name =~ /^\w/ %}
-        @__array.{{call}}
+        @__values.{{call}}
       {% else %}
-        @__array {{call.name.id}} {{args.id}}
+        @__values {{call.name.id}} {{args.id}}
       {% end %}
     end
 
-    @__array = %w()
-    @__nameless = %w()
-    getter :__nameless
-    @__named = {} of String => String
-    getter :__named
+    getter __values = %w()
+    getter __nameless = %w()
+    getter __named = {} of String => String
 
     def ==(other)
-      @__array == (other)
+      @__values == (other)
     end
 
     def inspect
-      @__array.inspect
+      @__values.inspect
+    end
+
+    def values
+      __values
     end
 
     def nameless
