@@ -30,8 +30,10 @@ module Optarg
   end
 
   class RequiredArgumentError < ValidationError
-    def initialize(key)
-      super "The #{key} argument is required."
+    getter argument : Argument
+
+    def initialize(@argument)
+      super "The #{@argument.display_name} argument is required."
     end
   end
 
