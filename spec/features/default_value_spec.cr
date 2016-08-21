@@ -5,6 +5,7 @@ module Optarg::DefaultValueFeature
     string "-s", default: "string"
     bool "-b", default: false
     array "-a", default: %w(1 2 3)
+    arg "arg", default: "arg"
   end
 
   it "Default Value" do
@@ -12,5 +13,6 @@ module Optarg::DefaultValueFeature
     result.s.should eq "string"
     result.b?.should be_false
     result.a.should eq %w(1 2 3)
+    result.args.arg.should eq "arg"
   end
 end
