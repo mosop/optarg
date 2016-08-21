@@ -137,9 +137,7 @@ class Model < Optarg::Model
 end
 
 result = Model.parse(%w(/path/to/src /path/to/build and more))
-result.src_dir # => "/path/to/src"
 result.args.src_dir # => "/path/to/src"
-result.build_dir # => "/path/to/build"
 result.args.build_dir # => "/path/to/build"
 result.args # => ["/path/to/src", "/path/to/build", "and", "more"]
 result.args.named # => {"src_dir" => "/path/to/src", "build_dir" => "/path/to/build"}
@@ -231,6 +229,29 @@ end
 Model.new(%w(--goodbye), The.new).parse # raises "Someday again!"
 ```
 
+### Stop and Termination
+
+```crystal
+class Model < Optarg::Model
+  bool "-b", stop: true
+end
+
+result = Model.parse(%w(foo -b bar))
+result.b? # => true
+result.args # => ["foo"]
+result.unparsed_args # => ["bar"]
+```
+
+```crystal
+class Model < Optarg::Model
+  terminator "--"
+end
+
+result = Model.parse(%w(foo -- bar))
+result.args # => ["foo"]
+result.unparsed_args # => ["bar"]
+```
+
 ## Usage
 
 ```crystal
@@ -241,6 +262,9 @@ and see [Features](#features).
 
 ## Release Notes
 
+* v0.3.0
+  * Stop and Termination
+  * (Breaking Change) "--" (double dash) is no longer a special argument by default. Use the `Model.terminator` method.
 * v0.2.0
   * (Breaking Change) Model#args separates arguments into named and nameless. #args itself returns both named and nameless arguments.
 * v0.1.14

@@ -9,28 +9,14 @@ module Optarg
     end
 
     @data : Model
-    getter argv : Array(String)
+    getter args : Array(String)
     @argument_index = 0
     @index = 0
-    getter args : Array(String)
     @parsed_args : ArgumentValueList?
-    getter unparsed_args : Array(String)
+    getter unparsed_args = %w()
     getter parsed_nodes = [] of Node
-    getter left_args = %w()
 
-    def initialize(@data, @argv)
-      @args, @unparsed_args = split_argv_by_double_dash(argv)
-    end
-
-    private def split_argv_by_double_dash(argv)
-      if i_or_nil = argv.index("--")
-        i = i_or_nil.to_i
-        parsed = i == 0 ? [] of ::String : argv[0..(i-1)]
-        unparsed = i == argv.size-1 ? [] of ::String : argv[(i+1)..-1]
-        {parsed, unparsed}
-      else
-        {argv, %w()}
-      end
+    def initialize(@data, @args)
     end
 
     @stopped__p = false
@@ -38,14 +24,9 @@ module Optarg
       @stopped__p
     end
 
-    @unknown__p = false
-    def unknown?
-      @unknown__p
-    end
-
-    @invalid__p = true
-    def valid?
-      !@invalid__p
+    @terminated__p = false
+    def terminated?
+      @terminated__p
     end
 
     @options_and_arguments : Array(OptionBase)?
@@ -84,16 +65,19 @@ module Optarg
     end
 
     def parse_args
-      while !stopped? && @index < args.size
+      while !stopped? && !terminated? && @index < args.size
         @index = parse_next
       end
     ensure
-      @left_args = args[@index..-1] if @index < args.size
+      @unparsed_args = args[@index..-1] if @index < args.size
     end
 
     def parse_next
       arg = args[@index]
-      if arg =~ /^-\w\w/
+      if model.__terminator?(arg)
+        @terminated__p = true
+        @index + 1
+      elsif arg =~ /^-\w\w/
         parse_multiple_options
       elsif arg =~ /^-/
         parse_single_option

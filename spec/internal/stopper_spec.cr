@@ -25,7 +25,7 @@ module OptargStopperFeature
     it {{model}}.name do
       result = {{model}}.parse({{args}})
       result.arg?.should be_nil
-      result.left_args.should eq \%w(arg)
+      result.unparsed_args.should eq \%w(arg)
     end
   end
 

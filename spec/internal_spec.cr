@@ -5,6 +5,7 @@ module Optarg::InternalFeatures
     string "-s"
     bool "-b"
     arg "arg"
+    terminator "--"
   end
 
   it "-s v -b arg parsed -- unparsed" do

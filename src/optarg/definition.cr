@@ -6,15 +6,21 @@ module Optarg
     getter metadata : Metadata
     getter group : Symbol
 
-    def initialize(@names, metadata = nil, group = nil, stop = nil)
+    def initialize(@names, metadata = nil, group = nil, stop = nil, terminate = nil)
       @metadata = metadata || Metadata.new
       @group = group || :default
       @stops__p = !!stop
+      @terminates__p = !!terminate
     end
 
     @stops__p : Bool
     def stops?
       @stops__p
+    end
+
+    @terminates__p : Bool
+    def terminates?
+      @terminates__p
     end
 
     def key
