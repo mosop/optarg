@@ -124,9 +124,8 @@ class Model < Optarg::Model
   bool "-b"
 end
 
-result = Model.parse(%w(-s foo -b bar -- baz))
-result.args # => ["bar"]
-result.unparsed_args # => ["baz"]
+result = Model.parse(%w(foo -s string bar -b baz))
+result.args # => ["foo", "bar", "baz"]
 ```
 
 ### Named Argument
