@@ -25,11 +25,7 @@ module Optarg
       @names.includes?(name)
     end
 
-    def parse(arg, data)
-      raise "Should never be called."
-    end
-
-    def parse(args, index, data)
+    def parse(args, data)
       raise "Should never be called."
     end
 
