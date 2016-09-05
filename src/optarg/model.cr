@@ -84,17 +84,9 @@ module Optarg
         end
       end
 
-      @@__self_terminators = {} of ::String => ::Optarg::Terminator
-      @@__terminators : ::Hash(::String, ::Optarg::Terminator)?
-      def self.__terminators
-        @@__terminators ||= begin
-          {% if is_root %}
-            h = {} of ::String => ::Optarg::Terminator
-          {% else %}
-            h = ::{{@type.superclass}}.__terminators.dup
-          {% end %}
-          h.merge(@@__self_terminators)
-        end
+      @@__terminator : ::Optarg::Terminator?
+      def self.__terminator
+        @@__terminator || super
       end
 
       class Parser < ::{{super_parser.id}}
@@ -157,8 +149,7 @@ module Optarg
       raise "Should never be called."
     end
 
-    def self.__terminator?(name)
-      self.__terminators.keys.includes?(name)
+    def self.__terminator
     end
   end
 end

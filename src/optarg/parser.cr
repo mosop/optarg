@@ -74,7 +74,7 @@ module Optarg
 
     def parse_next
       arg = args[@index]
-      if model.__terminator?(arg)
+      if model.__terminator.try(&.string) == arg
         @terminated__p = true
         @index + 1
       elsif arg =~ /^-\w\w/

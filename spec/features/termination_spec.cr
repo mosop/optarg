@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module OptargTerminatorFeature
+module OptargTerminationFeature
   class Model < Optarg::Model
     terminator "--"
   end
