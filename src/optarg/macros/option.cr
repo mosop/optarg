@@ -17,7 +17,7 @@ module Optarg
           include {{mixin.id}}
 
           def metadata
-            super as Metadata
+            super.as(Metadata)
           end
 
           def as_data?(data)
@@ -59,7 +59,7 @@ module Optarg
           include {{mixin.id}}
 
           def metadata
-            @metadata as Metadata
+            @metadata.as(Metadata)
           end
 
           def as_data?(data)

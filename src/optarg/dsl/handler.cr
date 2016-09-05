@@ -17,7 +17,7 @@ module Optarg
           end
 
           def metadata
-            @metadata as Metadata
+            @metadata.as(Metadata)
           end
 
           def parse(args, data)

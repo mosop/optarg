@@ -12,7 +12,7 @@ module Optarg
           end
 
           def metadata
-            @metadata as Metadata
+            @metadata.as(Metadata)
           end
 
           def as_data?(data)

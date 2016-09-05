@@ -92,7 +92,7 @@ module Optarg
       class Parser < ::{{super_parser.id}}
         @parsed_args = ArgumentValueList.new
         def parsed_args
-          @parsed_args as ArgumentValueList
+          @parsed_args.as(ArgumentValueList)
         end
 
         def model
@@ -100,7 +100,7 @@ module Optarg
         end
 
         def data
-          @data as ::{{@type}}
+          @data.as(::{{@type}})
         end
       end
 
@@ -114,7 +114,7 @@ module Optarg
       end
 
       def __parser
-        @__parser as Parser
+        @__parser.as(Parser)
       end
 
       def __new_parser(argv)
