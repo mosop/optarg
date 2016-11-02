@@ -95,13 +95,13 @@ result.b? # => true
 ```crystal
 class Model < Optarg::Model
   string "-s", default: "string"
-  bool "-b", default: false
+  bool "-b", default: true
   array "-a", default: %w(1 2 3)
 end
 
 result = Model.parse(%w())
 result.s  # => "string"
-result.b? # => false
+result.b? # => true
 result.a  # => ["1", "2", "3"]
 ```
 
