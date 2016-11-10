@@ -24,12 +24,12 @@ module Optarg::OptionMixins
       end
 
       def parse(args, data)
-        data.__array_options__{{snake.id}}[key] << args[1] if data.responds_to?(:__array_options__{{snake.id}})
+        data.{{snake.id}}_array_options[key] << args[1]
       end
 
       def validate(data)
         with_data?(data) do |data|
-          size = data.__array_options__string[key].size
+          size = data.{{snake.id}}_array_options[key].size
           raise ::Optarg::MinimumLengthError.new(key, @min, size) if @min > 0 && size < @min
         end
       end

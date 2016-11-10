@@ -4,20 +4,14 @@ module Optarg::ArgumentValueListFeature
   class Model < Optarg::Model
   end
 
-  it "#[]" do
+  it "#<< and #[]" do
     list = Model::ArgumentValueList.new
-    list.push "arg"
+    list << "arg"
     list[0].should eq "arg"
   end
 
   it "#[]?" do
     list = Model::ArgumentValueList.new
     list[0]?.should be_nil
-  end
-
-  it "#<<" do
-    list = Model::ArgumentValueList.new
-    list << "arg"
-    list[0].should eq "arg"
   end
 end

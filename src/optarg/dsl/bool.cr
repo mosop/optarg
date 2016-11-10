@@ -5,15 +5,18 @@ module Optarg
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
         not = [not] unless not.class_name == "ArrayLiteral"
+        model_reserved = (::Optarg::Model.methods + ::Reference.methods + ::Object.methods).map{|i| i.name}
       %}
 
       __define_hashed_value_container ::Bool
       __define_hashed_value_option ::Bool, ::Optarg::OptionMixins::Bool, {{names}}
 
       {% for method_name, index in method_names %}
-        def {{method_name.id}}?
-          !!@__options__bool[{{names[0]}}]?
-        end
+        {% unless model_reserved.includes?("#{method_name.id}?".id) %}
+          def {{method_name.id}}?
+            !!bool_options[{{names[0]}}]?
+          end
+        {% end %}
       {% end %}
     end
 

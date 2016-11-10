@@ -18,12 +18,12 @@ module Optarg::OptionMixins
       end
 
       def parse(args, data)
-        data.__options__string[key] = args[1] if data.responds_to?(:__options__string)
+        data.string_options[key] = args[1]
       end
 
       def validate(data)
         with_data?(data) do |data|
-          raise ::Optarg::RequiredOptionError.new(key) if @required && !data.__options__string[key]?
+          raise ::Optarg::RequiredOptionError.new(key) if @required && !data.string_options[key]?
         end
       end
 

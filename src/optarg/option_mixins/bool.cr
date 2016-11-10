@@ -26,12 +26,10 @@ module Optarg::OptionMixins
       end
 
       def parse(args, data)
-        if data.responds_to?(:__options__bool)
-          if matches_to_not?(args[0])
-            data.__options__bool[key] = false
-          else
-            data.__options__bool[key] = true
-          end
+        if matches_to_not?(args[0])
+          data.bool_options[key] = false
+        else
+          data.bool_options[key] = true
         end
       end
 

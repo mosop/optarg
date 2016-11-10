@@ -30,9 +30,9 @@ module Optarg
       @__values.inspect
     end
 
-    def values
-      __values
-    end
+    # def values
+    #   __values
+    # end
 
     def nameless
       __nameless

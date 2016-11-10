@@ -1,9 +1,13 @@
+require "../argument_value_list"
+
 module Optarg
   class Model
     macro __define_argument(name)
       {%
         method_name = name.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")
         class_name = "Argument_" + method_name
+        model_reserved = (::Optarg::Model.methods + ::Reference.methods + ::Object.methods).map{|i| i.name}
+        args_reserved = (::Optarg::ArgumentValueList.methods + ::Reference.methods + ::Object.methods).map{|i| i.name}
       %}
 
       module Arguments
@@ -26,22 +30,30 @@ module Optarg
       end
 
       class ArgumentValueList
+        {% unless args_reserved.includes?(method_name.id) %}
+          def {{method_name.id}}
+            __named[{{name}}]
+          end
+        {% end %}
+
+        {% unless args_reserved.includes?("#{method_name.id}?".id) %}
+          def {{method_name.id}}?
+            __named[{{name}}]?
+          end
+        {% end %}
+      end
+
+      {% unless model_reserved.includes?(method_name.id) %}
         def {{method_name.id}}
-          __named[{{name}}]
+          __args.__named[{{name}}]
         end
+      {% end %}
 
+      {% unless model_reserved.includes?("#{method_name.id}?".id) %}
         def {{method_name.id}}?
-          __named[{{name}}]?
+          __args.__named[{{name}}]?
         end
-      end
-
-      def {{method_name.id}}
-        __args.{{method_name.id}}
-      end
-
-      def {{method_name.id}}?
-        __args.{{method_name.id}}?
-      end
+      {% end %}
     end
 
     macro __add_argument(name, metadata = nil, required = nil, group = nil, stop = nil, default = nil)

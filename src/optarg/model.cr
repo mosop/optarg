@@ -1,6 +1,3 @@
-require "./macros/*"
-require "./dsl/*"
-
 module Optarg
   abstract class Model
     macro inherited
@@ -153,3 +150,6 @@ module Optarg
     end
   end
 end
+
+require "./macros/*"
+require "./dsl/*"
