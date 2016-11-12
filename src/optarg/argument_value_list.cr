@@ -23,7 +23,7 @@ module Optarg
     getter __named = {} of String => String
 
     def ==(other)
-      @__values == (other)
+      @__values == other
     end
 
     def inspect

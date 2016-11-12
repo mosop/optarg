@@ -27,9 +27,9 @@ module Optarg::OptionMixins
 
       def parse(args, data)
         if matches_to_not?(args[0])
-          data.bool_options[key] = false
+          data.__options.bool_options[key] = false
         else
-          data.bool_options[key] = true
+          data.__options.bool_options[key] = true
         end
       end
 

@@ -1,5 +1,3 @@
-require "../argument_value_list"
-
 module Optarg
   class Model
     macro __define_argument(name)

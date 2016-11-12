@@ -13,6 +13,7 @@ module Optarg
     @argument_index = 0
     @index = 0
     @parsed_args : ArgumentValueList?
+    @parsed_options : OptionValueList?
     getter unparsed_args = %w()
     getter parsed_nodes = [] of Node
 

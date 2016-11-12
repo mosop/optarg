@@ -10,6 +10,7 @@ module Optarg
           super_option_metadata = "Optarg::Metadata"
           super_argument_metadata = "Optarg::Metadata"
           super_handler_metadata = "Optarg::Metadata"
+          super_option_value_list = "Optarg::OptionValueList"
           super_argument_value_list = "Optarg::ArgumentValueList"
           super_parser = "Optarg::Parser"
         else
@@ -20,6 +21,7 @@ module Optarg
           super_option_metadata = "#{@type.superclass}::Option::Metadata"
           super_argument_metadata = "#{@type.superclass}::Argument::Metadata"
           super_handler_metadata = "#{@type.superclass}::Handler::Metadata"
+          super_option_value_list = "#{@type.superclass}::OptionValueList"
           super_argument_value_list = "#{@type.superclass}::ArgumentValueList"
           super_parser = "#{@type.superclass}::Parser"
         end %}
@@ -37,6 +39,9 @@ module Optarg
       abstract class Handler < ::{{super_handler.id}}
         abstract class Metadata < ::{{super_handler_metadata.id}}
         end
+      end
+
+      class OptionValueList < ::{{super_option_value_list.id}}
       end
 
       class ArgumentValueList < ::{{super_argument_value_list.id}}
@@ -87,9 +92,14 @@ module Optarg
       end
 
       class Parser < ::{{super_parser.id}}
-        @parsed_args = ArgumentValueList.new
+        @parsed_options = ::{{@type}}::OptionValueList.new
+        def parsed_options
+          @parsed_options.as(::{{@type}}::OptionValueList)
+        end
+
+        @parsed_args = ::{{@type}}::ArgumentValueList.new
         def parsed_args
-          @parsed_args.as(ArgumentValueList)
+          @parsed_args.as(::{{@type}}::ArgumentValueList)
         end
 
         def model
@@ -125,6 +135,9 @@ module Optarg
       @__parser = __new_parser(argv)
     end
 
+    def __options; __parser.parsed_options; end
+    def options; __options; end
+
     def __args; __parser.parsed_args; end
     def args; __args; end
 
@@ -151,5 +164,7 @@ module Optarg
   end
 end
 
-require "./macros/*"
-require "./dsl/*"
+require "./argument_value_list"
+require "./option_value_list"
+require "./model/macros/*"
+require "./model/dsl/*"

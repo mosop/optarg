@@ -36,11 +36,17 @@ module Optarg::NoAccessorFeature
       model_methods.includes?("to_s").should be_false
       model_methods.includes?("same?").should be_false
       model_methods.includes?("unparsed_args").should be_false
+      model_methods = {{ ForOptions::OptionValueList.methods.map{|i| i.name.stringify} }}
+      model_methods.includes?("to_s").should be_false
+      model_methods.includes?("same?").should be_false
+      model_methods.includes?("unparsed_args").should be_true
     end
 
     it "string --same" do
       result = ForStringSame.parse(%w())
       model_methods = {{ ForStringSame.methods.map{|i| i.name.stringify} }}
+      model_methods.includes?("same?").should be_false
+      model_methods = {{ ForStringSame::OptionValueList.methods.map{|i| i.name.stringify} }}
       model_methods.includes?("same?").should be_false
     end
   end
