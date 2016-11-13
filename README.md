@@ -427,7 +427,7 @@ A value accessor is one of the following types:
 
 A string option value accessor is a method to get a string option's value.
 
-For a string option, a nillable value accessor is also defined. If a value is not set, the nillable value accessor returns nil instead raises an exception. The name of a nillable value accessor has a trailing `?` character.
+For a string option, a nilable value accessor is also defined. If a value is not set, the nilable value accessor returns nil instead raises an exception. The name of a nilable value accessor has a trailing `?` character.
 
 String option value accessors are defined in model objects and option value containers.
 
@@ -497,7 +497,7 @@ result.options.a # equivalent to result.a
 
 A named argument value accessor is a method to get a named argument's value.
 
-For a named argument, a nillable value accessor is also defined. If a value is not set, the nillable value accessor returns nil instead raises an exception. The name of a nillable value accessor has a trailing `?` character.
+For a named argument, a nilable value accessor is also defined. If a value is not set, the nilable value accessor returns nil instead raises an exception. The name of a nilable value accessor has a trailing `?` character.
 
 Named argument value accessors are defined in model objects and argument value containers.
 
