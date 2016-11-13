@@ -5,23 +5,23 @@ module Optarg
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
         model_reserved = (::Optarg::Model.methods + ::Reference.methods + ::Object.methods).map{|i| i.name}
-        options_reserved = (::Optarg::OptionValueList.methods + ::Reference.methods + ::Object.methods).map{|i| i.name}
+        options_reserved = (::Optarg::OptionValueContainer.methods + ::Reference.methods + ::Object.methods).map{|i| i.name}
       %}
 
       __define_hashed_array_value_option ::String, ::Optarg::OptionMixins::Array(String), {{names}}
 
       {% for method_name, index in method_names %}
-        class OptionValueList
+        class OptionValueContainer
           {% unless options_reserved.includes?(method_name.id) %}
             def {{method_name.id}}
-              string_array_options[{{names[0]}}]
+              @__string_arrays[{{names[0]}}]
             end
           {% end %}
         end
 
         {% unless model_reserved.includes?(method_name.id) %}
           def {{method_name.id}}
-            __options.string_array_options[{{names[0]}}]
+            __options.__string_arrays[{{names[0]}}]
           end
         {% end %}
       {% end %}

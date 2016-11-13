@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module OptargArugmentDisplayNameFeature
+module OptargInternalArugmentDisplayNameFeature
   class Model < Optarg::Model
     arg "arg1"
     arg "arg2", required: true

@@ -1,7 +1,7 @@
 require "../spec_helper"
 
-module Optarg::InheritanceFeature
-  class Animal < ::Optarg::Model
+module OptargInheritanceFeature
+  class Animal < Optarg::Model
     bool "--sleep"
   end
 
@@ -12,11 +12,9 @@ module Optarg::InheritanceFeature
   class Dog < Animal
     bool "--woof"
   end
-end
 
-describe "Inheritance" do
-  it "" do
-    Optarg::InheritanceFeature::Cat.parse(%w()).responds_to?(:sleep?).should be_true
-    Optarg::InheritanceFeature::Dog.parse(%w()).responds_to?(:sleep?).should be_true
+  it name do
+    Cat.parse(%w()).responds_to?(:sleep?).should be_true
+    Dog.parse(%w()).responds_to?(:sleep?).should be_true
   end
 end

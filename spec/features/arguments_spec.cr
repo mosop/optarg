@@ -1,7 +1,7 @@
 require "../spec_helper"
 
 module OptargArgumentsFeature
-  class Model < ::Optarg::Model
+  class Model < Optarg::Model
     string "-s"
     bool "-b"
   end

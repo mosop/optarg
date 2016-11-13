@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module OptargRequiredArgumentErrorPreservesObjectFeature
+module OptargInternalRequiredArgumentErrorPreservesObjectFeature
   class Model < Optarg::Model
     arg "arg1", required: true
   end

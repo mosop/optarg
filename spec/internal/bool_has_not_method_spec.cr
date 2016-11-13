@@ -1,11 +1,11 @@
 require "../spec_helper"
 
-module Optarg::BoolHasNotMethodFeature
+module OptargInternalBoolHasNotMethodFeature
   class Model < Optarg::Model
     bool "-b", not: "-B"
   end
 
-  it "bool has 'not' method" do
+  it name do
     option = Model.__options["-b"]
     option.responds_to?(:not).should be_true
     if option.responds_to?(:not)

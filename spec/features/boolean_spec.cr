@@ -1,14 +1,12 @@
 require "../spec_helper"
 
-module OptargConcatenationFeature
+module OptargBooleanFeature
   class Model < Optarg::Model
-    bool "-a"
     bool "-b"
   end
 
   it name do
-    result = Model.parse(%w(-ab))
-    result.a?.should be_true
+    result = Model.parse(%w(-b))
     result.b?.should be_true
   end
 end

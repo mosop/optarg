@@ -1,11 +1,11 @@
 require "../spec_helper"
 
-module Optarg::MinimumLengthOfArrayFeature
+module OptargMinimumLengthOfArrayFeature
   class Multiply < Optarg::Model
     array "-n", min: 2
   end
 
-  it "Minimum Length of Array" do
+  it name do
     expect_raises(Optarg::MinimumLengthError) { Multiply.parse %w(-n 794) }
   end
 end

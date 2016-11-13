@@ -1,6 +1,6 @@
 require "./spec_helper"
 
-module Optarg::InternalFeatures
+module OptargInternalFeature
   class ParseModel < ::Optarg::Model
     string "-s"
     bool "-b"
@@ -17,8 +17,8 @@ module Optarg::InternalFeatures
     result.s?.should eq "v"
     result.b?.should be_true
     result.args.should eq %w(arg parsed)
-    result.args.named.should eq({"arg" => "arg"})
-    result.args.nameless.should eq %w(parsed)
+    result.named_args.should eq({"arg" => "arg"})
+    result.nameless_args.should eq %w(parsed)
     result.unparsed_args.should eq %w(unparsed)
     result.__parsed_nodes[0].should eq Optarg::Parser::Node.new(%w(-s v), [ParseModel.__options["-s"]] of Optarg::Definition)
     result.__parsed_nodes[1].should eq Optarg::Parser::Node.new(%w(-b), [ParseModel.__options["-b"]] of Optarg::Definition)
@@ -236,7 +236,7 @@ module Optarg::InternalFeatures
   end
 
   it "Required" do
-    expect_raises(RequiredArgumentError) { RequiredArgModel.parse %w() }
-    expect_raises(RequiredOptionError) { RequiredStringModel.parse %w() }
+    expect_raises(Optarg::RequiredArgumentError) { RequiredArgModel.parse %w() }
+    expect_raises(Optarg::RequiredOptionError) { RequiredStringModel.parse %w() }
   end
 end

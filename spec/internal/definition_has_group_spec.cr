@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module OptargDefinitionHasGroupFeature
+module OptargInternalDefinitionHasGroupFeature
   class Model < Optarg::Model
     arg "arg", group: :arg
     array "-a", group: :array

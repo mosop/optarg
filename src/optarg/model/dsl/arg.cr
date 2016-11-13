@@ -5,7 +5,7 @@ module Optarg
         method_name = name.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")
         class_name = "Argument_" + method_name
         model_reserved = (::Optarg::Model.methods + ::Reference.methods + ::Object.methods).map{|i| i.name}
-        args_reserved = (::Optarg::ArgumentValueList.methods + ::Reference.methods + ::Object.methods).map{|i| i.name}
+        args_reserved = (::Optarg::ArgumentValueContainer.methods + ::Reference.methods + ::Object.methods).map{|i| i.name}
       %}
 
       module Arguments
@@ -27,7 +27,7 @@ module Optarg
         end
       end
 
-      class ArgumentValueList
+      class ArgumentValueContainer
         {% unless args_reserved.includes?(method_name.id) %}
           def {{method_name.id}}
             __named[{{name}}]

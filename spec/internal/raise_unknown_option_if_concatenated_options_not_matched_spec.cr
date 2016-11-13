@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module OptargRaiseUnknownOptionIfConcatenatedOptionsNotMatchedFeature
+module OptargInternalRaiseUnknownOptionIfConcatenatedOptionsNotMatchedFeature
   class Model < Optarg::Model
   end
 

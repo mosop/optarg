@@ -12,8 +12,8 @@ module Optarg
     getter args : Array(String)
     @argument_index = 0
     @index = 0
-    @parsed_args : ArgumentValueList?
-    @parsed_options : OptionValueList?
+    @parsed_args : ArgumentValueContainer?
+    @parsed_options : OptionValueContainer?
     getter unparsed_args = %w()
     getter parsed_nodes = [] of Node
 
@@ -125,12 +125,12 @@ module Optarg
         df = model.__arguments.values[@argument_index]
         @stopped__p ||= df.stops?
         parsed_args.__named[df.key] = arg
-        parsed_args << arg
+        parsed_args.__values << arg
         parsed_nodes << Node.new([arg], [df] of Definition)
         @argument_index += 1
       else
         parsed_args.__nameless << arg
-        parsed_args << arg
+        parsed_args.__values << arg
         parsed_nodes << Node.new([arg], [] of Definition)
       end
       @index + 1

@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module OptargRaiseUnsupportedConcatenationFeature
+module OptargInternalRaiseUnsupportedConcatenationFeature
   class Model < Optarg::Model
     string "-s"
     array "-a"

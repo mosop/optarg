@@ -1,25 +1,23 @@
 require "../spec_helper"
 
-module Optarg::CustomInitializerFeature
+module OptargCustomInitializerFeature
   class The
     def message
       "Someday again!"
     end
   end
 
-  class Model < ::Optarg::Model
+  class Model < Optarg::Model
     def initialize(argv, @the : The)
       super argv
     end
 
     on("--goodbye") { raise @the.message }
   end
-end
 
-describe "Custom Initializer" do
-  it "" do
+  it name do
     argv = %w(--goodbye)
-    the = Optarg::CustomInitializerFeature::The.new
-    expect_raises(Exception, "Someday again!") { Optarg::CustomInitializerFeature::Model.new(argv, the).parse }
+    the = The.new
+    expect_raises(Exception, "Someday again!") { Model.new(argv, the).parse }
   end
 end

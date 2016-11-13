@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module OptargOptionHasRequiredMethodFeature
+module OptargInternalOptionHasRequiredMethodFeature
   class Model < Optarg::Model
     arg "arg"
     arg "required_arg", required: true

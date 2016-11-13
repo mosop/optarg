@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module OptargRaiseUnknownOptionRegardlessOfArgFeature
+module OptargInternalRaiseUnknownOptionRegardlessOfArgFeature
   class Model < Optarg::Model
     arg "arg"
   end

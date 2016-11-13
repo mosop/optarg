@@ -3,7 +3,6 @@ module Optarg
     macro __define_hashed_value_option(type, mixin, names)
       {%
         snake = type.id.split("::").map{|i| i.underscore}.join("__").gsub(/^_+/, "")
-        attribute_name = "#{snake.id}_options"
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
         class_name = "Option_" + method_names[0]
@@ -31,7 +30,7 @@ module Optarg
           def preset_default_to(data)
             with_default? do |default|
               with_data?(data) do |data|
-                data.__options.{{attribute_name.id}}[key] = default
+                data.__options.__{{snake.id}}s[key] = default
               end
             end
           end
@@ -45,7 +44,6 @@ module Optarg
     macro __define_hashed_array_value_option(type, mixin, names)
       {%
         snake = type.id.split("::").map{|i| i.underscore}.join("__").gsub(/^_+/, "")
-        attribute_name = "#{snake.id}_array_options"
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
         class_name = "Option_" + method_names[0]
@@ -72,14 +70,14 @@ module Optarg
 
           def preset_default_to(data)
             with_data?(data) do |data|
-              data.__options.{{attribute_name.id}}[key] = ::Array(::{{type.id}}).new
+              data.__options.__{{snake.id}}_arrays[key] = ::Array(::{{type.id}}).new
             end
           end
 
           def postset_default_to(data)
             with_default? do |default|
               with_data?(data) do |data|
-                data.__options.{{attribute_name.id}}[key] += default if data.__options.{{attribute_name.id}}[key].empty?
+                data.__options.__{{snake.id}}_arrays[key] += default if data.__options.__{{snake.id}}_arrays[key].empty?
               end
             end
           end

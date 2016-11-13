@@ -1,5 +1,5 @@
 module Optarg
-  abstract class ArgumentValueList
+  abstract class ArgumentValueContainer
     macro method_missing(call)
       {%
         args = call.args.map{|i| i.id}.join(", ")
@@ -28,14 +28,6 @@ module Optarg
 
     def inspect
       @__values.inspect
-    end
-
-    def nameless
-      __nameless
-    end
-
-    def named
-      __named
     end
   end
 end

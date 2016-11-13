@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module OptargArugmentHasDefaultSetterFeature
+module OptargInternalArugmentHasDefaultSetterFeature
   class Model < Optarg::Model
     arg "arg", default: "default"
   end

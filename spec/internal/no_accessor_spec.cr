@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module Optarg::NoAccessorFeature
+module OptargInternalNoAccessorFeature
   class ForArguments < ::Optarg::Model
     arg "to_s"
     arg "same"
@@ -24,7 +24,7 @@ module Optarg::NoAccessorFeature
       model_methods.includes?("to_s").should be_false
       model_methods.includes?("same?").should be_false
       model_methods.includes?("unparsed_args").should be_false
-      args_methods = {{ ForArguments::ArgumentValueList.methods.map{|i| i.name.stringify} }}
+      args_methods = {{ ForArguments::ArgumentValueContainer.methods.map{|i| i.name.stringify} }}
       args_methods.includes?("to_s").should be_false
       args_methods.includes?("same?").should be_false
       args_methods.includes?("unparsed_args").should be_true
@@ -36,7 +36,7 @@ module Optarg::NoAccessorFeature
       model_methods.includes?("to_s").should be_false
       model_methods.includes?("same?").should be_false
       model_methods.includes?("unparsed_args").should be_false
-      model_methods = {{ ForOptions::OptionValueList.methods.map{|i| i.name.stringify} }}
+      model_methods = {{ ForOptions::OptionValueContainer.methods.map{|i| i.name.stringify} }}
       model_methods.includes?("to_s").should be_false
       model_methods.includes?("same?").should be_false
       model_methods.includes?("unparsed_args").should be_true
@@ -46,7 +46,7 @@ module Optarg::NoAccessorFeature
       result = ForStringSame.parse(%w())
       model_methods = {{ ForStringSame.methods.map{|i| i.name.stringify} }}
       model_methods.includes?("same?").should be_false
-      model_methods = {{ ForStringSame::OptionValueList.methods.map{|i| i.name.stringify} }}
+      model_methods = {{ ForStringSame::OptionValueContainer.methods.map{|i| i.name.stringify} }}
       model_methods.includes?("same?").should be_false
     end
   end

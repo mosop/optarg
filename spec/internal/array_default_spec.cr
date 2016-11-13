@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module OptargArrayDefaultFeature
+module OptargInternalArrayDefaultFeature
   class Model < Optarg::Model
     array "-a", default: %w(default)
   end

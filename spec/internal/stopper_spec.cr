@@ -1,6 +1,6 @@
 require "../spec_helper"
 
-module OptargStopperFeature
+module OptargInternalStopperFeature
   class ArgumentModel < Optarg::Model
     arg "a", stop: true
     arg "arg"
