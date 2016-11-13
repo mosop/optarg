@@ -340,7 +340,7 @@ result.options[Bool]["--force"] # raises KeyError
 
 <a name="named_argument_value_hash"></a>
 
-A named argument value hash is an Hash object that contains named argument values of a model object.
+A named argument value hash is a Hash object that contains named argument values of a model object.
 
 To access named argument value hashes, use the `Optarg::Model#named_args` method.
 
