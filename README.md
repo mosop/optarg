@@ -295,7 +295,7 @@ result.args.map{|i| "#{i}!"} # => ["foo!", "bar!", "baz!"]
 
 #### Option Value Container
 
-<a name="option_value_contianer"></a>
+<a name="option_value_container"></a>
 
 An option value container is a set of Hash objects that contains option values of a model object.
 
