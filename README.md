@@ -529,7 +529,7 @@ For model objects (`Optarg::Model`), all the methods of its ancestor classes (`R
 * parser
 * unparsed_args
 
-For argument value container objects (`Optarg::ArgumentValueContainer`) and option value container objects (`Optarg::OptionValueContainer`), all the methods of its ancestor classes (`Reference` and `Object`) are not overridden.
+For argument value container objects (`Optarg::ArgumentValueContainer`) and option value container objects (`Optarg::OptionValueContainer`), all the methods of their ancestor classes (`Reference` and `Object`) are not overridden.
 
 ```crystal
 class Model < Optarg::Model
