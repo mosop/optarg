@@ -479,7 +479,7 @@ not_set.options.b? # equivalent to not_set.b?
 
 A string-array option value accessor is a method to get an string-array option's value.
 
-String-Array option value accessors are defined in model objects and option value containers.
+String-array option value accessors are defined in model objects and option value containers.
 
 ```crystal
 class Model < Optarg::Model
