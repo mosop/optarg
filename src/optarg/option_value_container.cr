@@ -1,7 +1,7 @@
 module Optarg
   abstract class OptionValueContainer
-    getter __strings = {} of ::String => ::String?
-    getter __bools = {} of ::String => ::Bool?
+    getter __strings = {} of ::String => ::String
+    getter __bools = {} of ::String => ::Bool
     getter __string_arrays = {} of ::String => ::Array(::String)
 
     def [](klass : ::String.class)
