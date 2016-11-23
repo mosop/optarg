@@ -252,6 +252,16 @@ result.args # => ["foo"]
 result.unparsed_args # => ["bar"]
 ```
 
+### Validating Inclusion
+
+```crystal
+class Trip < Optarg::Model
+  arg "somewhere_warm", any_of: %w(tahiti okinawa hawaii)
+end
+
+Trip.parse(%w(gotland)) # => raises an error
+```
+
 ### Custom Validation
 
 ```crystal
@@ -274,15 +284,11 @@ require "optarg"
 
 and see [Features](#features) and [Wiki](https://github.com/mosop/optarg/wiki).
 
-## Want to Do
-
-* Validation
-  * Inclusion
-
 ## Release Notes
 
 * v0.4.1
   * Custom Validation
+  * Inclusion Validation
 * v0.4.0
   * (Breaking Change) Removed Model#args.named Model#args.nameless. Use Model#named_args, Model#nameless_args instead.
   * Argument Value Container
