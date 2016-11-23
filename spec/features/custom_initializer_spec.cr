@@ -18,6 +18,6 @@ module OptargCustomInitializerFeature
   it name do
     argv = %w(--goodbye)
     the = The.new
-    expect_raises(Exception, "Someday again!") { Model.new(argv, the).parse }
+    expect_raises(Exception, "Someday again!") { Model.parse(argv, the) }
   end
 end

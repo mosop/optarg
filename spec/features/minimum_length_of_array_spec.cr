@@ -6,6 +6,6 @@ module OptargMinimumLengthOfArrayFeature
   end
 
   it name do
-    expect_raises(Optarg::MinimumLengthError) { Multiply.parse %w(-n 794) }
+    expect_raises(Optarg::Definitions::StringArrayOption::Validations::MinimumLength::Error) { Multiply.parse %w(-n 794) }
   end
 end

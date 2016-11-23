@@ -1,2 +1,7 @@
+require "callback"
+require "./optarg/util/*"
 require "./optarg/*"
-require "./optarg/option_mixins/*"
+require "./optarg/value_types/*"
+require "./optarg/value_validations/*"
+require "./optarg/definition_mixins/*"
+require "./optarg/definitions/*"

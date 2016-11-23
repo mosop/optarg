@@ -9,10 +9,10 @@ module OptargInternalRequiredArgumentErrorPreservesObjectFeature
     error = nil
     begin
       Model.parse %w()
-      raise "no error"
     rescue ex
       error = ex
+    ensure
     end
-    error.as(Optarg::RequiredArgumentError).argument.should be Model.__arguments["arg1"]
+    error.as(Optarg::Definitions::StringArgument::Validations::Required::Error).argument.should be Model.definitions.arguments["arg1"]
   end
 end

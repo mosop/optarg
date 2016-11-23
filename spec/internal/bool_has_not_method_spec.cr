@@ -6,7 +6,7 @@ module OptargInternalBoolHasNotMethodFeature
   end
 
   it name do
-    option = Model.__options["-b"]
+    option = Model.definitions.options["-b"]
     option.responds_to?(:not).should be_true
     if option.responds_to?(:not)
       option.not.should eq %w(-B)

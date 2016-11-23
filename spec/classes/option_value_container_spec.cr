@@ -5,9 +5,9 @@ module OptargOptionValueContainerClassFeature
   end
 
   it "#[]" do
-    list = Model::OptionValueContainer.new
-    list[String].class.should eq Hash(String, String)
-    list[Bool].class.should eq Hash(String, Bool)
-    list[Array(String)].class.should eq Hash(String, Array(String))
+    model = Model.new(%w())
+    model.options[String].class.should eq Optarg::Definitions::StringOption::Typed::ValueHash
+    model.options[Bool].class.should eq Optarg::Definitions::BoolOption::Typed::ValueHash
+    model.options[Array(String)].class.should eq Optarg::Definitions::StringArrayOption::Typed::ValueHash
   end
 end

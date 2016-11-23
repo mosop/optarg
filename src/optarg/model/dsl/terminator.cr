@@ -1,7 +1,8 @@
 module Optarg
   class Model
-    macro terminator(string)
-      @@__terminator = ::Optarg::Terminator.new({{string}})
+    macro terminator(names, metadata = nil)
+      %term = ::Optarg::Definitions::Terminator.new({{names}}, metadata: {{metadata}})
+      definitions << %term
     end
   end
 end

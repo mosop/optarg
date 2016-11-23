@@ -3,10 +3,11 @@ require "../spec_helper"
 module OptargInternalRaiseUnsupportedConcatenationFeature
   class Model < Optarg::Model
     string "-s"
-    array "-a"
+    bool "-b"
   end
 
   it name do
-    expect_raises(Optarg::UnsupportedConcatenation, Optarg::UnsupportedConcatenation.new("-s").message) { Model.parse %w(-sa)}
+    model = Model.new(%w(-sa))
+    expect_raises(Optarg::UnsupportedConcatenation, Optarg::UnsupportedConcatenation.new(model.__parser, Model.definitions.options["-s"]).message) { model.__parse}
   end
 end

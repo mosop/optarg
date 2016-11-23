@@ -1,139 +1,170 @@
 module Optarg
   abstract class Parser
-    struct Node
-      getter args : Array(String)
-      getter definitions : Array(Definition)
+    ::Callback.enable
+    define_callback_group :parse
+    define_callback_group :validate
 
-      def initialize(@args, @definitions)
+    alias Node = NamedTuple(args: Array(String), definitions: Array(Definitions::Base))
+
+    getter input_args : Array(String)
+    getter parsed_nodes = [] of Node
+
+    @data = Util::Variable(Model).new
+    @options = Util::Variable(OptionValueContainer).new
+    @args = Util::Variable(ArgumentValueContainer).new
+
+    @argument_index = 0
+    getter index = 0
+
+    def initialize(data, @input_args)
+      @data.value = data
+    end
+
+    def self.new_node(args = %w(), *definitions)
+      node = {args: args, definitions: [] of Definitions::Base}
+      definitions.each do |df|
+        node[:definitions] << df
+      end
+      node
+    end
+
+    @definitions : DefinitionSet?
+    def definitions
+      @definitions ||= data.class.definitions
+    end
+
+    def stopped?
+      return false if parsed_nodes.size == 0
+      return parsed_nodes.last[:definitions].any?{|i| i.stops? || i.terminates?}
+    end
+
+    @unparsed_args : Array(String)?
+    def unparsed_args
+      @unparsed_args ||= %w()
+    end
+
+    before_parse do |o|
+      o.definitions.all.each do |kv|
+        kv[1].run_callbacks_for_before_parse(o) {}
       end
     end
 
-    @data : Model
-    getter args : Array(String)
-    @argument_index = 0
-    @index = 0
-    @parsed_args : ArgumentValueContainer?
-    @parsed_options : OptionValueContainer?
-    getter unparsed_args = %w()
-    getter parsed_nodes = [] of Node
-
-    def initialize(@data, @args)
+    after_parse do |o|
+      o.definitions.all.each do |kv|
+        kv[1].run_callbacks_for_after_parse(o) {}
+      end
     end
 
-    @stopped__p = false
-    def stopped?
-      @stopped__p
-    end
-
-    @terminated__p = false
-    def terminated?
-      @terminated__p
-    end
-
-    @options_and_arguments : Array(OptionBase)?
-    def options_and_arguments
-      @options_and_arguments ||= model.__options.values + model.__arguments.values
-    end
-
-    @options_and_handlers : Array(Definition)?
-    def options_and_handlers
-      @options_and_handlers ||= model.__options.values + model.__handlers.values
+    on_validate do |o|
+      o.definitions.value_validators.each do |kv|
+        kv[1].validate_value(o)
+      end
     end
 
     def parse
-      preset_default
-      parse_args
-      postset_default
-      validate
-    end
-
-    def preset_default
-      options_and_arguments.each do |df|
-        df.preset_default_to data
+      run_callbacks_for_parse do
+        resume
+      end
+      run_callbacks_for_validate do
       end
     end
 
-    def postset_default
-      options_and_arguments.each do |df|
-        df.postset_default_to data
-      end
+    def eol?
+      @index == @input_args.size
     end
 
-    def validate
-      options_and_arguments.each do |df|
-        df.validate data
-      end
-    end
-
-    def parse_args
-      while !stopped? && !terminated? && @index < args.size
-        @index = parse_next
+    def resume
+      until eol? || stopped?
+        visit
       end
     ensure
-      @unparsed_args = args[@index..-1] if @index < args.size
+      @unparsed_args = self[0..-1] if left > 0
+      @index = @input_args.size
     end
 
-    def parse_next
-      arg = args[@index]
-      if model.__terminator.try(&.string) == arg
-        @terminated__p = true
-        @index + 1
+    def visit
+      arg = self[0]
+      if visit_terminator
       elsif arg =~ /^-\w\w/
-        parse_multiple_options
+        visit_concatenated_options
       elsif arg =~ /^-/
-        parse_single_option
+        visit_option
       else
-        parse_argument
+        visit_argument
       end
     end
 
-    def parse_multiple_options
-      names = args[@index][1..-1].split("").map{|i| "-#{i}"}
-      dfs = [] of Definition
-      parsed_nodes << Node.new([args[@index]], dfs)
-      stopped = false
+    def visit_terminator
+      name = self[0]
+      if node = find_with_def(definitions.terminators, self[0]){|df| df.visit(self)}
+        parsed_nodes << node
+        @index += node[:args].size
+      end
+    end
+
+    def find_with_def(dfs, name)
+      dfs.each do |kv|
+        next unless kv[1].matches?(name)
+        node = yield kv[1]
+        return node if node
+      end
+      nil
+    end
+
+    def visit_concatenated_options
+      names = self[0][1..-1].split("").map{|i| "-#{i}"}
+      node = Parser.new_node([self[0]])
       names.each do |name|
-        if df = options_and_handlers.find{|i| i.matches?(name)}
-          raise UnsupportedConcatenation.new(name) if df.length >= 2
-          df.parse [name], data
-          stopped ||= df.stops?
+        if nd = find_with_def(definitions.concatenation_visitors, name){|df| df.visit_concatenated(self, name)}
+          node[:definitions] << nd[:definitions][0]
         else
-          raise UnknownOption.new(name)
+          raise UnknownOption.new(self, name)
         end
       end
-      @stopped__p = stopped
-      @index + 1
+      parsed_nodes << node
+      @index += 1
     end
 
-    def parse_single_option
-      name = args[@index]
-      if df = options_and_handlers.find{|i| i.matches?(name)}
-        next_index = @index + df.length
-        parsed_nodes << Node.new(args[@index...([next_index, args.size].min)], [df])
-        raise MissingValue.new(df.key) unless next_index <= args.size
-        df.parse args[@index...next_index], data
-        @stopped__p ||= df.stops?
-        next_index
+    def visit_option
+      name = self[0]
+      if node = find_with_def(definitions.option_visitors, name){|df| df.visit(self)}
+        parsed_nodes << node
+        @index += node[:args].size
       else
-        raise UnknownOption.new(name)
+        raise UnknownOption.new(self, self[0])
       end
     end
 
-    def parse_argument
-      arg = args[@index]
-      if @argument_index < model.__arguments.size
-        df = model.__arguments.values[@argument_index]
-        @stopped__p ||= df.stops?
-        parsed_args.__named[df.key] = arg
-        parsed_args.__values << arg
-        parsed_nodes << Node.new([arg], [df] of Definition)
+    def visit_argument
+      arg = self[0]
+      if @argument_index < definitions.arguments.size
+        df = definitions.argument_values[@argument_index]
+        args.__named[df.key] = arg
+        args.__values << arg
+        @parsed_nodes << Parser.new_node([arg], df)
         @argument_index += 1
       else
-        parsed_args.__nameless << arg
-        parsed_args.__values << arg
-        parsed_nodes << Node.new([arg], [] of Definition)
+        args.__nameless << arg
+        args.__values << arg
+        @parsed_nodes << Parser.new_node([arg])
       end
-      @index + 1
+      @index += 1
+    end
+
+    def [](*args)
+      @input_args[@index..-1][*args]
+    end
+
+    def left
+      @input_args.size - @index
+    end
+
+    def invalidate!(message : String)
+      invalidate! ValidationError.new(self, message)
+    end
+
+    def invalidate!(ex : ValidationError)
+      raise ex
     end
   end
 end

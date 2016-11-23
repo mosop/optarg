@@ -1,7 +1,7 @@
 require "./spec_helper"
 
 module OptargInternalFeature
-  class ParseModel < ::Optarg::Model
+  class ParseModel < Optarg::Model
     string "-s"
     bool "-b"
     arg "arg"
@@ -20,10 +20,10 @@ module OptargInternalFeature
     result.named_args.should eq({"arg" => "arg"})
     result.nameless_args.should eq %w(parsed)
     result.unparsed_args.should eq %w(unparsed)
-    result.__parsed_nodes[0].should eq Optarg::Parser::Node.new(%w(-s v), [ParseModel.__options["-s"]] of Optarg::Definition)
-    result.__parsed_nodes[1].should eq Optarg::Parser::Node.new(%w(-b), [ParseModel.__options["-b"]] of Optarg::Definition)
-    result.__parsed_nodes[2].should eq Optarg::Parser::Node.new(%w(arg), [ParseModel.__arguments["arg"]] of Optarg::Definition)
-    result.__parsed_nodes[3].should eq Optarg::Parser::Node.new(%w(parsed), [] of Optarg::Definition)
+    result.__parsed_nodes[0].should eq Optarg::Parser.new_node(%w(-s v), ParseModel.definitions.options["-s"])
+    result.__parsed_nodes[1].should eq Optarg::Parser.new_node(%w(-b), ParseModel.definitions.options["-b"])
+    result.__parsed_nodes[2].should eq Optarg::Parser.new_node(%w(arg), ParseModel.definitions.arguments["arg"])
+    result.__parsed_nodes[3].should eq Optarg::Parser.new_node(%w(parsed))
   end
 
   it "parses nothing" do
@@ -37,7 +37,7 @@ module OptargInternalFeature
     result.__parsed_nodes.should eq [] of Array(String)
   end
 
-  class Supermodel < ::Optarg::Model
+  class Supermodel < Optarg::Model
     string "-s"
     bool "-b"
   end
@@ -47,7 +47,7 @@ module OptargInternalFeature
     bool "--bool"
   end
 
-  class Supermodel2 < ::Optarg::Model
+  class Supermodel2 < Optarg::Model
     arg "arg"
   end
 
@@ -87,7 +87,7 @@ module OptargInternalFeature
     end
   end
 
-  class EmptyModel < ::Optarg::Model
+  class EmptyModel < Optarg::Model
   end
 
   describe "Unknown Option" do
@@ -97,7 +97,7 @@ module OptargInternalFeature
     end
   end
 
-  class MissingModel < ::Optarg::Model
+  class MissingModel < Optarg::Model
     string "-s"
   end
 
@@ -108,7 +108,7 @@ module OptargInternalFeature
     end
   end
 
-  class DefaultModel < ::Optarg::Model
+  class DefaultModel < Optarg::Model
     string "--default-string", default: "default"
     bool "--default-bool", default: true, not: "--Default-bool"
   end
@@ -129,7 +129,7 @@ module OptargInternalFeature
     end
   end
 
-  class SynonymsModel < ::Optarg::Model
+  class SynonymsModel < Optarg::Model
     string %w(-s --string)
     bool %w(-b --bool)
   end
@@ -149,94 +149,30 @@ module OptargInternalFeature
     end
   end
 
-  class MetadataModel < ::Optarg::Model
-    class Option
-      class Metadata
-        getter :data
+  class MetadataModel < Optarg::Model
+    class Metadata < Optarg::Metadata
+      getter :data
 
-        def initialize(@data : ::String)
-        end
+      def initialize(@data : ::String)
       end
     end
 
-    class Argument
-      class Metadata
-        getter :data
-
-        def initialize(@data : ::String)
-        end
-      end
-    end
-
-    class Handler
-      class Metadata
-        getter :data
-
-        def initialize(@data : ::String)
-        end
-      end
-    end
-
-    __define_string_option "-s"
-    __define_bool_option "-b"
-    __define_string_array_option "-a"
-    __define_argument "arg"
-    __define_handler("--help") {}
-    __add_string_option "-s", metadata: Options::Option_s::Metadata.new("string")
-    __add_bool_option "-b", metadata: Options::Option_b::Metadata.new("bool")
-    __add_string_array_option "-a", metadata: Options::Option_a::Metadata.new("array")
-    __add_argument "arg", metadata: Arguments::Argument_arg::Metadata.new("arg")
-    __add_handler "--help", metadata: Handlers::Handler_help::Metadata.new("handler")
-
-    def self.string_option_metadata_class
-      __option_metadata_class_of "-s"
-    end
-
-    def self.bool_option_metadata_class
-      __option_metadata_class_of "-b"
-    end
-
-    def self.string_array_option_metadata_class
-      __option_metadata_class_of "-a"
-    end
-
-    def self.argument_metadata_class
-      __argument_metadata_class_of "arg"
-    end
-
-    def self.handler_metadata_class
-      __handler_metadata_class_of "--help"
-    end
+    string "-s", metadata: Metadata.new("string")
+    bool "-b", Metadata.new("bool")
+    array "-a", Metadata.new("array")
+    arg "arg", metadata: Metadata.new("arg")
+    on("--help", metadata: Metadata.new("handler")) {}
+    terminator "--", metadata: Metadata.new("terminator")
   end
 
   describe "Metadata" do
     it "preserves metadata" do
-      MetadataModel.__options["-s"].metadata.as(MetadataModel::Option::Metadata).data.should eq "string"
-      MetadataModel.__options["-b"].metadata.as(MetadataModel::Option::Metadata).data.should eq "bool"
-      MetadataModel.__options["-a"].metadata.as(MetadataModel::Option::Metadata).data.should eq "array"
-      MetadataModel.__arguments["arg"].metadata.as(MetadataModel::Argument::Metadata).data.should eq "arg"
-      MetadataModel.__handlers["--help"].metadata.as(MetadataModel::Handler::Metadata).data.should eq "handler"
+      MetadataModel.definitions.options["-s"].metadata.as(MetadataModel::Metadata).data.should eq "string"
+      MetadataModel.definitions.options["-b"].metadata.as(MetadataModel::Metadata).data.should eq "bool"
+      MetadataModel.definitions.options["-a"].metadata.as(MetadataModel::Metadata).data.should eq "array"
+      MetadataModel.definitions.arguments["arg"].metadata.as(MetadataModel::Metadata).data.should eq "arg"
+      MetadataModel.definitions.handlers["--help"].metadata.as(MetadataModel::Metadata).data.should eq "handler"
+      MetadataModel.definitions.terminators["--"].metadata.as(MetadataModel::Metadata).data.should eq "terminator"
     end
-
-    it "gets metadata class" do
-      (MetadataModel.string_option_metadata_class == MetadataModel::Options::Option_s::Metadata).should be_true
-      (MetadataModel.bool_option_metadata_class == MetadataModel::Options::Option_b::Metadata).should be_true
-      (MetadataModel.string_array_option_metadata_class == MetadataModel::Options::Option_a::Metadata).should be_true
-      (MetadataModel.argument_metadata_class == MetadataModel::Arguments::Argument_arg::Metadata).should be_true
-      (MetadataModel.handler_metadata_class == MetadataModel::Handlers::Handler_help::Metadata).should be_true
-    end
-  end
-
-  class RequiredArgModel < ::Optarg::Model
-    arg "required_arg", required: true
-  end
-
-  class RequiredStringModel < ::Optarg::Model
-    string "--required-option", required: true
-  end
-
-  it "Required" do
-    expect_raises(Optarg::RequiredArgumentError) { RequiredArgModel.parse %w() }
-    expect_raises(Optarg::RequiredOptionError) { RequiredStringModel.parse %w() }
   end
 end

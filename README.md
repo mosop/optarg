@@ -144,7 +144,7 @@ result.named_args # => {"src_dir" => "/path/to/src", "build_dir" => "/path/to/bu
 result.nameless_args # => ["and", "more"]
 ```
 
-### Inheritance (Reusable Model)
+### Inheritance (Reusing Models)
 
 ```crystal
 class Animal < Optarg::Model
@@ -226,7 +226,7 @@ class Model < Optarg::Model
   on("--goodbye") { raise @the.message }
 end
 
-Model.new(%w(--goodbye), The.new).parse # raises "Someday again!"
+Model.parse(%w(--goodbye), The.new) # raises "Someday again!"
 ```
 
 ### Stop and Termination
@@ -252,6 +252,20 @@ result.args # => ["foo"]
 result.unparsed_args # => ["bar"]
 ```
 
+### Custom Validation
+
+```crystal
+class Hello < Optarg::Model
+  arg "smiley"
+
+  Parser.on_validate do |parser|
+    parser.invalidate! "That's not a smile." if parser.args.smiley != ":)"
+  end
+end
+
+Hello.parse %w(:P) # => raises "That's not a smile."
+```
+
 ## Usage
 
 ```crystal
@@ -264,10 +278,11 @@ and see [Features](#features) and [Wiki](https://github.com/mosop/optarg/wiki).
 
 * Validation
   * Inclusion
-  * Custom Handler
 
 ## Release Notes
 
+* v0.4.1
+  * Custom Validation
 * v0.4.0
   * (Breaking Change) Removed Model#args.named Model#args.nameless. Use Model#named_args, Model#nameless_args instead.
   * Argument Value Container

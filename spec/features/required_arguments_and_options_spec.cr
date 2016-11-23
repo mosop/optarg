@@ -11,11 +11,11 @@ module OptargRequiredArgumentsAndOptionsFeature
 
   describe name do
     it "Arguments" do
-      expect_raises(Optarg::RequiredArgumentError) { Compile.parse %w() }
+      expect_raises(Optarg::Definitions::StringArgument::Validations::Required::Error) { Compile.parse %w() }
     end
 
     it "Options" do
-      expect_raises(Optarg::RequiredOptionError) { Profile.parse %w() }
+      expect_raises(Optarg::Definitions::StringOption::Validations::Required::Error) { Profile.parse %w() }
     end
   end
 end
