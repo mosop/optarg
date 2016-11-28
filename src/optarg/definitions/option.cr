@@ -5,11 +5,11 @@ module Optarg::Definitions
     macro inherited
       {% unless @type.abstract? %}
         def get_value?(parser)
-          parser.options[Typed::TYPE][key]?
+          parser.options[Typed::TYPE][value_key]?
         end
 
         def set_value(parser, value)
-          parser.options[Typed::TYPE][key] = value
+          parser.options[Typed::TYPE][value_key] = value
         end
       {% end %}
     end

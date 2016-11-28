@@ -11,7 +11,7 @@ module Optarg::Definitions
 
         def visit(parser)
           raise MissingValue.new(parser, self, self) if parser.left < 2
-          parser.options[Typed::TYPE][key] << Typed::ElementValue.decode(parser[1])
+          parser.options[Typed::TYPE][value_key] << Typed::ElementValue.decode(parser[1])
           Parser.new_node(parser[0..1], self)
         end
 
@@ -20,7 +20,7 @@ module Optarg::Definitions
         end
 
         def set_default_value_on_after_parse(parser)
-          a = parser.options[Typed::TYPE][key]
+          a = parser.options[Typed::TYPE][value_key]
           set_default_value parser if a.empty?
         end
 

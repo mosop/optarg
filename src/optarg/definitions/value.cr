@@ -140,6 +140,10 @@ module Optarg::Definitions
     include DefinitionMixins::FallbackValue
     include DefinitionMixins::ValidateValue
 
+    def value_key
+      key
+    end
+
     def set_default_value(parser)
       set_value parser, default_value.dup_value! if default_value.exists?
     end
