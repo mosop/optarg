@@ -1,8 +1,8 @@
 /doc/
-/libs/
 /.crystal/
 /.shards/
 /.crystal-version
+/lib
 
 # Libraries don't need dependency lock
 # Dependencies will be locked in application that uses them
