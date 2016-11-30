@@ -15,19 +15,19 @@ module Optarg
           {% if type == :predicate %}
             {% unless options_reserved.includes?("#{method_name.id}?".id) %}
               def {{method_name.id}}?
-                !!self[::{{metaclass}}::Typed::TYPE][{{value_key}}]?
+                !!self[::{{metaclass}}::Typed::Type][{{value_key}}]?
               end
             {% end %}
           {% elsif type == :nilable %}
             {% unless options_reserved.includes?(method_name.id) %}
               def {{method_name.id}}
-                self[::{{metaclass}}::Typed::TYPE][{{value_key}}]
+                self[::{{metaclass}}::Typed::Type][{{value_key}}]
               end
             {% end %}
 
             {% unless options_reserved.includes?("#{method_name.id}?".id) %}
               def {{method_name.id}}?
-                self[::{{metaclass}}::Typed::TYPE][{{value_key}}]?
+                self[::{{metaclass}}::Typed::Type][{{value_key}}]?
               end
             {% end %}
           {% end %}
@@ -36,19 +36,19 @@ module Optarg
         {% if type == :predicate %}
           {% unless model_reserved.includes?("#{method_name.id}?".id) %}
             def {{method_name.id}}?
-              !!__options[::{{metaclass}}::Typed::TYPE][{{value_key}}]?
+              !!__options[::{{metaclass}}::Typed::Type][{{value_key}}]?
             end
           {% end %}
         {% elsif type == :nilable %}
           {% unless model_reserved.includes?(method_name.id) %}
             def {{method_name.id}}
-              __options[::{{metaclass}}::Typed::TYPE][{{value_key}}]
+              __options[::{{metaclass}}::Typed::Type][{{value_key}}]
             end
           {% end %}
 
           {% unless model_reserved.includes?("#{method_name.id}?".id) %}
             def {{method_name.id}}?
-              __options[::{{metaclass}}::Typed::TYPE][{{value_key}}]?
+              __options[::{{metaclass}}::Typed::Type][{{value_key}}]?
             end
           {% end %}
         {% end %}

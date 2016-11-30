@@ -1,12 +1,16 @@
 module Optarg::Definitions
-  class NotOption < Option
-    class Typed < ValueTypes::Bool
+  class NotOption < ValueTypes::Bool::Definition
+    include DefinitionMixins::ScalarValueOption
+
+    getter bool : BoolOption
+
+    def initialize(names, @bool : BoolOption, metadata = nil, stop = nil, default = nil)
+      super names, metadata: metadata, stop: stop
+      initialize_scalar_value_option default: default, required: nil, any_of: nil
     end
 
-    getter! value_key : String
-
-    def initialize(names, @value_key, metadata = nil, stop = nil)
-      initialize names, metadata: metadata, stop: stop, default: nil
+    def value_key
+      bool.value_key
     end
 
     def visit(parser, name = nil)
@@ -16,6 +20,14 @@ module Optarg::Definitions
 
     def visit_concatenated(parser, name)
       visit parser, name
+    end
+
+    def completion_length(gen)
+      1
+    end
+
+    def completion_max_occurs(gen)
+      bool.default_value.get? == true ? 1 : 0
     end
   end
 end

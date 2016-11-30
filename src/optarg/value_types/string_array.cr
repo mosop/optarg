@@ -1,7 +1,6 @@
 module Optarg::ValueTypes
-  abstract class StringArray < Array(::String)
-    __concrete
-    __concrete_array
+  class StringArray < Base
+    __concrete Array(::String), et: ::String
 
     class Value
       def compare_to(other)

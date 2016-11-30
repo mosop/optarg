@@ -21,7 +21,7 @@ module Optarg
       return if has_key?(key)
       return if @fallbacked.has_key?(key)
       @fallbacked[key] = true
-      if fb = @parser.definitions.value_fallbackers[key]?
+      if fb = @parser.definitions.values[key]?
         fb.fallback_value @parser
       end
     end

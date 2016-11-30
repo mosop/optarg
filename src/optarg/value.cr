@@ -56,6 +56,10 @@ module Optarg
       end
     end
 
+    def string
+      self.class.encode_to_string(@value)
+    end
+
     abstract def compare_to(other)
   end
 end

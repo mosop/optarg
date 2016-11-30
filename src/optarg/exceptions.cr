@@ -14,7 +14,7 @@ module Optarg
   end
 
   class MissingValue < ParsingError
-    getter option : Definitions::Option
+    getter option : DefinitionMixins::Option
 
     def initialize(parser, @option, name)
       super parser, "The #{name} option has no value."
@@ -22,10 +22,11 @@ module Optarg
   end
 
   class UnsupportedConcatenation < ParsingError
-    getter option : Definitions::Option
+    getter option : DefinitionMixins::Option
 
-    def initialize(parser, @option)
-      super parser, "The #{@option.metadata.display_name} option can not be concatenated."
+    def initialize(parser, option : DefinitionMixins::Option)
+      @option = option
+      super parser, "The #{option.metadata.display_name} option can not be concatenated."
     end
   end
 

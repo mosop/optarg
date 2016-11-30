@@ -16,9 +16,9 @@ dependencies:
     github: mosop/optarg
 ```
 
-<a name="features"></a>
+<a name="code_samples"></a>
 
-## Features
+## Code Samples
 
 ### Accessor
 
@@ -282,10 +282,12 @@ Hello.parse %w(:P) # => raises "That's not a smile."
 require "optarg"
 ```
 
-and see [Features](#features) and [Wiki](https://github.com/mosop/optarg/wiki).
+and see [Code Samples](#code_samples) and [Wiki](https://github.com/mosop/optarg/wiki).
 
 ## Release Notes
 
+* v0.4.2
+  * (Experimental) Bash Completion
 * v0.4.1
   * Custom Validation
   * Inclusion Validation

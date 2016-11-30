@@ -3,7 +3,7 @@ require "../spec_helper"
 module OptargInternalArugmentDisplayNameFeature
   class Metadata < Optarg::Metadata
     def display_name
-      if definition.is_a?(Optarg::Definitions::Argument)
+      if definition.is_a?(Optarg::DefinitionMixins::Argument)
         super.upcase
       else
         super

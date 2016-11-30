@@ -1,27 +1,59 @@
 module Optarg
   abstract class Model
     macro inherited
-      {%
-        if @type.superclass == ::Optarg::Model
+      {% if @type.superclass == ::Optarg::Model %}
+        {%
           is_root = true
+          super_model_class = "Optarg::ModelClass".id
           super_parser = "Optarg::Parser".id
           super_option_value_container = "Optarg::OptionValueContainer".id
           super_argument_value_container = "Optarg::ArgumentValueContainer".id
-        else
+        %}
+      {% else %}
+        {%
           is_root = false
+          super_model_class = "#{@type.superclass}::Class".id
           super_parser = "#{@type.superclass}::Parser".id
           super_option_value_container = "#{@type.superclass}::OptionValueContainer".id
           super_argument_value_container = "#{@type.superclass}::ArgumentValueContainer".id
-        end %}
+          %}
+      {% end %}
 
-      @@definitions : ::Optarg::DefinitionSet?
-      def self.definitions
-        @@definitions ||= begin
-          {% if is_root %}
-            ::Optarg::DefinitionSet.new(nil)
-          {% else %}
-            ::Optarg::DefinitionSet.new(::{{@type.superclass}}.definitions)
+      class Class < ::{{super_model_class}}
+        def self.instance
+          @@instance.var ||= Class.new
+        end
+
+        def name
+          {{@type.name.split("::")[-1].underscore}}
+        end
+
+        def model
+          ::{{@type}}
+        end
+
+        def supermodel?
+          {% unless is_root %}
+            ::{{super_model_class}}.instance
           {% end %}
+        end
+
+        def default_definitions
+          [] of ::Optarg::Definitions::Base
+        end
+
+        @definitions : ::Optarg::DefinitionSet?
+        def definitions
+          @definitions ||= ::Optarg::DefinitionSet.new(self).tap do |defs|
+            default_definitions.each do |df|
+              defs << df
+            end
+          end
+        end
+
+        @bash_completion : ::Optarg::BashCompletion?
+        def bash_completion
+          @bash_completion ||= ::Optarg::BashCompletion.new(self)
         end
       end
 
@@ -33,43 +65,41 @@ module Optarg
 
       class Parser < ::{{super_parser}}
         def data
-          @data.value.as(::{{@type}})
+          @data.var.as(::{{@type}})
         end
 
         def options
-          (@options.value ||= OptionValueContainer.new(self)).as(OptionValueContainer)
+          (@options.var ||= OptionValueContainer.new(self)).as(OptionValueContainer)
         end
 
         def args
-          (@args.value ||= ArgumentValueContainer.new(self)).as(ArgumentValueContainer)
+          (@args.var ||= ArgumentValueContainer.new(self)).as(ArgumentValueContainer)
         end
       end
 
       def __options
-        __parser.options.as(::{{@type}}::OptionValueContainer)
+        __parser.options.as(OptionValueContainer)
       end
 
       def __args
-        __parser.args.as(::{{@type}}::ArgumentValueContainer)
-      end
-
-      def __new_parser(argv)
-        Parser.new(self, argv)
+        __parser.args.as(ArgumentValueContainer)
       end
 
       def __parser
-        @__parser.value.as(::{{@type}}::Parser)
+        (@__parser.var ||= Parser.new(self)).as(Parser)
+      end
+
+      def self.__klass
+        @@__klass.var ||= Class.instance
       end
     end
 
-    def initialize(argv)
-      @__parser.value = __new_parser(argv)
-    end
+    @@__klass = Util::Var(ModelClass).new
+    @__parser = Util::Var(Parser).new
 
-    @__parser = Util::Variable(Parser).new
+    getter __argv : Array(String)
 
-    def self.parse(argv, *args)
-      __parse(argv, *args)
+    def initialize(@__argv)
     end
 
     def self.__parse(argv, *args)
@@ -82,10 +112,14 @@ module Optarg
       __parser.parse
     end
 
-    def parse
-      __parse
-    end
+    def self.klass; __klass; end
+    def self.parse(argv, *args); __parse(argv, *args); end
 
+    def self.__definitions; __klass.definitions; end
+    def self.definitions; __definitions; end
+
+    def parse; __parse; end
+    def parser; __parser; end
     def options; __options; end
     def args; __args; end
 

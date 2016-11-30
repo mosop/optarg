@@ -1,6 +1,10 @@
 module Optarg::Definitions
-  class StringOption < Option
-    class Typed < ValueTypes::String
+  class StringOption < ValueTypes::String::Definition
+    include DefinitionMixins::ScalarValueOption
+
+    def initialize(names, metadata = nil, stop = nil, default = nil, required = nil, any_of = nil)
+      super names, metadata: metadata, stop: stop
+      initialize_scalar_value_option default: default, required: required, any_of: any_of
     end
 
     def visit(parser)
@@ -11,6 +15,10 @@ module Optarg::Definitions
 
     def visit_concatenated(parser, name)
       raise UnsupportedConcatenation.new(parser, self)
+    end
+
+    def completion_length(gen)
+      2
     end
   end
 end

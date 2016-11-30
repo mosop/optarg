@@ -1,87 +1,61 @@
 module Optarg
   class DefinitionSet
-    def initialize(@superset)
+    getter model : ModelClass
+
+    def initialize(@model)
       inherit
     end
 
     def inherit
-      if superset?
-        superset.all.each{|kv| self << kv[1]}
+      if model.supermodel?
+        model.supermodel.definitions.all.each{|kv| self << kv[1].subclassify(model)}
       end
     end
 
-    @superset : DefinitionSet?
-    def superset?
-      @superset
+    macro __set(types, list, array = nil)
+      {%
+        types = [types] unless types.class_name == "ArrayLiteral"
+        a = %w()
+      %}
+      {% for e, i in types %}
+        {% if i == 0 %}
+          {%
+            a << "if o = df.as?(#{e})"
+          %}
+        {% else %}
+          {%
+            a << "elsif o = df.as?(#{e})"
+          %}
+        {% end %}
+        {%
+          a << "#{list}[o.key] = o"
+          a << "#{array} << o" if array
+        %}
+      {% end %}
+      {%
+        a << "end"
+      %}
+      {{a.join("\n").id}}
     end
 
-    def superset
-      @superset.as(DefinitionSet)
-    end
-
-    def root?
-      @superset.nil?
-    end
-
-    @root : DefinitionSet?
-    def root
-      @root ||= root? ? self : superset.root
-    end
-
-    getter options = {} of String => Definitions::Option
-    getter arguments = {} of String => Definitions::Argument
-    getter handlers = {} of String => Definitions::Handler
-    getter terminators = {} of String => Definitions::Terminator
-
-    def <<(df : Definitions::Option)
-      [
-        all, options,
-        options_and_arguments,
-        option_visitors,
-        concatenation_visitors,
-        value_fallbackers,
-        value_validators
-      ].each do |i|
-        i[df.key] = df
-      end
-    end
-
-    def <<(df : Definitions::Argument)
-      [
-        all, arguments,
-        options_and_arguments,
-        value_fallbackers,
-        value_validators
-      ].each do |i|
-        i[df.key] = df
-      end
-      argument_values << df
-    end
-
-    def <<(df : Definitions::Handler)
-      [
-        all, handlers,
-        option_visitors,
-        concatenation_visitors
-      ].each do |i|
-        i[df.key] = df
-      end
-    end
-
-    def <<(df : Definitions::Terminator)
-      [
-        all, terminators
-      ].each do |i|
-        i[df.key] = df
-      end
+    def <<(df : Definitions::Base)
+      all[df.key] = df
+      __set DefinitionMixins::Option, options
+      __set DefinitionMixins::ValueOption, value_options
+      __set DefinitionMixins::Argument, arguments, array: argument_list
+      __set Definitions::Handler, handlers
+      __set Definitions::Terminator, terminators
+      __set DefinitionMixins::Value, values
     end
 
     getter all = {} of String => Definitions::Base
-    getter options_and_arguments = {} of String => (Definitions::Option | Definitions::Argument)
-    getter option_visitors = {} of String => DefinitionMixins::Visit
-    getter concatenation_visitors = {} of String => DefinitionMixins::VisitConcatenated
-    getter value_fallbackers = {} of String => DefinitionMixins::FallbackValue
-    getter value_validators = {} of String => DefinitionMixins::ValidateValue
-    getter argument_values = [] of Definitions::Argument
+    getter arguments = {} of String => DefinitionMixins::Argument
+    getter options = {} of String => DefinitionMixins::Option
+    getter value_options = {} of String => DefinitionMixins::ValueOption
+    getter handlers = {} of String => Definitions::Handler
+    getter terminators = {} of String => Definitions::Terminator
+    getter values = {} of String => DefinitionMixins::Value
+
+    getter argument_list = [] of DefinitionMixins::Argument
   end
 end

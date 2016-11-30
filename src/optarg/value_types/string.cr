@@ -1,8 +1,16 @@
 module Optarg::ValueTypes
-  abstract class String < Scalar(::String)
-    __concrete
+  class String < Base
+    __concrete ::String
 
     class Value
+      def self.encode_to_string(b)
+        if b.nil?
+          nil
+        else
+          b.to_s
+        end
+      end
+
       def self.decode(s)
         s
       end

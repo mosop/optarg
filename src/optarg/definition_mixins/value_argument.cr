@@ -1,9 +1,9 @@
-require "./value"
+module Optarg::DefinitionMixins
+  module ValueArgument
+    macro included
+      include ::Optarg::DefinitionMixins::Argument
 
-module Optarg::Definitions
-  abstract class Argument < Value
-    macro inherited
-      {% unless @type.abstract? %}
+      module ValueArgumentModule
         def get_value?(parser)
           parser.args.__named[value_key]?
         end
@@ -11,7 +11,9 @@ module Optarg::Definitions
         def set_value(parser, value)
           parser.args.__named[value_key] = value
         end
-      {% end %}
+      end
+
+      include ValueArgumentModule
     end
   end
 end

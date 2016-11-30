@@ -6,18 +6,21 @@ module Optarg
 
     alias Node = NamedTuple(args: Array(String), definitions: Array(Definitions::Base))
 
-    getter input_args : Array(String)
     getter parsed_nodes = [] of Node
 
-    @data = Util::Variable(Model).new
-    @options = Util::Variable(OptionValueContainer).new
-    @args = Util::Variable(ArgumentValueContainer).new
+    @data = Util::Var(Model).new
+    @options = Util::Var(OptionValueContainer).new
+    @args = Util::Var(ArgumentValueContainer).new
 
     @argument_index = 0
     getter index = 0
 
-    def initialize(data, @input_args)
-      @data.value = data
+    def initialize(data)
+      @data.var = data
+    end
+
+    def input_args
+      data.__argv
     end
 
     def self.new_node(args = %w(), *definitions)
@@ -56,7 +59,7 @@ module Optarg
     end
 
     on_validate do |o|
-      o.definitions.value_validators.each do |kv|
+      o.definitions.values.each do |kv|
         kv[1].validate_value(o)
       end
     end
@@ -70,7 +73,7 @@ module Optarg
     end
 
     def eol?
-      @index == @input_args.size
+      @index == input_args.size
     end
 
     def resume
@@ -79,7 +82,7 @@ module Optarg
       end
     ensure
       @unparsed_args = self[0..-1] if left > 0
-      @index = @input_args.size
+      @index = input_args.size
     end
 
     def visit
@@ -115,7 +118,7 @@ module Optarg
       names = self[0][1..-1].split("").map{|i| "-#{i}"}
       node = Parser.new_node([self[0]])
       names.each do |name|
-        if nd = find_with_def(definitions.concatenation_visitors, name){|df| df.visit_concatenated(self, name)}
+        if nd = find_with_def(definitions.options, name){|df| df.visit_concatenated(self, name)}
           node[:definitions] << nd[:definitions][0]
         else
           raise UnknownOption.new(self, name)
@@ -127,7 +130,7 @@ module Optarg
 
     def visit_option
       name = self[0]
-      if node = find_with_def(definitions.option_visitors, name){|df| df.visit(self)}
+      if node = find_with_def(definitions.options, name){|df| df.visit(self)}
         parsed_nodes << node
         @index += node[:args].size
       else
@@ -138,7 +141,7 @@ module Optarg
     def visit_argument
       arg = self[0]
       if @argument_index < definitions.arguments.size
-        df = definitions.argument_values[@argument_index]
+        df = definitions.argument_list[@argument_index]
         args.__named[df.key] = arg
         args.__values << arg
         @parsed_nodes << Parser.new_node([arg], df)
@@ -152,11 +155,11 @@ module Optarg
     end
 
     def [](*args)
-      @input_args[@index..-1][*args]
+      input_args[@index..-1][*args]
     end
 
     def left
-      @input_args.size - @index
+      input_args.size - @index
     end
 
     def invalidate!(message : String)
