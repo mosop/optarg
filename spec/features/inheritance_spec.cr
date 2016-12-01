@@ -1,7 +1,7 @@
 require "../spec_helper"
 
 module OptargInheritanceFeature
-  class Animal < Optarg::Model
+  abstract class Animal < Optarg::Model
     bool "--sleep"
   end
 
