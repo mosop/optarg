@@ -17,12 +17,12 @@ module Optarg::BashCompletion::Functions
         fi
         local max=${#{occurs}[$i]}
         if [ $max -lt 0 ] || [ $found -lt $max ]; then
-          a+=("${#{keys}[$i]}")
+          a+=(${#{keys}[$i]})
         fi
         let i+=1
       done
       if [ $#{arg_index} -lt ${##{args}[@]} ]; then
-        a+=("${#{words}[${#{args}[$#{arg_index}]}]}")
+        a+=(${#{words}[${#{args}[$#{arg_index}]}]})
       fi
       COMPREPLY=( $(compgen -W "$(echo ${a[@]})" -- "$#{cursor}") )
       return 0

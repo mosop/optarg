@@ -27,7 +27,8 @@ class Optarg::BashCompletion
       initialize completion, previous.prefix
     end
 
-    def initialize(@completion : BashCompletion, @base_prefix : String)
+    def initialize(@completion : BashCompletion, base_prefix : String)
+      @base_prefix = base_prefix.sub(/_+$/, "") + "__"
       @keys = ["declare -a #{prefix}keys"]
       @occurs = ["declare -ia #{prefix}occurs"]
       @words = ["declare -a #{prefix}words"]
@@ -35,6 +36,10 @@ class Optarg::BashCompletion
       @lens = ["declare -a #{prefix}lens"]
       @tags = ["declare -a #{prefix}tags"]
       @args = ["declare -ia #{prefix}args"]
+    end
+
+    def entry_point
+      "#{@prefix}reply"
     end
 
     def model
@@ -51,7 +56,7 @@ class Optarg::BashCompletion
 
     @prefix : String?
     def prefix
-      @prefix ||= "#{@base_prefix}#{model.name}__"
+      @prefix ||= first? ? @base_prefix : "#{@base_prefix}__#{model.name}__"
     end
 
     def result
