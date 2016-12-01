@@ -287,7 +287,7 @@ and see [Code Samples](#code_samples) and [Wiki](https://github.com/mosop/optarg
 ## Release Notes
 
 * v0.4.2
-  * (Experimental) Bash Completion
+  * Bash Completion
 * v0.4.1
   * Custom Validation
   * Inclusion Validation
