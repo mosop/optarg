@@ -56,7 +56,7 @@ class Optarg::BashCompletion
 
     @prefix : String?
     def prefix
-      @prefix ||= first? ? @base_prefix : "#{@base_prefix}__#{model.name}__"
+      @prefix ||= first? ? @base_prefix : "#{@base_prefix}#{model.name}__"
     end
 
     def result

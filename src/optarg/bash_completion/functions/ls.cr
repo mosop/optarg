@@ -6,25 +6,32 @@ module Optarg::BashCompletion::Functions
       #{f(:cur)}
       local a=()
       local i=0
-      while [ $i -lt ${##{keys}[@]} ]; do
-        if #{f(:tag)} arg $i; then
+      if [[ "$#{word}" =~ ^- ]]; then
+        while [ $i -lt ${##{keys}[@]} ]; do
+          if #{f(:tag)} arg $i; then
+            let i+=1
+            continue
+          fi
+          local found=${#{found}[$i]}
+          if [[ "$found" == "" ]]; then
+            found=0
+          fi
+          local max=${#{occurs}[$i]}
+          if [ $max -lt 0 ] || [ $found -lt $max ]; then
+            a+=(${#{keys}[$i]})
+          fi
           let i+=1
-          continue
+        done
+      else
+        if [ $#{arg_index} -lt ${##{args}[@]} ]; then
+          a=(${#{words}[${#{args}[$#{arg_index}]}]})
         fi
-        local found=${#{found}[$i]}
-        if [[ "$found" == "" ]]; then
-          found=0
-        fi
-        local max=${#{occurs}[$i]}
-        if [ $max -lt 0 ] || [ $found -lt $max ]; then
-          a+=(${#{keys}[$i]})
-        fi
-        let i+=1
-      done
-      if [ $#{arg_index} -lt ${##{args}[@]} ]; then
-        a+=(${#{words}[${#{args}[$#{arg_index}]}]})
       fi
-      COMPREPLY=( $(compgen -W "$(echo ${a[@]})" -- "$#{cursor}") )
+      if [ ${#a[@]} -gt 0 ]; then
+        COMPREPLY=( $(compgen -W "$(echo ${a[@]})" -- "$#{cursor}") )
+      else
+        COMPREPLY=( $(compgen -o default -- "$#{cursor}") )
+      fi
       return 0
       EOS
     end
