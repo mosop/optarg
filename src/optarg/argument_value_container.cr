@@ -1,29 +1,29 @@
 module Optarg
   abstract class ArgumentValueContainer
     macro method_missing(call)
-      {%
-        args = call.args.map{|i| i.id}.join(", ")
-      %}
-
-      {% if call.name == "[]" %}
-        @__values[{{args.id}}]
-      {% elsif call.name == "[]?" %}
-        @__values[{{args.id}}]?
-      {% elsif call.name == "[]=" %}
-        @__values[{{call.args[0..-2].map{|i| i.id}.join(", ").id}}] = {{call.args.last.id}}
-      {% elsif call.name =~ /^\w/ %}
+      {% if call.name =~ /^\w/ %}
         @__values.{{call}}
       {% else %}
-        @__values {{call.name.id}} {{args.id}}
+        {{call}}
       {% end %}
     end
 
     getter __values = %w()
     getter __nameless = %w()
     getter __named : Definitions::StringArgument::Typed::ValueHash
+    getter __string_arrays : Definitions::StringArrayArgument::Typed::ValueHash
 
     def initialize(parser)
       @__named = Definitions::StringArgument::Typed::ValueHash.new(parser)
+      @__string_arrays = Definitions::StringArrayArgument::Typed::ValueHash.new(parser)
+    end
+
+    def [](klass : ::String.class)
+      @__named
+    end
+
+    def [](klass : ::Array(::String).class)
+      @__string_arrays
     end
 
     def ==(other)
@@ -32,6 +32,22 @@ module Optarg
 
     def inspect
       @__values.inspect
+    end
+
+    def [](index : Int)
+      @__values[index]
+    end
+
+    def []?(index : Int)
+      @__values[index]?
+    end
+
+    def [](start : Int, count : Int)
+      @__values[start, count]
+    end
+
+    def [](range : Range(Int, Int))
+      @__values[range]
     end
   end
 end

@@ -4,7 +4,8 @@ class Optarg::BashCompletion
       s.split("\n").map{|i| "#{spaces}#{i}"}.join("\n")
     end
 
-    def string(s : String)
+    def string(s : String?)
+      s ||= ""
       "'" + s.gsub(/(\\|')/, "'\\\\\\1'") + "'"
     end
 

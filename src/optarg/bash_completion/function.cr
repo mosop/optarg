@@ -136,6 +136,10 @@ class Optarg::BashCompletion
       "#{prefix}words"
     end
 
+    def cmds
+      "#{prefix}cmds"
+    end
+
     def nexts
       "#{prefix}nexts"
     end

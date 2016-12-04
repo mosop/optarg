@@ -10,6 +10,7 @@ class Optarg::BashCompletion
     @keys : Array(String)
     @occurs : Array(String)
     @words : Array(String)
+    @cmds : Array(String)
     @nexts : Array(String)
     @lens : Array(String)
     @tag_data = {} of Int32 => Array(String)
@@ -32,6 +33,7 @@ class Optarg::BashCompletion
       @keys = ["declare -a #{prefix}keys"]
       @occurs = ["declare -ia #{prefix}occurs"]
       @words = ["declare -a #{prefix}words"]
+      @cmds = ["declare -a #{prefix}cmds"]
       @nexts = ["declare -a #{prefix}nexts"]
       @lens = ["declare -a #{prefix}lens"]
       @tags = ["declare -a #{prefix}tags"]
@@ -78,6 +80,7 @@ class Optarg::BashCompletion
       combine_section @lens
       combine_section @occurs
       combine_section @words
+      combine_section @cmds
       combine_section @nexts
       combine_section @args
       combine_section @tags
@@ -101,6 +104,7 @@ class Optarg::BashCompletion
       make_lens df
       make_occurs df
       make_words df
+      make_cmds df
       make_nexts df
       make_tag_data df
     end
@@ -122,6 +126,10 @@ class Optarg::BashCompletion
       @words << "#{prefix}words[#{@keymap[df.key]}]=#{matching_words(df.completion_words(self))}"
     end
 
+    def make_cmds(df)
+      @cmds << "#{prefix}cmds[#{@keymap[df.key]}]=#{string(df.completion_command(self))}"
+    end
+
     def make_nexts(df)
       if data = df.completion_next_models_by_value(self)
         if data.size > 0
@@ -140,6 +148,7 @@ class Optarg::BashCompletion
       @tag_data[key] << "term" if df.is_a?(Definitions::Terminator)
       @tag_data[key] << "opt" if df.is_a?(DefinitionMixins::Option)
       @tag_data[key] << "arg" if df.is_a?(DefinitionMixins::Argument)
+      @tag_data[key] << "varg" if df.is_a?(Definitions::StringArrayArgument)
       @tag_data[key] << "stop" if df.stops?
     end
 

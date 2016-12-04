@@ -5,11 +5,11 @@ module Optarg::DefinitionMixins
 
       module ValueOptionModule
         def get_value?(parser)
-          parser.options[::{{@type}}::Typed::Type][value_key]?
+          parser.options[Typed::Type][value_key]?
         end
 
         def set_value(parser, value)
-          parser.options[::{{@type}}::Typed::Type][value_key] = value
+          parser.options[Typed::Type][value_key] = value
         end
       end
 

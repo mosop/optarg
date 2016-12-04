@@ -1,9 +1,9 @@
 module Optarg::Definitions
-  class StringOption < ValueTypes::String::Definition
+  abstract class StringOption < ValueTypes::String::Definition
     include DefinitionMixins::ScalarValueOption
 
-    def initialize(names, metadata = nil, stop = nil, default = nil, required = nil, any_of = nil)
-      super names, metadata: metadata, stop: stop
+    def initialize(names, metadata = nil, stop = nil, default = nil, required = nil, any_of = nil, complete = nil)
+      super names, metadata: metadata, stop: stop, complete: complete
       initialize_scalar_value_option default: default, required: required, any_of: any_of
     end
 

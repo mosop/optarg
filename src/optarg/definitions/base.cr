@@ -2,16 +2,12 @@ require "../definition_mixins/completion"
 
 module Optarg::Definitions
   abstract class Base
-    ::Callback.enable
-    define_callback_group :before_parse, proc_type: Proc(Optarg::Parser, Nil)
-    define_callback_group :after_parse, proc_type: Proc(Optarg::Parser, Nil)
-
     include DefinitionMixins::Completion
 
     getter names : Array(String)
     getter metadata : Metadata
 
-    def initialize(names : String | Array(String), metadata : Metadata? = nil, stop : Bool? = nil, terminate : Bool? = nil)
+    def initialize(names : String | Array(String), metadata : Metadata? = nil, stop : Bool? = nil, terminate : Bool? = nil, complete : String? = nil)
       @names = case names
       when String
         [names]
@@ -22,6 +18,7 @@ module Optarg::Definitions
       @metadata.definition = self
       @stops = !!stop
       @terminates = !!terminate
+      initialize_completion complete: (complete || "")
     end
 
     @stops : Bool?
@@ -44,6 +41,12 @@ module Optarg::Definitions
 
     def subclassify(model)
       self
+    end
+
+    def initialize_before_parse(parser)
+    end
+
+    def initialize_after_parse(parser)
     end
   end
 end

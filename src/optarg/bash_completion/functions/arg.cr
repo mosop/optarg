@@ -5,7 +5,9 @@ module Optarg::BashCompletion::Functions
       body << <<-EOS
       if [ $#{arg_index} -lt ${##{args}[@]} ]; then
         #{key}=${#{args}[$#{arg_index}]}
-        let #{arg_index}+=1
+        if ! #{f(:tag)} varg; then
+          let #{arg_index}+=1
+        fi
         return 0
       fi
       return 1

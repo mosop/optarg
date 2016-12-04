@@ -13,6 +13,6 @@ module OptargInternalRequiredArgumentErrorPreservesObjectFeature
       error = ex
     ensure
     end
-    error.as(Optarg::Definitions::StringArgument::Validations::Required::Error).definition.should be Model.definitions.arguments["arg1"]
+    error.as(Optarg::Definitions::StringArgument::Validations::Existence::Error).definition.should be Model.definitions.arguments["arg1"]
   end
 end

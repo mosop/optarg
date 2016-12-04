@@ -2,7 +2,7 @@ module Optarg::DefinitionMixins
   module Value
     macro included
       module ValueModule
-        getter! default_value : ::{{@type}}::Typed::Value
+        getter! default_value : Typed::Value
 
         def initialize_value(default : Typed::Type | Typed::Value | Nil = nil)
           @default_value = Typed::Value.new(default)
@@ -24,11 +24,7 @@ module Optarg::DefinitionMixins
           set_value parser, default_value.dup_value! if default_value.exists?
         end
 
-        getter value_validations = [] of Typed::Validation
-
-        def validate_value(parser)
-          value_validations.each{|i| i.validate(parser, self)}
-        end
+        getter validations = [] of Typed::Validation
       end
 
       include ValueModule

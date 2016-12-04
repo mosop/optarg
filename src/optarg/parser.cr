@@ -48,19 +48,19 @@ module Optarg
 
     before_parse do |o|
       o.definitions.all.each do |kv|
-        kv[1].run_callbacks_for_before_parse(o) {}
+        kv[1].initialize_before_parse(o)
       end
     end
 
     after_parse do |o|
       o.definitions.all.each do |kv|
-        kv[1].run_callbacks_for_after_parse(o) {}
+        kv[1].initialize_after_parse(o)
       end
     end
 
     on_validate do |o|
       o.definitions.values.each do |kv|
-        kv[1].validate_value(o)
+        kv[1].validate(o)
       end
     end
 
@@ -139,18 +139,21 @@ module Optarg
     end
 
     def visit_argument
-      arg = self[0]
-      if @argument_index < definitions.arguments.size
+      while @argument_index < definitions.arguments.size
         df = definitions.argument_list[@argument_index]
-        args.__named[df.key] = arg
-        args.__values << arg
-        @parsed_nodes << Parser.new_node([arg], df)
-        @argument_index += 1
-      else
-        args.__nameless << arg
-        args.__values << arg
-        @parsed_nodes << Parser.new_node([arg])
+        unless df.visitable?(self)
+          @argument_index += 1
+          next
+        end
+        node = df.visit(self)
+        parsed_nodes << node
+        @index += node[:args].size
+        return
       end
+      arg = self[0]
+      args.__nameless << arg
+      args.__values << arg
+      @parsed_nodes << Parser.new_node([arg])
       @index += 1
     end
 

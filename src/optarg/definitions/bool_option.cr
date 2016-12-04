@@ -1,5 +1,5 @@
 module Optarg::Definitions
-  class BoolOption < ValueTypes::Bool::Definition
+  abstract class BoolOption < ValueTypes::Bool::Definition
     include DefinitionMixins::ScalarValueOption
 
     def initialize(names, metadata = nil, stop = nil, default = nil)
@@ -22,6 +22,18 @@ module Optarg::Definitions
 
     def completion_max_occurs(gen)
       default_value.get? == true ? 0 : 1
+    end
+
+    macro inherited
+      {%
+        is_root = @type.superclass.name == "Optarg::Definitions::BoolOption"
+      %}
+
+      {% if is_root %}
+        class Not < ::Optarg::Definitions::NotOption
+          alias Model = ::{{@type}}::Model
+        end
+      {% end %}
     end
   end
 end

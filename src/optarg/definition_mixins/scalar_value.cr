@@ -7,7 +7,7 @@ module Optarg::DefinitionMixins
         def initialize_scalar_value(default, required : Bool?, any_of : ::Array(Typed::Value) | ::Array(Typed::Type) | Nil)
           initialize_value default
           require_value! if required
-          any_value_of!(any_of) if any_of
+          any_value_of! any_of if any_of
         end
 
         def fallback_value(parser)
@@ -15,28 +15,28 @@ module Optarg::DefinitionMixins
         end
 
         def require_value!
-          value_validations << Validations::Required.new unless value_required?
+          validations << new_existence_validation unless value_required?
         end
 
         def unrequire_value!
-          value_validations.reject! do |v|
-            v.is_a?(Validations::Required)
+          validations.reject! do |v|
+            v.is_a?(Validations::Existence)
           end
         end
 
         def any_value_of!(values)
-          value_validations << Validations::Inclusion.new(values)
+          validations << new_inclusion_validation(values)
           require_value!
         end
 
         def value_required?
-          value_validations.any? do |i|
-            i.is_a?(Validations::Required)
+          validations.any? do |i|
+            i.is_a?(Validations::Existence)
           end
         end
 
         module Validations
-          class Required < Typed::Validation
+          class Existence < Typed::Validation
             def valid?(parser, df)
               df.get_typed_value(parser).exists?
             end
@@ -61,7 +61,7 @@ module Optarg::DefinitionMixins
 
         def completion_words(gen)
           a = \%w()
-          value_validations.each do |v|
+          validations.each do |v|
             if v = v.as?(Validations::Inclusion)
               v.values.each do |val|
                 if s = val.string

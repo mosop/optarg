@@ -6,6 +6,8 @@ module Optarg::BashCompletion::Functions
       #{f(:cur)}
       local a=()
       local i=0
+      local cmd
+      local arg
       if [[ "$#{word}" =~ ^- ]]; then
         while [ $i -lt ${##{keys}[@]} ]; do
           if #{f(:tag)} arg $i; then
@@ -24,7 +26,13 @@ module Optarg::BashCompletion::Functions
         done
       else
         if [ $#{arg_index} -lt ${##{args}[@]} ]; then
-          a=(${#{words}[${#{args}[$#{arg_index}]}]})
+          arg=${#{args}[$#{arg_index}]}
+          cmd=${#{cmds}[$arg]}
+          if [[ "$cmd" == "" ]]; then
+            a=(${#{words}[$arg]})
+          else
+            a=($($cmd))
+          fi
         fi
       fi
       if [ ${#a[@]} -gt 0 ]; then

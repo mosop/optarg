@@ -2,32 +2,38 @@ module Optarg::DefinitionMixins
   module ArrayValue
     macro included
       include ::Optarg::DefinitionMixins::Value
-      include ::Optarg::DefinitionMixins::ValueOption
 
       module ArrayValueModule
-        def initialize_array_value(default, min : Int32?)
+        def initialize_array_value(default, min : Int32?, any_item_of : ::Array(Typed::ElementValue) | ::Array(Typed::ElementType) | Nil)
           initialize_value default: default
-          value_validations << Validations::MinimumLength.new(min) if min
+          validations << new_minimum_length_of_array_validation(min) if min
+          validations << new_element_inclusion_validation(any_item_of) if any_item_of
         end
 
         def fallback_value(parser)
           set_value parser, Typed::Type.new
         end
 
+        def get_typed_element_values(parser)
+          a = [] of Typed::ElementValue
+          if v = get_value?(parser)
+            v.each do |i|
+              a << Typed::ElementValue.new(i)
+            end
+          end
+          a
+        end
+
         def value_required?
-          value_validations.any? do |v|
-            if v = v.as?(Validations::MinimumLength)
+          validations.any? do |v|
+            if v = v.as?(Validations::MinimumLengthOfArray)
               v.min > 0
             end
           end
         end
 
-        def visit_concatenated(parser, name)
-          raise UnsupportedConcatenation.new(parser, self)
-        end
-
         module Validations
-          class MinimumLength < Typed::Validation
+          class MinimumLengthOfArray < Typed::Validation
             getter min : Int32
 
             def initialize(@min)
@@ -37,37 +43,42 @@ module Optarg::DefinitionMixins
               df.get_value(parser).size >= min
             end
           end
+
+          class ElementInclusion < Typed::Validation
+            getter values : ::Array(Typed::ElementValue)
+
+            def initialize(@values : ::Array(Typed::ElementValue))
+            end
+
+            def initialize(values : ::Array(Typed::ElementType))
+              initialize values.map{|i| Typed::ElementValue.new(i)}
+            end
+
+            def valid?(parser, df)
+              typed = df.get_typed_element_values(parser)
+              typed.all?{|i| values.any?{|j| i == j } }
+            end
+          end
         end
 
-        def value_validation_error_message_for(parser, validation : Validations::MinimumLength)
-          "The #{metadata.display_name} option's length is #{get_value(parser).size}, but #{validation.min} or more is expected."
-        end
-
-        def minimum_length_of_array_value
-          value_validations.each do |i|
-            if v = i.as?(Validations::MinimumLength)
+        def minimum_length_of_array
+          validations.each do |i|
+            if v = i.as?(Validations::MinimumLengthOfArray)
               return v.min
             end
           end
           0
         end
 
+        def initialize_after_parse(parser)
+          set_default_value_on_after_parse(parser)
+          super
+        end
+
         def set_default_value_on_after_parse(parser)
-          a = parser.options[Typed::Type][value_key]
+          a = get_value(parser)
           set_default_value parser if a.empty?
         end
-
-        def completion_length(gen)
-          2
-        end
-
-        def completion_max_occurs(gen)
-          -1
-        end
-      end
-
-      on_after_parse do |df, parser|
-        df.set_default_value_on_after_parse(parser)
       end
 
       include ArrayValueModule
