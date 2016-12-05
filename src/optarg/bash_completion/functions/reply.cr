@@ -33,25 +33,27 @@ module Optarg::BashCompletion::Functions
             #{f(:inc)}
             continue
           fi
-          #{f(:inc)}
           if #{f(:end)}; then
             #{f(:lskey)}
             return $?
           fi
           #{f(:add)}
+          #{f(:inc)}
         else
           if #{f(:arg)}; then
-            #{f(:inc)}
-            if [[ ${#{nexts}[$#{key}]} != "" ]]; then
-              #{f(:next)}
+            if #{f(:end)}; then
+              #{f(:lskey)}
               return $?
             fi
-          else
-            #{f(:inc)}
           fi
+          #{f(:inc)}
         fi
       done
-      #{f(:any)}
+      if [[ "${#{nexts}[$#{key}]}" != "" ]]; then
+        #{f(:next)}
+      else
+        #{f(:any)}
+      fi
       return $?
       EOS
     end

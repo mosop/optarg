@@ -11,6 +11,7 @@ class Optarg::BashCompletion
     @occurs : Array(String)
     @words : Array(String)
     @cmds : Array(String)
+    @acts : Array(String)
     @nexts : Array(String)
     @lens : Array(String)
     @tag_data = {} of Int32 => Array(String)
@@ -34,6 +35,7 @@ class Optarg::BashCompletion
       @occurs = ["declare -ia #{prefix}occurs"]
       @words = ["declare -a #{prefix}words"]
       @cmds = ["declare -a #{prefix}cmds"]
+      @acts = ["declare -a #{prefix}acts"]
       @nexts = ["declare -a #{prefix}nexts"]
       @lens = ["declare -a #{prefix}lens"]
       @tags = ["declare -a #{prefix}tags"]
@@ -81,6 +83,7 @@ class Optarg::BashCompletion
       combine_section @occurs
       combine_section @words
       combine_section @cmds
+      combine_section @acts
       combine_section @nexts
       combine_section @args
       combine_section @tags
@@ -105,6 +108,7 @@ class Optarg::BashCompletion
       make_occurs df
       make_words df
       make_cmds df
+      make_acts df
       make_nexts df
       make_tag_data df
     end
@@ -128,6 +132,42 @@ class Optarg::BashCompletion
 
     def make_cmds(df)
       @cmds << "#{prefix}cmds[#{@keymap[df.key]}]=#{string(df.completion_command(self))}"
+    end
+
+    ACTIONS = %i(
+      alias
+      arrayvar
+      binding
+      builtin
+      command
+      directory
+      disabled
+      enabled
+      export
+      file
+      function
+      group
+      helptopic
+      hostname
+      job
+      keyword
+      running
+      service
+      setopt
+      shopt
+      signal
+      stopped
+      user
+      variable
+    )
+
+    def make_acts(df)
+      act = if sym = df.completion_type(self)
+        if ACTIONS.includes?(sym)
+          sym.to_s
+        end
+      end
+      @acts << "#{prefix}acts[#{@keymap[df.key]}]=#{string(act)}"
     end
 
     def make_nexts(df)

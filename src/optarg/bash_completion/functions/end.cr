@@ -3,10 +3,10 @@ module Optarg::BashCompletion::Functions
     def initialize(g)
       super g
       body << <<-EOS
-      if [ $#{index} -eq $COMP_CWORD ]; then
-        return 0
+      if [ $#{index} -lt $COMP_CWORD ]; then
+        return 1
       fi
-      return 1
+      return 0
       EOS
     end
   end

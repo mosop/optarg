@@ -6,8 +6,9 @@ module Optarg::BashCompletion::Functions
       #{f(:cur)}
       local a=()
       local i=0
-      local cmd
       local arg
+      local act
+      local cmd
       if [[ "$#{word}" =~ ^- ]]; then
         while [ $i -lt ${##{keys}[@]} ]; do
           if #{f(:tag)} arg $i; then
@@ -27,20 +28,26 @@ module Optarg::BashCompletion::Functions
       else
         if [ $#{arg_index} -lt ${##{args}[@]} ]; then
           arg=${#{args}[$#{arg_index}]}
+          act=${#{acts}[$arg]}
           cmd=${#{cmds}[$arg]}
-          if [[ "$cmd" == "" ]]; then
-            a=(${#{words}[$arg]})
-          else
+          if [[ "$act" != "" ]]; then
+            :
+          elif [[ "$cmd" != "" ]]; then
             a=($($cmd))
+          else
+            a=(${#{words}[$arg]})
           fi
         fi
       fi
-      if [ ${#a[@]} -gt 0 ]; then
-        COMPREPLY=( $(compgen -W "$(echo ${a[@]})" -- "$#{cursor}") )
-      else
-        COMPREPLY=( $(compgen -o default -- "$#{cursor}") )
+      if [[ "$act" != "" ]]; then
+        COMPREPLY=( $(compgen -A $act -- "${#{cursor}}") )
+        return 0
+      elif [ ${#a[@]} -gt 0 ]; then
+        COMPREPLY=( $(compgen -W "$(echo ${a[@]})" -- "${#{cursor}}") )
+        return 0
       fi
-      return 0
+      #{f(:any)}
+      return $?
       EOS
     end
   end
