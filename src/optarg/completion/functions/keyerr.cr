@@ -1,7 +1,6 @@
-module Optarg::BashCompletion::Functions
+module Optarg::Completion::Functions
   class Keyerr < Function
-    def initialize(g)
-      super g
+    def make
       body << <<-EOS
       if [[ "$#{key}" == "" ]] || [ $#{key} -lt 0 ]; then
         return 0

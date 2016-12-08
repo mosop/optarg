@@ -7,7 +7,7 @@ module Optarg::Definitions
     getter names : Array(String)
     getter metadata : Metadata
 
-    def initialize(names : String | Array(String), metadata : Metadata? = nil, stop : Bool? = nil, terminate : Bool? = nil, complete : String | Symbol | Nil = nil)
+    def initialize(names : String | Array(String), metadata : Metadata? = nil, stop : Bool? = nil, terminate : Bool? = nil, complete : String | Symbol | Array(String) | Nil = nil)
       @names = case names
       when String
         [names]

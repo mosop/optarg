@@ -1,9 +1,9 @@
-module Optarg::BashCompletion::Functions
+module Optarg::Completion::Functions
   class Key < Function
-    def initialize(g)
-      super g
+    def make
       body << <<-EOS
-      local i=0
+      local i
+      i=0
       while [ $i -lt ${##{keys}[@]} ]; do
         if [[ ${#{keys}[$i]} == *' '$#{word}' '* ]]; then
           #{key}=$i

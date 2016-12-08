@@ -1,7 +1,6 @@
-module Optarg::BashCompletion::Functions
+module Optarg::Completion::Functions
   class Inc < Function
-    def initialize(g)
-      super g
+    def make
       body << <<-EOS
       let #{index}+=1
       return 0

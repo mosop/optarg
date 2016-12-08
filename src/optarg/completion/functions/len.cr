@@ -1,7 +1,6 @@
-module Optarg::BashCompletion::Functions
+module Optarg::Completion::Functions
   class Len < Function
-    def initialize(g)
-      super g
+    def make
       body << <<-EOS
       if #{f(:keyerr)}; then return 1; fi
       #{len}=${#{lens}[$#{key}]}

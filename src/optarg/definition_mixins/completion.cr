@@ -5,27 +5,33 @@ module Optarg::DefinitionMixins
         abstract def completion_length(gen) : Int32
         abstract def completion_max_occurs(gen) : Int32
 
-        @command : String?
-        @type : Symbol?
+        @completion_words : Array(String)?
+        @completion_command : String?
+        @completion_action : Symbol?
 
         def initialize_completion(complete)
           case complete
+          when Array(String)
+            @completion_words = complete
           when String
-            @command = complete
+            @completion_command = complete
+          when Symbol
+            @completion_action = complete
           else
-            @type = complete
+            raise "Unknown completion type: #{complete}"
           end
         end
 
         def completion_words(gen) : Array(String)?
+          @completion_words
         end
 
         def completion_command(gen) : String?
-          @command
+          @completion_command
         end
 
-        def completion_type(gen) : Symbol?
-          @type
+        def completion_action(gen) : Symbol?
+          @completion_action
         end
 
         def completion_next_models_by_value(gen) : Hash(String, ModelClass)?

@@ -1,24 +1,31 @@
 require "./text_formatter"
 
-class Optarg::BashCompletion
+class Optarg::Completion
   abstract class Function
     include TextFormatter
 
     macro inherited
-      {%
-        name = @type.name.split("::")[-1].underscore
-      %}
       def name
-        {{name}}
+        "#{prefix}{{@type.name.split("::")[-1].underscore.id}}"
       end
     end
 
-    getter g : Generator
-    getter! header : String?
+    getter g : CompletionGenerators::Base
+    getter header = %w()
     getter body = %w()
-    getter! footer : String?
+    getter footer = %w()
 
-    def initialize(@g, @header = nil, @footer = nil)
+    def initialize(@g)
+      if zsh?
+        header << <<-EOS
+        setopt localoptions ksharrays
+        EOS
+      end
+      make
+    end
+
+    def zsh?
+      g.zsh?
     end
 
     def <<(line : String)
@@ -39,17 +46,21 @@ class Optarg::BashCompletion
     end
 
     def combine
+      sections = %w()
+      sections << header.join("\n\n") unless header.empty?
+      sections << body.join("\n") unless body.empty?
+      sections << footer.join("\n\n") unless footer.empty?
       a = %w()
-      a << "function #{prefix}#{name}() {"
-      a << indent(header) if header?
-      a << indent(body.join("\n"))
-      a << indent(footer) if footer?
+      a << "function #{name}() {"
+      a << indent(sections.join("\n\n"))
       a << "}"
       a.join("\n")
     end
 
     macro f(name)
-      {% if name == :add %}
+      {% if name == :act %}
+        "#{global}act"
+      {% elsif name == :add %}
         "#{global}add"
       {% elsif name == :any %}
         "#{global}any"
@@ -59,6 +70,8 @@ class Optarg::BashCompletion
         "#{global}cur"
       {% elsif name == :end %}
         "#{global}end"
+      {% elsif name == :found %}
+        "#{global}found"
       {% elsif name == :inc %}
         "#{global}inc"
       {% elsif name == :key %}

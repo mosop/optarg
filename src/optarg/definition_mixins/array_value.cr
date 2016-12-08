@@ -79,6 +79,22 @@ module Optarg::DefinitionMixins
           a = get_value(parser)
           set_default_value parser if a.empty?
         end
+
+        def completion_words(gen)
+          super || begin
+            a = \%w()
+            validations.each do |v|
+              if v = v.as?(Validations::ElementInclusion)
+                v.values.each do |val|
+                  if s = val.string
+                    a << s
+                  end
+                end
+              end
+            end
+            a.uniq!
+          end
+        end
       end
 
       include ArrayValueModule

@@ -1,10 +1,10 @@
-module Optarg::BashCompletion::Functions
-  class Add < Function
-    def initialize(g)
-      super g
+module Optarg::Completion::Functions
+  class Found < Function
+    def make
       body << <<-EOS
       if #{f(:keyerr)}; then return 1; fi
-      local n=${#{found}[$#{key}]}
+      local n
+      n=${#{found}[$#{key}]}
       if [[ "$n" == "" ]]; then
         n=1
       else

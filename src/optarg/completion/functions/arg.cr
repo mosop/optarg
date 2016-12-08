@@ -1,7 +1,6 @@
-module Optarg::BashCompletion::Functions
+module Optarg::Completion::Functions
   class Arg < Function
-    def initialize(g)
-      super g
+    def make
       body << <<-EOS
       if [ $#{arg_index} -lt ${##{args}[@]} ]; then
         #{key}=${#{args}[$#{arg_index}]}

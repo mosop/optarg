@@ -1,7 +1,6 @@
-module Optarg::BashCompletion::Functions
+module Optarg::Completion::Functions
   class Cur < Function
-    def initialize(g)
-      super g
+    def make
       body << <<-EOS
       #{cursor}="${COMP_WORDS[COMP_CWORD]}"
       return 0

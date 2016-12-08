@@ -51,9 +51,14 @@ module Optarg
           end
         end
 
-        @bash_completion : ::Optarg::BashCompletion?
+        @bash_completion : ::Optarg::Completion?
         def bash_completion
-          @bash_completion ||= ::Optarg::BashCompletion.new(self)
+          @bash_completion ||= ::Optarg::Completion.new(:bash, self)
+        end
+
+        @zsh_completion : ::Optarg::Completion?
+        def zsh_completion
+          @zsh_completion ||= ::Optarg::Completion.new(:zsh, self)
         end
       end
 

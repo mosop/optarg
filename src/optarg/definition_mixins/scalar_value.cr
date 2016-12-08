@@ -60,17 +60,19 @@ module Optarg::DefinitionMixins
         end
 
         def completion_words(gen)
-          a = \%w()
-          validations.each do |v|
-            if v = v.as?(Validations::Inclusion)
-              v.values.each do |val|
-                if s = val.string
-                  a << s
+          super || begin
+            a = \%w()
+            validations.each do |v|
+              if v = v.as?(Validations::Inclusion)
+                v.values.each do |val|
+                  if s = val.string
+                    a << s
+                  end
                 end
               end
             end
+            a.uniq!
           end
-          a.uniq!
         end
       end
 

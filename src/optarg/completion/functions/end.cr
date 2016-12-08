@@ -1,7 +1,6 @@
-module Optarg::BashCompletion::Functions
+module Optarg::Completion::Functions
   class End < Function
-    def initialize(g)
-      super g
+    def make
       body << <<-EOS
       if [ $#{index} -lt $COMP_CWORD ]; then
         return 1

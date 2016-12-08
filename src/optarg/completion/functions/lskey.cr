@@ -1,26 +1,25 @@
-module Optarg::BashCompletion::Functions
+module Optarg::Completion::Functions
   class Lskey < Function
-    def initialize(g)
-      super g
+    def make
       body << <<-EOS
       if ! #{f(:keyerr)}; then
-        local act=(${#{acts}[$#{key}]})
-        local cmd=(${#{cmds}[$#{key}]})
+        local act
+        local cmd
         local a
+        act=${#{acts}[$#{key}]}
+        cmd=${#{cmds}[$#{key}]}
         if [[ "$act" != "" ]]; then
           :
         elif [[ "$cmd" != "" ]]; then
           a=($($cmd))
         else
-          a=(${#{words}[$#{key}]})
+          a=($(echo "${#{words}[$#{key}]}"))
         fi
         if [[ "$act" != "" ]]; then
-          #{f(:cur)}
-          COMPREPLY=( $(compgen -A $act -- "${#{cursor}}") )
+          #{f(:act)} $act
           return 0
         elif [ ${#a[@]} -gt 0 ]; then
-          #{f(:cur)}
-          COMPREPLY=( $(compgen -W "$(echo ${a[@]})" -- "${#{cursor}}") )
+          #{f(:add)} "${a[@]}"
           return 0
         fi
       fi

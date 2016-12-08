@@ -1,8 +1,13 @@
-module Optarg::BashCompletion::Functions
-  class Reply < Function
-    def initialize(g)
-      super g
+module Optarg::Completion::Functions
+  class Main < Function
+    def make
       if g.first?
+        if zsh?
+          body << <<-EOS
+          (( COMP_CWORD = CURRENT - 1 ))
+          COMP_WORDS=($(echo ${words[@]}))
+          EOS
+        end
         body << <<-EOS
         #{index}=1
         EOS
@@ -29,7 +34,7 @@ module Optarg::BashCompletion::Functions
           fi
           #{f(:len)}
           if [ $#{len} -eq 1 ]; then
-            #{f(:add)}
+            #{f(:found)}
             #{f(:inc)}
             continue
           fi
@@ -37,7 +42,7 @@ module Optarg::BashCompletion::Functions
             #{f(:lskey)}
             return $?
           fi
-          #{f(:add)}
+          #{f(:found)}
           #{f(:inc)}
         else
           if #{f(:arg)}; then
@@ -56,6 +61,10 @@ module Optarg::BashCompletion::Functions
       fi
       return $?
       EOS
+    end
+
+    def name
+      g.entry_point
     end
   end
 end

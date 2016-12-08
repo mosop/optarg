@@ -1,7 +1,6 @@
-module Optarg::BashCompletion::Functions
+module Optarg::Completion::Functions
   class Word < Function
-    def initialize(g)
-      super g
+    def make
       body << <<-EOS
       #{word}="${COMP_WORDS[$#{index}]}"
       return 0

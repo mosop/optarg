@@ -1,15 +1,20 @@
-module Optarg::BashCompletion::Functions
+module Optarg::Completion::Functions
   class Next < Function
-    def initialize(g, data)
+    @data : Hash(String, ModelClass)
+
+    def initialize(g, @data)
       super g
+    end
+
+    def make
       body << <<-EOS
       case $#{word} in
       EOS
-      data.each do |k, v|
-        gen = v.bash_completion.new_generator(g)
+      @data.each do |k, v|
+        gen = g.next_completion_for(v).new_generator(g)
         cond = <<-EOS
         #{string(k)})
-          #{gen.prefix}reply
+          #{gen.entry_point}
           ;;
         EOS
         body << indent(cond)
