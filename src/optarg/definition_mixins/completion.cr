@@ -17,6 +17,7 @@ module Optarg::DefinitionMixins
             @completion_command = complete
           when Symbol
             @completion_action = complete
+          when Nil
           else
             raise "Unknown completion type: #{complete}"
           end
