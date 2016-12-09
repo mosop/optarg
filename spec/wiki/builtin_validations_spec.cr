@@ -36,4 +36,17 @@ module OptargBuiltinValidationsWikiFeature
       }
     end
   end
+
+  module Existence
+    class GoToProm < Optarg::Model
+      string "--dress"
+      string "--partner", required: true
+    end
+
+    it name do
+      expect_raises(Optarg::Definitions::StringOption::Validations::Existence::Error, "The --partner option is required.") {
+        GoToProm.parse %w(--dress brand-new-tuxedo)
+      }
+    end
+  end
 end
