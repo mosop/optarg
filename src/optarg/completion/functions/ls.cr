@@ -12,7 +12,7 @@ module Optarg::Completion::Functions
           if [[ "$act" != "" ]]; then
             :
           elif [[ "$cmd" != "" ]]; then
-            a+=($($cmd))
+            a+=($(eval $cmd))
           else
             a+=($(echo "${#{words}[$arg]}"))
           fi
