@@ -32,17 +32,16 @@ module Optarg::Completion::Functions
             #{f(:any)}
             return $?
           fi
+          #{f(:found)}
+          #{f(:inc)}
           #{f(:len)}
           if [ $#{len} -eq 1 ]; then
-            #{f(:found)}
-            #{f(:inc)}
             continue
           fi
           if #{f(:end)}; then
             #{f(:lskey)}
             return $?
           fi
-          #{f(:found)}
           #{f(:inc)}
         else
           if #{f(:arg)}; then

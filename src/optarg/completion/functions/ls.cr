@@ -4,21 +4,7 @@ module Optarg::Completion::Functions
       body << <<-EOS
       local a i max found arg act cmd
       a=()
-      if ! [[ "$#{word}" =~ ^- ]]; then
-        if [ $#{arg_index} -lt ${##{args}[@]} ]; then
-          arg=${#{args}[$#{arg_index}]}
-          act=${#{acts}[$arg]}
-          cmd=${#{cmds}[$arg]}
-          if [[ "$act" != "" ]]; then
-            :
-          elif [[ "$cmd" != "" ]]; then
-            a+=($(eval $cmd))
-          else
-            a+=($(echo "${#{words}[$arg]}"))
-          fi
-        fi
-      fi
-      if [[ "$#{word}" =~ ^- ]] || [[ "$#{word}" == "" ]] && [[ "$act" == "" ]] && [[ "$cmd" == "" ]]; then
+      if [[ "$#{word}" =~ ^- ]]; then
         i=0
         while [ $i -lt ${##{keys}[@]} ]; do
           if #{f(:tag)} arg $i; then
@@ -35,11 +21,22 @@ module Optarg::Completion::Functions
           fi
           let i+=1
         done
+      else
+        if [ $#{arg_index} -lt ${##{args}[@]} ]; then
+          arg=${#{args}[$#{arg_index}]}
+          act=${#{acts}[$arg]}
+          cmd=${#{cmds}[$arg]}
+          if [[ "$act" != "" ]]; then
+            #{f(:act)} $act
+            return 0
+          elif [[ "$cmd" != "" ]]; then
+            a=($(eval $cmd))
+          else
+            a=($(echo "${#{words}[$arg]}"))
+          fi
+        fi
       fi
-      if [[ "$act" != "" ]]; then
-        #{f(:act)} $act
-        return 0
-      elif [ ${#a[@]} -gt 0 ]; then
+      if [ ${#a[@]} -gt 0 ]; then
         #{f(:add)} "${a[@]}"
         return 0
       fi

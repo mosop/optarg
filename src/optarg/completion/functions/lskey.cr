@@ -3,15 +3,13 @@ module Optarg::Completion::Functions
     def make
       body << <<-EOS
       if ! #{f(:keyerr)}; then
-        local act
-        local cmd
-        local a
+        local act cmd a
         act=${#{acts}[$#{key}]}
         cmd=${#{cmds}[$#{key}]}
         if [[ "$act" != "" ]]; then
           :
         elif [[ "$cmd" != "" ]]; then
-          a=($($cmd))
+          a=($(eval $cmd))
         else
           a=($(echo "${#{words}[$#{key}]}"))
         fi

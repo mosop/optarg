@@ -27,11 +27,10 @@ class Optarg::CompletionGenerators
 
     def initialize(previous : Base, completion : Completion)
       @previous = previous
-      initialize completion, previous.prefix
+      initialize completion, previous.entry_point
     end
 
-    def initialize(@completion : Completion, base_prefix : String)
-      @base_prefix = base_prefix.sub(/_+$/, "") + "__"
+    def initialize(@completion : Completion, @base_prefix : String)
     end
 
     def zsh?
@@ -49,7 +48,12 @@ class Optarg::CompletionGenerators
 
     @entry_point : String?
     def entry_point
-      @entry_point ||= prefix.sub(/_+$/, "")
+      @entry_point ||= first? ? @base_prefix : "#{@base_prefix}__#{model.name}"
+    end
+
+    @prefix : String?
+    def prefix
+      @prefix ||= "#{entry_point}___"
     end
 
     def model
@@ -62,11 +66,6 @@ class Optarg::CompletionGenerators
 
     def first
       first? ? self : previous.first
-    end
-
-    @prefix : String?
-    def prefix
-      @prefix ||= first? ? @base_prefix : "#{@base_prefix}#{model.name}__"
     end
 
     def result
