@@ -1,7 +1,6 @@
 module Optarg
   abstract class Parser
     ::Callback.enable
-    define_callback_group :parse
     define_callback_group :validate
 
     alias Node = NamedTuple(args: Array(String), definitions: Array(Definitions::Base))
@@ -46,18 +45,6 @@ module Optarg
       @unparsed_args ||= %w()
     end
 
-    before_parse do |o|
-      o.definitions.all.each do |kv|
-        kv[1].initialize_before_parse(o)
-      end
-    end
-
-    after_parse do |o|
-      o.definitions.all.each do |kv|
-        kv[1].initialize_after_parse(o)
-      end
-    end
-
     on_validate do |o|
       o.definitions.values.each do |kv|
         kv[1].validate(o)
@@ -65,8 +52,12 @@ module Optarg
     end
 
     def parse
-      run_callbacks_for_parse do
-        resume
+      definitions.all.each do |kv|
+        kv[1].initialize_before_parse(self)
+      end
+      resume
+      definitions.all.each do |kv|
+        kv[1].initialize_after_parse(self)
       end
       run_callbacks_for_validate do
       end

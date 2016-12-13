@@ -1,5 +1,6 @@
 module Optarg::Definitions
-  abstract class StringArrayArgument < ValueTypes::StringArray::Definition
+  class StringArrayArgument < Base
+    include ValueTypes::StringArray::Definition
     include DefinitionMixins::ArrayValueArgument
 
     def initialize(names, metadata = nil, default = nil, min = nil, any_item_of = nil, complete = nil)

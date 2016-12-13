@@ -1,27 +1,90 @@
 module Optarg
   abstract class Model
+    macro define_dynamic_definition(df)
+      {%
+        df = df.resolve if df.class_name == "Path"
+        local = df.name.split("::").last.id
+      %}
+
+      class Class
+        def with_definition(df : ::{{df}})
+          yield Dynamic{{local}}.new(df)
+        end
+      end
+
+      class Dynamic{{local}}
+        getter definition : ::{{df}}
+
+        def initialize(@definition)
+        end
+
+        def on_validate(&block : Dynamic{{local}}Context ->)
+          this = self
+          Parser.on_validate do |parser|
+            block.call Dynamic{{local}}Context.new(parser, this.definition)
+          end
+        end
+      end
+
+      class Dynamic{{local}}Context < DynamicDefinitionContext
+        include ::{{df}}::DynamicContext
+
+        getter definition : ::{{df}}
+      end
+    end
+
     macro inherited
       {% if @type.superclass == ::Optarg::Model %}
         {%
           is_root = true
-          super_model_class = "Optarg::ModelClass".id
-          super_parser = "Optarg::Parser".id
-          super_option_value_container = "Optarg::OptionValueContainer".id
-          super_argument_value_container = "Optarg::ArgumentValueContainer".id
+          supermodel_class = "Optarg::ModelClass".id
+          superoption_value_container = "Optarg::OptionValueContainer".id
+          superargument_value_container = "Optarg::ArgumentValueContainer".id
+          superparser = "Optarg::Parser".id
+          superdynamic_validation_context = "Optarg::DynamicValidationContext".id
+          superlast_concrete = nil
         %}
       {% else %}
         {%
           is_root = false
-          super_model_class = "#{@type.superclass}::Class".id
-          super_parser = "#{@type.superclass}::Parser".id
-          super_option_value_container = "#{@type.superclass}::OptionValueContainer".id
-          super_argument_value_container = "#{@type.superclass}::ArgumentValueContainer".id
-          %}
+          supermodel_class = "#{@type.superclass}::Class".id
+          superoption_value_container = "#{@type.superclass}::OptionValueContainer".id
+          superargument_value_container = "#{@type.superclass}::ArgumentValueContainer".id
+          superparser = "#{@type.superclass}::Parser".id
+          superdynamic_validation_context = "#{@type.superclass}::DynamicValidationContext".id
+          superclass_id = @type.superclass.name.underscore.split("_").join("__").id
+          superlast_concrete = @type.superclass.constant("LAST_CONCRETE___#{superclass_id}")
+        %}
       {% end %}
 
-      class Class < ::{{super_model_class}}
+      {%
+        class_id = @type.name.underscore.split("::").join("__").id
+        last_concrete_id = "LastConcrete_#{class_id}".id
+      %}
+
+      {% if @type.abstract? %}
+        {%
+          last_concrete = superlast_concrete
+        %}
+      {% else %}
+        {%
+          last_concrete = @type
+        %}
+      {% end %}
+
+      {% if last_concrete %}
+        alias {{last_concrete_id}} = ::{{last_concrete}}
+      {% end %}
+
+      class OptionValueContainer < ::{{superoption_value_container}}
+      end
+
+      class ArgumentValueContainer < ::{{superargument_value_container}}
+      end
+
+      class Class < ::Optarg::ModelClass
         def self.instance
-          @@instance.var ||= Class.new
+          (@@instance.var ||= Class.new).as(Class)
         end
 
         def name
@@ -34,21 +97,12 @@ module Optarg
 
         def supermodel?
           {% unless is_root %}
-            ::{{super_model_class}}.instance
+            ::{{supermodel_class}}.instance
           {% end %}
         end
 
         def default_definitions
           [] of ::Optarg::Definitions::Base
-        end
-
-        @definitions : ::Optarg::DefinitionSet?
-        def definitions
-          @definitions ||= ::Optarg::DefinitionSet.new(self).tap do |defs|
-            default_definitions.each do |df|
-              defs << df
-            end
-          end
         end
 
         @bash_completion : ::Optarg::Completion?
@@ -60,42 +114,68 @@ module Optarg
         def zsh_completion
           @zsh_completion ||= ::Optarg::Completion.new(:zsh, self)
         end
-      end
 
-      class OptionValueContainer < ::{{super_option_value_container}}
-      end
-
-      class ArgumentValueContainer < ::{{super_argument_value_container}}
-      end
-
-      class Parser < ::{{super_parser}}
-        def data
-          @data.var.as(::{{@type}})
-        end
-
-        def options
-          (@options.var ||= OptionValueContainer.new(self)).as(OptionValueContainer)
-        end
-
-        def args
-          (@args.var ||= ArgumentValueContainer.new(self)).as(ArgumentValueContainer)
+        @definitions : ::Optarg::DefinitionSet?
+        def definitions
+          @definitions ||= ::Optarg::DefinitionSet.new(self).tap do |defs|
+            default_definitions.each do |df|
+              defs << df
+            end
+          end
         end
       end
 
-      def __options
-        __parser.options.as(OptionValueContainer)
+      abstract class DynamicDefinitionContext
+        {% if last_concrete %}
+          getter parser : ::{{last_concrete}}::Parser
+        {% else %}
+          getter parser : ::Optarg::Parser
+        {% end %}
+
+        def model
+          parser.data
+        end
+
+        def initialize(@parser, @definition)
+        end
       end
 
-      def __args
-        __parser.args.as(ArgumentValueContainer)
-      end
+      define_dynamic_definition ::Optarg::Definitions::BoolOption
+      define_dynamic_definition ::Optarg::Definitions::StringArgument
+      define_dynamic_definition ::Optarg::Definitions::StringArrayArgument
+      define_dynamic_definition ::Optarg::Definitions::StringArrayOption
+      define_dynamic_definition ::Optarg::Definitions::StringOption
 
-      def __parser
-        (@__parser.var ||= Parser.new(self)).as(Parser)
-      end
+      {% unless @type.abstract? %}
+        class Parser < ::Optarg::Parser
+          def data
+            @data.var.as(::{{@type}})
+          end
+
+          def options
+            (@options.var ||= OptionValueContainer.new(self)).as(OptionValueContainer)
+          end
+
+          def args
+            (@args.var ||= ArgumentValueContainer.new(self)).as(ArgumentValueContainer)
+          end
+        end
+
+        def __options
+          __parser.options.as(OptionValueContainer)
+        end
+
+        def __args
+          __parser.args.as(ArgumentValueContainer)
+        end
+
+        def __parser
+          (@__parser.var ||= Parser.new(self)).as(Parser)
+        end
+      {% end %}
 
       def self.__klass
-        @@__klass.var ||= Class.instance
+        (@@__klass.var ||= Class.instance).as(Class)
       end
     end
 

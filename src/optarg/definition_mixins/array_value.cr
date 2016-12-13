@@ -33,7 +33,7 @@ module Optarg::DefinitionMixins
         end
 
         module Validations
-          class MinimumLengthOfArray < Typed::Validation
+          class MinimumLengthOfArray < Validation
             getter min : Int32
 
             def initialize(@min)
@@ -44,7 +44,7 @@ module Optarg::DefinitionMixins
             end
           end
 
-          class ElementInclusion < Typed::Validation
+          class ElementInclusion < Validation
             getter values : ::Array(Typed::ElementValue)
 
             def initialize(@values : ::Array(Typed::ElementValue))

@@ -36,13 +36,13 @@ module Optarg::DefinitionMixins
         end
 
         module Validations
-          class Existence < Typed::Validation
+          class Existence < Validation
             def valid?(parser, df)
               df.get_typed_value(parser).exists?
             end
           end
 
-          class Inclusion < Typed::Validation
+          class Inclusion < Validation
             getter values : ::Array(Typed::Value)
 
             def initialize(@values : ::Array(Typed::Value))

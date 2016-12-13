@@ -1,5 +1,6 @@
 module Optarg::Definitions
-  abstract class NotOption < ValueTypes::Bool::Definition
+  class NotOption < Base
+    include ValueTypes::Bool::Definition
     include DefinitionMixins::ScalarValueOption
 
     getter bool : BoolOption

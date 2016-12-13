@@ -24,7 +24,11 @@ module Optarg::DefinitionMixins
           set_value parser, default_value.dup_value! if default_value.exists?
         end
 
-        getter validations = [] of Typed::Validation
+        getter validations = [] of Validation
+
+        def validate(parser)
+          validations.each{|i| i.validate(parser, self)}
+        end
       end
 
       include ValueModule

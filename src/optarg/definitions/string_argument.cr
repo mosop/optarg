@@ -1,5 +1,6 @@
 module Optarg::Definitions
-  abstract class StringArgument < ValueTypes::String::Definition
+  class StringArgument < Base
+    include ValueTypes::String::Definition
     include DefinitionMixins::ScalarValueArgument
 
     def initialize(names, metadata = nil, stop = nil, default = nil, required = nil, any_of = nil, complete = nil)
