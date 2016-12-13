@@ -1,5 +1,5 @@
 name: optarg
-version: 0.4.2.7
+version: 0.4.2.8
 
 authors:
   - mosop
@@ -9,4 +9,4 @@ license: MIT
 dependencies:
   callback:
     github: mosop/callback
-    version: 0.5.0
+    version: 0.5.0.1
