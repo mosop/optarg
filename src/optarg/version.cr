@@ -1,3 +1,3 @@
 module Optarg
-  VERSION = "0.4.2.8"
+  VERSION = "0.4.2.9"
 end
