@@ -144,6 +144,19 @@ result.named_args # => {"src_dir" => "/path/to/src", "build_dir" => "/path/to/bu
 result.nameless_args # => ["and", "more"]
 ```
 
+### Argument Array
+
+```crystal
+class Model < Optarg::Model
+  arg "arg"
+  arg_array "item"
+end
+
+result = Model.parse(%w(foo bar baz))
+result.arg # => "foo"
+result.item # => ["bar", "baz"]
+```
+
 ### Inheritance (Reusing Models)
 
 ```crystal
