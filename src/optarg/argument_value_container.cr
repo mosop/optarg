@@ -1,25 +1,15 @@
 module Optarg
-  abstract class ArgumentValueContainer
-    macro method_missing(call)
-      {% if call.name =~ /^\w/ %}
-        @__values.{{call}}
-      {% else %}
-        {{call}}
-      {% end %}
-    end
-
-    getter __values = %w()
-    getter __nameless = %w()
-    getter __named : Definitions::StringArgument::Typed::ValueHash
+  class ArgumentValueContainer
+    getter __strings : Definitions::StringArgument::Typed::ValueHash
     getter __string_arrays : Definitions::StringArrayArgument::Typed::ValueHash
 
-    def initialize(parser)
-      @__named = Definitions::StringArgument::Typed::ValueHash.new(parser)
+    def initialize(@parser : Parser)
+      @__strings = Definitions::StringArgument::Typed::ValueHash.new(parser)
       @__string_arrays = Definitions::StringArrayArgument::Typed::ValueHash.new(parser)
     end
 
     def [](klass : ::String.class)
-      @__named
+      @__strings
     end
 
     def [](klass : ::Array(::String).class)
@@ -27,27 +17,37 @@ module Optarg
     end
 
     def ==(other)
-      @__values == other
+      @parser.parsed_args == other
     end
 
     def inspect
-      @__values.inspect
+      @parser.parsed_args.inspect
+    end
+
+    def size
+      @parser.parsed_args.size
+    end
+
+    def map
+      @parser.parsed_args.map do |i|
+        yield i
+      end
     end
 
     def [](index : Int)
-      @__values[index]
+      @parser.parsed_args[index]
     end
 
     def []?(index : Int)
-      @__values[index]?
+      @parser.parsed_args[index]?
     end
 
     def [](start : Int, count : Int)
-      @__values[start, count]
+      @parser.parsed_args[start, count]
     end
 
     def [](range : Range(Int, Int))
-      @__values[range]
+      @parser.parsed_args[range]
     end
   end
 end

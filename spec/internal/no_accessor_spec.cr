@@ -24,10 +24,6 @@ module OptargInternalNoAccessorFeature
       model_methods.includes?("to_s").should be_false
       model_methods.includes?("same?").should be_false
       model_methods.includes?("unparsed_args").should be_false
-      args_methods = {{ ForArguments::ArgumentValueContainer.methods.map{|i| i.name.stringify} }}
-      args_methods.includes?("to_s").should be_false
-      args_methods.includes?("same?").should be_false
-      args_methods.includes?("unparsed_args").should be_true
     end
 
     it "string --to_s, bool --same, array --unparsed_args" do
@@ -36,17 +32,11 @@ module OptargInternalNoAccessorFeature
       model_methods.includes?("to_s").should be_false
       model_methods.includes?("same?").should be_false
       model_methods.includes?("unparsed_args").should be_false
-      model_methods = {{ ForOptions::OptionValueContainer.methods.map{|i| i.name.stringify} }}
-      model_methods.includes?("to_s").should be_false
-      model_methods.includes?("same?").should be_false
-      model_methods.includes?("unparsed_args").should be_true
     end
 
     it "string --same" do
       result = ForStringSame.parse(%w())
       model_methods = {{ ForStringSame.methods.map{|i| i.name.stringify} }}
-      model_methods.includes?("same?").should be_false
-      model_methods = {{ ForStringSame::OptionValueContainer.methods.map{|i| i.name.stringify} }}
       model_methods.includes?("same?").should be_false
     end
   end

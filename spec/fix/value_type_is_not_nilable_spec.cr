@@ -6,10 +6,11 @@ module OptargFixValueTypeIsNotNilableFeature
 
   it name do
     model = Model.new(%w())
-    model.args.__values.class.should eq Array(String)
-    model.args.__named.class.should eq Optarg::Definitions::StringArgument::Typed::ValueHash
-    model.options[String].class.should eq Optarg::Definitions::StringOption::Typed::ValueHash
-    model.options[Bool].class.should eq Optarg::Definitions::BoolOption::Typed::ValueHash
-    model.options[Array(String)].class.should eq Optarg::Definitions::StringArrayOption::Typed::ValueHash
+    model.__parser.parsed_args.class.should eq Array(String)
+    model.__parser.args[String].class.should eq Optarg::Definitions::StringArgument::Typed::ValueHash
+    model.__parser.args[Array(String)].class.should eq Optarg::Definitions::StringArrayArgument::Typed::ValueHash
+    model.__parser.options[String].class.should eq Optarg::Definitions::StringOption::Typed::ValueHash
+    model.__parser.options[Bool].class.should eq Optarg::Definitions::BoolOption::Typed::ValueHash
+    model.__parser.options[Array(String)].class.should eq Optarg::Definitions::StringArrayOption::Typed::ValueHash
   end
 end

@@ -15,7 +15,7 @@ module Optarg::Definitions
 
     def visit(parser)
       parser.args[Typed::Type][value_key] << parser[0]
-      parser.args.__values << parser[0]
+      parser.parsed_args << parser[0]
       Parser.new_node(parser[0..0], self)
     end
   end

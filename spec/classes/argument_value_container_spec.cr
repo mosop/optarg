@@ -6,12 +6,12 @@ module OptargArgumentValueContainerClassFeature
 
   it "#[]" do
     model = Model.new(%w())
-    model.__args.__values << "arg"
-    model.__args.__values[0].should eq "arg"
+    model.__parser.parsed_args << "arg"
+    model.__args[0].should eq "arg"
   end
 
   it "#[]?" do
     model = Model.new(%w())
-    model.__args.__values[0]?.should be_nil
+    model.__args[0]?.should be_nil
   end
 end

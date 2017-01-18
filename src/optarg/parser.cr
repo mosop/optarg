@@ -5,17 +5,22 @@ module Optarg
 
     alias Node = NamedTuple(args: Array(String), definitions: Array(Definitions::Base))
 
-    getter parsed_nodes = [] of Node
-
     @data = Util::Var(Model).new
-    @options = Util::Var(OptionValueContainer).new
-    @args = Util::Var(ArgumentValueContainer).new
+
+    getter parsed_nodes = [] of Node
+    getter! options : OptionValueContainer?
+    getter! args : ArgumentValueContainer?
+    getter nameless_args = %w()
+    getter parsed_args = %w()
+    getter unparsed_args = %w()
 
     @argument_index = 0
     getter index = 0
 
     def initialize(data)
       @data.var = data
+      @options = OptionValueContainer.new(self)
+      @args = ArgumentValueContainer.new(self)
     end
 
     def input_args
@@ -38,11 +43,6 @@ module Optarg
     def stopped?
       return false if parsed_nodes.size == 0
       return parsed_nodes.last[:definitions].any?{|i| i.stops? || i.terminates?}
-    end
-
-    @unparsed_args : Array(String)?
-    def unparsed_args
-      @unparsed_args ||= %w()
     end
 
     on_validate do |o|
@@ -137,13 +137,13 @@ module Optarg
           next
         end
         node = df.visit(self)
-        parsed_nodes << node
+        @parsed_nodes << node
         @index += node[:args].size
         return
       end
       arg = self[0]
-      args.__nameless << arg
-      args.__values << arg
+      @nameless_args << arg
+      @parsed_args << arg
       @parsed_nodes << Parser.new_node([arg])
       @index += 1
     end

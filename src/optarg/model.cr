@@ -38,8 +38,6 @@ module Optarg
         {%
           is_root = true
           supermodel_class = "Optarg::ModelClass".id
-          superoption_value_container = "Optarg::OptionValueContainer".id
-          superargument_value_container = "Optarg::ArgumentValueContainer".id
           superparser = "Optarg::Parser".id
           superdynamic_validation_context = "Optarg::DynamicValidationContext".id
           superlast_concrete = nil
@@ -48,8 +46,6 @@ module Optarg
         {%
           is_root = false
           supermodel_class = "#{@type.superclass}::Class".id
-          superoption_value_container = "#{@type.superclass}::OptionValueContainer".id
-          superargument_value_container = "#{@type.superclass}::ArgumentValueContainer".id
           superparser = "#{@type.superclass}::Parser".id
           superdynamic_validation_context = "#{@type.superclass}::DynamicValidationContext".id
           superclass_id = @type.superclass.name.underscore.split("_").join("__").id
@@ -75,12 +71,6 @@ module Optarg
       {% if last_concrete %}
         alias {{last_concrete_id}} = ::{{last_concrete}}
       {% end %}
-
-      class OptionValueContainer < ::{{superoption_value_container}}
-      end
-
-      class ArgumentValueContainer < ::{{superargument_value_container}}
-      end
 
       class Class < ::Optarg::ModelClass
         def self.instance
@@ -151,22 +141,6 @@ module Optarg
           def data
             @data.var.as(::{{@type}})
           end
-
-          def options
-            (@options.var ||= OptionValueContainer.new(self)).as(OptionValueContainer)
-          end
-
-          def args
-            (@args.var ||= ArgumentValueContainer.new(self)).as(ArgumentValueContainer)
-          end
-        end
-
-        def __options
-          __parser.options.as(OptionValueContainer)
-        end
-
-        def __args
-          __parser.args.as(ArgumentValueContainer)
         end
 
         def __parser
@@ -205,22 +179,34 @@ module Optarg
 
     def parse; __parse; end
     def parser; __parser; end
+
+    def __options; __parser.options; end
     def options; __options; end
+
+    def __args; __parser.parsed_args; end
     def args; __args; end
 
-    def __named_args; __args.__named; end
+    def __named_args; __parser.args.__strings; end
     def named_args; __named_args; end
 
-    def __nameless_args; __args.__nameless; end
+    def __nameless_args; __parser.nameless_args; end
     def nameless_args; __nameless_args; end
 
-    def __parsed_args; __args.__values; end
+    def __parsed_args; __parser.parsed_args; end
     def parsed_args; __parsed_args; end
 
     def __unparsed_args; __parser.unparsed_args; end
     def unparsed_args; __unparsed_args; end
 
     def __parsed_nodes; __parser.parsed_nodes; end
+
+    def [](index : Int32)
+      __parser.parsed_args[index]
+    end
+
+    def []?(index : Int32)
+      __parser.parsed_args[index]?
+    end
   end
 end
 

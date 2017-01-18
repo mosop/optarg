@@ -13,6 +13,6 @@ module OptargDefaultValueFeature
     result.s.should eq "string"
     result.b?.should be_false
     result.a.should eq %w(1 2 3)
-    result.args.arg.should eq "arg"
+    result.arg.should eq "arg"
   end
 end

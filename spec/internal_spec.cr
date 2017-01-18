@@ -12,7 +12,6 @@ module OptargInternalFeature
     argv = %w{-s v -b arg parsed -- unparsed}
     result = ParseModel.parse(argv)
     result.arg.should eq "arg"
-    result.args.arg.should eq "arg"
     result.s.should eq "v"
     result.s?.should eq "v"
     result.b?.should be_true

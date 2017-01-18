@@ -1,5 +1,5 @@
 module Optarg
-  abstract class OptionValueContainer
+  class OptionValueContainer
     getter __strings : Definitions::StringOption::Typed::ValueHash
     getter __bools : Definitions::BoolOption::Typed::ValueHash
     getter __string_arrays : Definitions::StringArrayOption::Typed::ValueHash
