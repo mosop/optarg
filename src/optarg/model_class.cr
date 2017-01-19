@@ -11,5 +11,15 @@ module Optarg
     def supermodel
       supermodel?.not_nil!
     end
+
+    @bash_completion : Completion?
+    def bash_completion
+      @bash_completion ||= Completion.new(:bash, self)
+    end
+
+    @zsh_completion : Completion?
+    def zsh_completion
+      @zsh_completion ||= Completion.new(:zsh, self)
+    end
   end
 end
