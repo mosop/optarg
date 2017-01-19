@@ -80,15 +80,14 @@ module Optarg
       def self.__klass; @@__klass; end
       def self.klass; @@__klass; end
 
-      @@__definitions = ::Optarg::DefinitionSet.new
+      def self.__definitions; @@__klass.definitions; end
+      def self.definitions; @@__klass.definitions; end
+
       {% unless is_root %}
         ::{{@type.superclass}}.__definitions.all.each do |kv|
-          @@__definitions << kv[1].subclassify(::{{@type}})
+          __definitions << kv[1].subclassify(::{{@type}})
         end
       {% end %}
-
-      def self.__definitions; @@__definitions; end
-      def self.definitions; @@__definitions; end
 
       class ::Optarg::ModelClass
       end

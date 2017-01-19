@@ -3,6 +3,7 @@ module Optarg
     property name : String
     getter? abstract : Bool
     getter! supermodel : ModelClass?
+    getter definitions = DefinitionSet.new
 
     def initialize(@supermodel, @name, @abstract)
     end
