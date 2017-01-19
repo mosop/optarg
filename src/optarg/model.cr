@@ -1,38 +1,5 @@
 module Optarg
   abstract class Model
-    # macro define_dynamic_definition(df)
-    #   {%
-    #     df = df.resolve if df.class_name == "Path"
-    #     local = df.name.split("::").last.id
-    #   %}
-    #
-    #   class Class
-    #     def with_definition(df : ::{{df}})
-    #       yield Dynamic{{local}}.new(df)
-    #     end
-    #   end
-    #
-    #   class Dynamic{{local}}
-    #     getter definition : ::{{df}}
-    #
-    #     def initialize(@definition)
-    #     end
-    #
-    #     def on_validate(&block : Dynamic{{local}}Context ->)
-    #       this = self
-    #       Parser.on_validate do |parser|
-    #         block.call Dynamic{{local}}Context.new(parser, this.definition)
-    #       end
-    #     end
-    #   end
-    #
-    #   class Dynamic{{local}}Context < DynamicDefinitionContext
-    #     include ::{{df}}::DynamicContext
-    #
-    #     getter definition : ::{{df}}
-    #   end
-    # end
-
     macro inherited
       {% if @type.superclass == ::Optarg::Model %}
         {%
@@ -174,6 +141,12 @@ module Optarg
 
     def []?(index : Int32)
       __parser.parsed_args[index]?
+    end
+
+    def each
+      __parser.parsed_args.each do |i|
+        yield i
+      end
     end
 
     def self.__with_self(*args)
