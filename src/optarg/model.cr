@@ -63,7 +63,7 @@ module Optarg
           inherit_callback_group :validate, ::Proc(::{{@type}}, ::Nil)
 
           def data
-            @data.var.as(::{{@type}})
+            @data.as(::{{@type}})
           end
         end
 
@@ -134,6 +134,8 @@ module Optarg
     def unparsed_args; __unparsed_args; end
 
     def __parsed_nodes; __parser.parsed_nodes; end
+
+    def __definitions; self.class.__definitions; end
 
     def [](index : Int32)
       __parser.parsed_args[index]

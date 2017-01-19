@@ -5,7 +5,7 @@ module Optarg
 
     alias Node = NamedTuple(args: Array(String), definitions: Array(Definitions::Base))
 
-    @data = Util::Var(Model).new
+    getter data : Model
 
     getter parsed_nodes = [] of Node
     getter! options : OptionValueContainer?
@@ -18,7 +18,7 @@ module Optarg
     getter index = 0
 
     def initialize(data)
-      @data.var = data
+      @data = data
       @options = OptionValueContainer.new(self)
       @args = ArgumentValueContainer.new(self)
     end
@@ -37,7 +37,7 @@ module Optarg
 
     @definitions : DefinitionSet?
     def definitions
-      @definitions ||= data.class.definitions
+      @definitions ||= data.__definitions
     end
 
     def stopped?
