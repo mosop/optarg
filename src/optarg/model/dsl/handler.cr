@@ -3,7 +3,7 @@ module Optarg
     macro on(names, metadata = nil, stop = nil, &block)
       define_static_handler nil, {{names}} {{block}}
       %handler = create_static_handler({{names}}, metadata: {{metadata}}, stop: {{stop}})
-      definitions << %handler
+      __definitions << %handler
     end
   end
 end

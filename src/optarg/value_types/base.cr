@@ -38,14 +38,6 @@ module Optarg::ValueTypes
       {% if is_root %}
         alias Typed = ::{{value_type}}
 
-        # class ValidationContextCallback
-        #   ::Callback.enable
-        #    define_callback_group :validate, proc_type: ::Proc(::{{type}}::Typed::ValidationContext, ::Nil)
-        # end
-
-        module DynamicContext
-        end
-
         abstract class Validation < ::Optarg::ValueValidation
           macro inherited
             \{%
@@ -81,11 +73,9 @@ module Optarg::ValueTypes
                 def \{{constructor}}(*args)
                   Validations::\{{local}}.new(*args)
                 end
-              end
 
-              module ::{{type}}::DynamicContext
-                def \{{validator}}(*args)
-                  ::{{type}}::Validations::\{{local}}.new(*args).validate(parser, definition)
+                def \{{validator}}(parser, *args)
+                  ::{{type}}::Validations::\{{local}}.new(*args).validate(parser, self)
                 end
               end
             \{% end %}

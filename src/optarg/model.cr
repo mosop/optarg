@@ -1,37 +1,37 @@
 module Optarg
   abstract class Model
-    macro define_dynamic_definition(df)
-      {%
-        df = df.resolve if df.class_name == "Path"
-        local = df.name.split("::").last.id
-      %}
-
-      class Class
-        def with_definition(df : ::{{df}})
-          yield Dynamic{{local}}.new(df)
-        end
-      end
-
-      class Dynamic{{local}}
-        getter definition : ::{{df}}
-
-        def initialize(@definition)
-        end
-
-        def on_validate(&block : Dynamic{{local}}Context ->)
-          this = self
-          Parser.on_validate do |parser|
-            block.call Dynamic{{local}}Context.new(parser, this.definition)
-          end
-        end
-      end
-
-      class Dynamic{{local}}Context < DynamicDefinitionContext
-        include ::{{df}}::DynamicContext
-
-        getter definition : ::{{df}}
-      end
-    end
+    # macro define_dynamic_definition(df)
+    #   {%
+    #     df = df.resolve if df.class_name == "Path"
+    #     local = df.name.split("::").last.id
+    #   %}
+    #
+    #   class Class
+    #     def with_definition(df : ::{{df}})
+    #       yield Dynamic{{local}}.new(df)
+    #     end
+    #   end
+    #
+    #   class Dynamic{{local}}
+    #     getter definition : ::{{df}}
+    #
+    #     def initialize(@definition)
+    #     end
+    #
+    #     def on_validate(&block : Dynamic{{local}}Context ->)
+    #       this = self
+    #       Parser.on_validate do |parser|
+    #         block.call Dynamic{{local}}Context.new(parser, this.definition)
+    #       end
+    #     end
+    #   end
+    #
+    #   class Dynamic{{local}}Context < DynamicDefinitionContext
+    #     include ::{{df}}::DynamicContext
+    #
+    #     getter definition : ::{{df}}
+    #   end
+    # end
 
     macro inherited
       {% if @type.superclass == ::Optarg::Model %}
@@ -39,7 +39,6 @@ module Optarg
           is_root = true
           supermodel_class = "Optarg::ModelClass".id
           superparser = "Optarg::Parser".id
-          superdynamic_validation_context = "Optarg::DynamicValidationContext".id
           superlast_concrete = nil
         %}
       {% else %}
@@ -47,7 +46,6 @@ module Optarg
           is_root = false
           supermodel_class = "#{@type.superclass}::Class".id
           superparser = "#{@type.superclass}::Parser".id
-          superdynamic_validation_context = "#{@type.superclass}::DynamicValidationContext".id
           superclass_id = @type.superclass.name.underscore.split("_").join("__").id
           superlast_concrete = @type.superclass.constant("LAST_CONCRETE___#{superclass_id}")
         %}
@@ -89,32 +87,14 @@ module Optarg
         end
       {% end %}
 
-      class ::Optarg::ModelClass
-      end
-
-      abstract class DynamicDefinitionContext
-        {% if last_concrete %}
-          getter parser : ::{{last_concrete}}::Parser
-        {% else %}
-          getter parser : ::Optarg::Parser
-        {% end %}
-
-        def model
-          parser.data
+      {% if @type.abstract? %}
+        abstract class Parser < ::{{superparser}}
+          inherit_callback_group :validate, ::Proc(::{{@type}}, ::Nil)
         end
+      {% else %}
+        class Parser < ::{{superparser}}
+          inherit_callback_group :validate, ::Proc(::{{@type}}, ::Nil)
 
-        def initialize(@parser, @definition)
-        end
-      end
-
-      define_dynamic_definition ::Optarg::Definitions::BoolOption
-      define_dynamic_definition ::Optarg::Definitions::StringArgument
-      define_dynamic_definition ::Optarg::Definitions::StringArrayArgument
-      define_dynamic_definition ::Optarg::Definitions::StringArrayOption
-      define_dynamic_definition ::Optarg::Definitions::StringOption
-
-      {% unless @type.abstract? %}
-        class Parser < ::Optarg::Parser
           def data
             @data.var.as(::{{@type}})
           end
@@ -122,6 +102,25 @@ module Optarg
 
         def __parser
           (@__parser.var ||= Parser.new(self)).as(Parser)
+        end
+
+        class DefinitionContext
+          @definition : ::Optarg::Definitions::Base
+
+          def initialize(@definition)
+          end
+
+          def on_validate(&block : (::Optarg::ValidationContext, ::{{@type}}) ->)
+            this = self
+            Parser.on_validate do |parser|
+              block.call ::Optarg::ValidationContext.new(parser, @definition), parser.data.as(::{{@type}})
+              nil
+            end
+          end
+        end
+
+        def self.__with_definition(df)
+          yield DefinitionContext.new(df)
         end
       {% end %}
     end
