@@ -1,17 +1,5 @@
 module Optarg
   class DefinitionSet
-    getter model : ModelClass
-
-    def initialize(@model)
-      inherit
-    end
-
-    def inherit
-      if model.supermodel?
-        model.supermodel.definitions.all.each{|kv| self << kv[1].subclassify(model)}
-      end
-    end
-
     macro __set(types, list, array = nil)
       {%
         types = [types] unless types.class_name == "ArrayLiteral"

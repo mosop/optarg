@@ -1,11 +1,11 @@
 module Optarg
-  abstract class ModelClass
-    @@instance = Util::Var(ModelClass).new
+  class ModelClass
+    property name : String
+    getter? abstract : Bool
+    getter! supermodel : ModelClass?
 
-    abstract def name : String
-    abstract def supermodel? : ModelClass?
-    abstract def bash_completion : BashCompletion
-    abstract def definitions : DefinitionSet
+    def initialize(@supermodel, @name, @abstract)
+    end
 
     def supermodel
       supermodel?.not_nil!

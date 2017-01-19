@@ -1,7 +1,7 @@
 module Optarg
   class Model
     macro bool(names, metadata = nil, stop = nil, default = nil, not = nil, _mixin = nil, &block)
-      define_static_value :option, :predicate, ::Optarg::Definitions::BoolOption, {{names}}, nil, {{_mixin}} do
+      define_static_value :option, :predicate, ::Optarg::Definitions::BoolOption, {{names}}, nil, {{_mixin}} do  |klass|
         option = klass.new({{names}}, metadata: {{metadata}}, stop: {{stop}}, default: {{default}})
         definitions << option
         {% if not %}

@@ -72,47 +72,25 @@ module Optarg
         alias {{last_concrete_id}} = ::{{last_concrete}}
       {% end %}
 
-      class Class < ::Optarg::ModelClass
-        def self.instance
-          (@@instance.var ||= Class.new).as(Class)
-        end
+      @@__klass = ::Optarg::ModelClass.new(
+        supermodel: {{ is_root ? nil : "::#{@type.superclass}.__klass".id }},
+        name: {{@type.name.split("::")[-1].underscore}},
+        abstract: {{@type.abstract?}}
+      )
+      def self.__klass; @@__klass; end
+      def self.klass; @@__klass; end
 
-        def name
-          {{@type.name.split("::")[-1].underscore}}
+      @@__definitions = ::Optarg::DefinitionSet.new
+      {% unless is_root %}
+        ::{{@type.superclass}}.__definitions.all.each do |kv|
+          @@__definitions << kv[1].subclassify(::{{@type}})
         end
+      {% end %}
 
-        def model
-          ::{{@type}}
-        end
+      def self.__definitions; @@__definitions; end
+      def self.definitions; @@__definitions; end
 
-        def supermodel?
-          {% unless is_root %}
-            ::{{supermodel_class}}.instance
-          {% end %}
-        end
-
-        def default_definitions
-          [] of ::Optarg::Definitions::Base
-        end
-
-        @bash_completion : ::Optarg::Completion?
-        def bash_completion
-          @bash_completion ||= ::Optarg::Completion.new(:bash, self)
-        end
-
-        @zsh_completion : ::Optarg::Completion?
-        def zsh_completion
-          @zsh_completion ||= ::Optarg::Completion.new(:zsh, self)
-        end
-
-        @definitions : ::Optarg::DefinitionSet?
-        def definitions
-          @definitions ||= ::Optarg::DefinitionSet.new(self).tap do |defs|
-            default_definitions.each do |df|
-              defs << df
-            end
-          end
-        end
+      class ::Optarg::ModelClass
       end
 
       abstract class DynamicDefinitionContext
@@ -147,13 +125,8 @@ module Optarg
           (@__parser.var ||= Parser.new(self)).as(Parser)
         end
       {% end %}
-
-      def self.__klass
-        (@@__klass.var ||= Class.instance).as(Class)
-      end
     end
 
-    @@__klass = Util::Var(ModelClass).new
     @__parser = Util::Var(Parser).new
 
     getter __argv : Array(String)
@@ -173,9 +146,6 @@ module Optarg
 
     def self.klass; __klass; end
     def self.parse(argv, *args); __parse(argv, *args); end
-
-    def self.__definitions; __klass.definitions; end
-    def self.definitions; __definitions; end
 
     def parse; __parse; end
     def parser; __parser; end
@@ -206,6 +176,10 @@ module Optarg
 
     def []?(index : Int32)
       __parser.parsed_args[index]?
+    end
+
+    def self.__with_self(*args)
+      with self yield *args
     end
   end
 end

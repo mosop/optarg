@@ -9,7 +9,9 @@ module Optarg
         value_key = value_key || names[0]
         key = names[0].id
         model_reserved = (::Optarg::Model.methods + ::Reference.methods + ::Object.methods).map{|i| i.name}
-        definer = "__define_static_#{kind}__#{method_names[0]}".id
+        type_id = @type.name.split("(")[0].split("::").join("_").id
+        snake_type_id = type_id.underscore
+        definer = "#{snake_type_id}__define_static_#{kind}__#{method_names[0]}".id
       %}
 
       {% if kind == :argument %}
@@ -46,12 +48,8 @@ module Optarg
         {% end %}
       {% end %}
 
-      class Class
-        def {{definer}}(klass)
-          {{block.body}}
-        end
-        instance.{{definer}} ::{{metaclass}}
-      end
+
+      ::{{@type}}.__with_self(::{{metaclass}}) {{block}}
     end
   end
 end
