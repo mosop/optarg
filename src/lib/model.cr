@@ -115,9 +115,6 @@ module Optarg
     def parse; __parse; end
     def parser; __parser; end
 
-    def __args; __parser.parsed_args; end
-    def args; __parser.parsed_args; end
-
     def __nameless_args; __parser.nameless_args; end
     def nameless_args; __nameless_args; end
 
