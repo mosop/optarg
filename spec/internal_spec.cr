@@ -16,7 +16,7 @@ module OptargInternalFeature
     result.s?.should eq "v"
     result.b?.should be_true
     result.args.should eq %w(arg parsed)
-    result.named_args.should eq({"arg" => "arg"})
+    result[String].should eq({"-s" => "v", "arg" => "arg"})
     result.nameless_args.should eq %w(parsed)
     result.unparsed_args.should eq %w(unparsed)
     result.__parsed_nodes[0].should eq Optarg::Parser.new_node(%w(-s v), ParseModel.definitions.options["-s"])

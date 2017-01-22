@@ -11,7 +11,7 @@ module OptargNamedArgumentsFeature
     result.src_dir.should eq "/path/to/src"
     result.build_dir.should eq "/path/to/build"
     result.args.should eq ["/path/to/src", "/path/to/build", "and", "more"]
-    result.named_args.should eq({"src_dir" => "/path/to/src", "build_dir" => "/path/to/build"})
+    result[String].should eq({"src_dir" => "/path/to/src", "build_dir" => "/path/to/build"})
     result.nameless_args.should eq ["and", "more"]
   end
 end

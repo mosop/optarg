@@ -9,7 +9,7 @@ module Optarg::Definitions
     end
 
     def visit(parser, name = nil)
-      parser.options[Bool][value_key] = true
+      parser.args[Bool][value_key] = true
       Parser.new_node(parser[0..0], self)
     end
 

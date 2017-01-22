@@ -115,14 +115,8 @@ module Optarg
     def parse; __parse; end
     def parser; __parser; end
 
-    def __options; __parser.options; end
-    def options; __options; end
-
     def __args; __parser.parsed_args; end
-    def args; __args; end
-
-    def __named_args; __parser.args.__strings; end
-    def named_args; __named_args; end
+    def args; __parser.parsed_args; end
 
     def __nameless_args; __parser.nameless_args; end
     def nameless_args; __nameless_args; end
@@ -136,6 +130,18 @@ module Optarg
     def __parsed_nodes; __parser.parsed_nodes; end
 
     def __definitions; self.class.__definitions; end
+
+    def [](klass : String.class)
+      __parser.args[klass]
+    end
+
+    def [](klass : Bool.class)
+      __parser.args[klass]
+    end
+
+    def [](klass : Array(String).class)
+      __parser.args[klass]
+    end
 
     def [](index : Int32)
       __parser.parsed_args[index]

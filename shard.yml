@@ -6,7 +6,9 @@ authors:
 
 license: MIT
 
+crystal: 0.20.5
+
 dependencies:
   callback:
     github: mosop/callback
-    version: 0.6.0
+    version: ~> 0.6.0

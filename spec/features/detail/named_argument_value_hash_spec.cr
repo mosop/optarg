@@ -8,6 +8,6 @@ module OptargNamedArgumentValueHashFeatureDetail
   it name do
     result = Model.parse(%w(foo bar baz))
     expected = {"named" => "foo"}
-    result.named_args.should eq expected
+    result[String].should eq expected
   end
 end

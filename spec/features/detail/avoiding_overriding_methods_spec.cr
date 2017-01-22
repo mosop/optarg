@@ -8,6 +8,6 @@ module OptargAvoidingOverridingMethodsFeatureDetail
   it name do
     result = Model.parse(%w(--class foo))
     result.class.should eq Model
-    result.options[String]["--class"].should eq "foo"
+    result[String]["--class"].should eq "foo"
   end
 end

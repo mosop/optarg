@@ -15,7 +15,7 @@ module Optarg::Definitions
     end
 
     def visit(parser, name = nil)
-      parser.options[Bool][value_key] = false
+      parser.args[Bool][value_key] = false
       Parser.new_node(parser[0..0], self)
     end
 

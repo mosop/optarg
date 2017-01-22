@@ -16,12 +16,12 @@ module Optarg
 
       {% if kind == :argument %}
         {%
-          container_method = "__parser.args".id
+          container_method = "self".id
           df_getter = "#{method_names[0]}_arg".id
         %}
       {% else %}
         {%
-          container_method = "__options".id
+          container_method = "self".id
           df_getter = "#{method_names[0]}_option".id
         %}
       {% end %}

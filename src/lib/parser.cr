@@ -8,8 +8,7 @@ module Optarg
     getter data : Model
 
     getter parsed_nodes = [] of Node
-    getter! options : OptionValueContainer?
-    getter! args : ArgumentValueContainer?
+    getter! args : ValueContainer
     getter nameless_args = %w()
     getter parsed_args = %w()
     getter unparsed_args = %w()
@@ -19,8 +18,7 @@ module Optarg
 
     def initialize(data)
       @data = data
-      @options = OptionValueContainer.new(self)
-      @args = ArgumentValueContainer.new(self)
+      @args = ValueContainer.new(self)
     end
 
     def input_args

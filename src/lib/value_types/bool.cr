@@ -1,5 +1,5 @@
 module Optarg::ValueTypes
-  abstract class Bool < Base
+  class Bool < Base
     __concrete ::Bool
 
     class Value

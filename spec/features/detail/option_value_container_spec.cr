@@ -12,9 +12,9 @@ module OptargOptionValueContainerFeatureDetail
     s = {"-s" => "foo"}
     b = {"-b" => true}
     a = {"-a" => ["bar", "baz"]}
-    result.options[String].should eq s
-    result.options[Bool].should eq b
-    result.options[Array(String)].should eq a
+    result[String].should eq s
+    result[Bool].should eq b
+    result[Array(String)].should eq a
   end
 
   module KeyForMultipleName
@@ -24,8 +24,8 @@ module OptargOptionValueContainerFeatureDetail
 
     it name do
       result = Model.parse(%w(--force))
-      result.options[Bool]["-f"].should be_true
-      expect_raises(KeyError) { result.options[Bool]["--force"] }
+      result[Bool]["-f"].should be_true
+      expect_raises(KeyError) { result[Bool]["--force"] }
     end
   end
 end
