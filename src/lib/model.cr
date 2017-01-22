@@ -2,6 +2,9 @@ module Optarg
   # The base of model classes.
   abstract class Model
     macro inherited
+      {%
+        last_name = @type.name.split("::").last.id
+      %}
       {% if @type.superclass == ::Optarg::Model %}
         {%
           is_root = true
@@ -33,7 +36,7 @@ module Optarg
         end
       {% end %}
 
-      # The dedicated Optarg::Parser subclass for the model class.
+      # The dedicated Optarg::Parser subclass for the `{{last_name}}` class.
       #
       # This class is automatically defined by the optarg library.
       {% if @type.abstract? %}
