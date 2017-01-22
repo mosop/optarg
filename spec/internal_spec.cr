@@ -15,7 +15,7 @@ module OptargInternalFeature
     result.s.should eq "v"
     result.s?.should eq "v"
     result.b?.should be_true
-    result.args.should eq %w(arg parsed)
+    result.parsed_args.should eq %w(arg parsed)
     result[String].should eq({"-s" => "v", "arg" => "arg"})
     result.nameless_args.should eq %w(parsed)
     result.unparsed_args.should eq %w(unparsed)
@@ -31,7 +31,8 @@ module OptargInternalFeature
     expect_raises(KeyError) { result.s }
     result.s?.should be_nil
     result.b?.should be_false
-    result.args.should eq %w()
+    result.nameless_args.should eq %w()
+    result.parsed_args.should eq %w()
     result.unparsed_args.should eq %w()
     result.__parsed_nodes.should eq [] of Array(String)
   end

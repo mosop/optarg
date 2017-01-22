@@ -8,6 +8,6 @@ module OptargArgumentsFeature
 
   it name do
     result = Model.parse(%w(foo -s string -b bar baz))
-    result.args.should eq %w(foo bar baz)
+    result.nameless_args.should eq %w(foo bar baz)
   end
 end

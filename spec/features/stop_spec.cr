@@ -8,7 +8,7 @@ module OptargStopFeature
   it name do
     result = Model.parse(%w(foo -b bar))
     result.b?.should be_true
-    result.args.should eq %w(foo)
+    result.nameless_args.should eq %w(foo)
     result.unparsed_args.should eq %w(bar)
   end
 end
