@@ -295,7 +295,11 @@ Hello.parse %w(:P) # => raises "That's not a smile."
 require "optarg"
 ```
 
-and see [Code Samples](#code_samples) and [Wiki](https://github.com/mosop/optarg/wiki).
+and see:
+
+* [Code Samples](#code_samples)
+* [Wiki](https://github.com/mosop/optarg/wiki)
+* [API Document](http://mosop.me/optarg/Optarg.html)
 
 ## Release Notes
 
