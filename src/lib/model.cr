@@ -33,7 +33,7 @@ module Optarg
         end
       {% end %}
 
-      # A dedicated Optarg::Parser subclass for the model class.
+      # The dedicated Optarg::Parser subclass for the model class.
       #
       # This class is automatically defined by the optarg library.
       {% if @type.abstract? %}
@@ -50,6 +50,7 @@ module Optarg
           end
         end
 
+        # :nodoc:
         def __parser
           (@__parser.var ||= Parser.new(self)).as(Parser)
         end
