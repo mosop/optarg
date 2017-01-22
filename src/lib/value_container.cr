@@ -1,4 +1,5 @@
 module Optarg
+  # :nodoc:
   class ValueContainer
     getter strings : ValueTypes::String::ValueHash
     getter bools : ValueTypes::Bool::ValueHash

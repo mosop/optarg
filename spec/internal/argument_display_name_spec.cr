@@ -21,8 +21,8 @@ module OptargInternalArugmentDisplayNameFeature
   end
 
   it name do
-    Model.definitions.arguments["arg"].metadata.display_name.should eq "arg"
-    Upcase.definitions.arguments["arg"].metadata.display_name.should eq "ARG"
-    Upcase.definitions.options["--option"].metadata.display_name.should eq "--option"
+    Model.__klass.definitions.arguments["arg"].metadata.display_name.should eq "arg"
+    Upcase.__klass.definitions.arguments["arg"].metadata.display_name.should eq "ARG"
+    Upcase.__klass.definitions.options["--option"].metadata.display_name.should eq "--option"
   end
 end

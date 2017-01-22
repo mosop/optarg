@@ -1,6 +1,7 @@
 module Optarg
   class Model
-    macro define_static_handler(type, names, &block)
+    # :nodoc:
+    macro __define_static_handler(type, names, &block)
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}
@@ -8,10 +9,12 @@ module Optarg
         df_class = "Handler__#{name}".id
       %}
 
+      # :nodoc:
       def __call_handler_for__{{name}}
         {{block.body}}
       end
 
+      # :nodoc:
       class {{df_class}} < ::Optarg::Definitions::Handler
         def visit(parser)
           if data = parser.data.as?(::{{@type}})
@@ -26,7 +29,8 @@ module Optarg
       end
     end
 
-    macro create_static_handler(names, metadata, stop)
+    # :nodoc:
+    macro __create_static_handler(names, metadata, stop)
       {%
         names = [names] unless names.class_name == "ArrayLiteral"
         method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_")}

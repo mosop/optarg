@@ -6,7 +6,7 @@ module OptargArgumentValueContainerClassFeature
 
   it "#[]" do
     model = Model.new(%w())
-    model.parser.parsed_args << "arg"
+    model.__parser.parsed_args << "arg"
     model[0].should eq "arg"
   end
 

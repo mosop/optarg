@@ -1,4 +1,5 @@
 module Optarg
+  # :nodoc:
   class Completion
     getter type : Symbol
     getter model : ModelClass

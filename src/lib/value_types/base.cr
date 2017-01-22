@@ -53,6 +53,7 @@ module Optarg::ValueTypes
                 Error.new(parser, df, self, message)
               end
 
+              # :nodoc:
               class Error < ::Optarg::ValidationError
                 getter definition : ::{{type}}
                 getter validation : ::\{{@type}}

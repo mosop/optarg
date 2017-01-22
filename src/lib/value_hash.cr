@@ -1,4 +1,5 @@
 module Optarg
+  # :nodoc:
   abstract class ValueHash(V) < Hash(String, V)
     @fallbacked = {} of String => Bool
     @parser : Parser

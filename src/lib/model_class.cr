@@ -1,4 +1,5 @@
 module Optarg
+  # :nodoc:
   class ModelClass
     property name : String
     getter? abstract : Bool

@@ -1,4 +1,4 @@
-class Optarg::CompletionGenerators
+module Optarg::CompletionGenerators
   class Zsh < Base
   end
 end

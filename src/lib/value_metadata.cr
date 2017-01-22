@@ -1,4 +1,5 @@
 module Optarg
+  # :nodoc:
   class ValueMetadata(T)
     @value : Value(T)?
 

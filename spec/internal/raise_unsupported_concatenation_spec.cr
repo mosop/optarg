@@ -8,6 +8,6 @@ module OptargInternalRaiseUnsupportedConcatenationFeature
 
   it name do
     model = Model.new(%w(-sa))
-    expect_raises(Optarg::UnsupportedConcatenation, Optarg::UnsupportedConcatenation.new(model.__parser, Model.definitions.options["-s"]).message) { model.__parse}
+    expect_raises(Optarg::UnsupportedConcatenation, Optarg::UnsupportedConcatenation.new(model.__parser, Model.__klass.definitions.options["-s"]).message) { model.__parse}
   end
 end

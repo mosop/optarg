@@ -15,14 +15,14 @@ module OptargInternalFeature
     result.s.should eq "v"
     result.s?.should eq "v"
     result.b?.should be_true
-    result.parsed_args.should eq %w(arg parsed)
+    result.__parser.parsed_args.should eq %w(arg parsed)
     result[String].should eq({"-s" => "v", "arg" => "arg"})
     result.nameless_args.should eq %w(parsed)
     result.unparsed_args.should eq %w(unparsed)
-    result.__parsed_nodes[0].should eq Optarg::Parser.new_node(%w(-s v), ParseModel.definitions.options["-s"])
-    result.__parsed_nodes[1].should eq Optarg::Parser.new_node(%w(-b), ParseModel.definitions.options["-b"])
-    result.__parsed_nodes[2].should eq Optarg::Parser.new_node(%w(arg), ParseModel.definitions.arguments["arg"])
-    result.__parsed_nodes[3].should eq Optarg::Parser.new_node(%w(parsed))
+    result.__parser.parsed_nodes[0].should eq Optarg::Parser.new_node(%w(-s v), ParseModel.__klass.definitions.options["-s"])
+    result.__parser.parsed_nodes[1].should eq Optarg::Parser.new_node(%w(-b), ParseModel.__klass.definitions.options["-b"])
+    result.__parser.parsed_nodes[2].should eq Optarg::Parser.new_node(%w(arg), ParseModel.__klass.definitions.arguments["arg"])
+    result.__parser.parsed_nodes[3].should eq Optarg::Parser.new_node(%w(parsed))
   end
 
   it "parses nothing" do
@@ -32,9 +32,9 @@ module OptargInternalFeature
     result.s?.should be_nil
     result.b?.should be_false
     result.nameless_args.should eq %w()
-    result.parsed_args.should eq %w()
+    result.__parser.parsed_args.should eq %w()
     result.unparsed_args.should eq %w()
-    result.__parsed_nodes.should eq [] of Array(String)
+    result.__parser.parsed_nodes.should eq [] of Array(String)
   end
 
   class Supermodel < Optarg::Model
@@ -167,12 +167,12 @@ module OptargInternalFeature
 
   describe "Metadata" do
     it "preserves metadata" do
-      MetadataModel.definitions.options["-s"].metadata.as(MetadataModel::Metadata).data.should eq "string"
-      MetadataModel.definitions.options["-b"].metadata.as(MetadataModel::Metadata).data.should eq "bool"
-      MetadataModel.definitions.options["-a"].metadata.as(MetadataModel::Metadata).data.should eq "array"
-      MetadataModel.definitions.arguments["arg"].metadata.as(MetadataModel::Metadata).data.should eq "arg"
-      MetadataModel.definitions.handlers["--help"].metadata.as(MetadataModel::Metadata).data.should eq "handler"
-      MetadataModel.definitions.terminators["--"].metadata.as(MetadataModel::Metadata).data.should eq "terminator"
+      MetadataModel.__klass.definitions.options["-s"].metadata.as(MetadataModel::Metadata).data.should eq "string"
+      MetadataModel.__klass.definitions.options["-b"].metadata.as(MetadataModel::Metadata).data.should eq "bool"
+      MetadataModel.__klass.definitions.options["-a"].metadata.as(MetadataModel::Metadata).data.should eq "array"
+      MetadataModel.__klass.definitions.arguments["arg"].metadata.as(MetadataModel::Metadata).data.should eq "arg"
+      MetadataModel.__klass.definitions.handlers["--help"].metadata.as(MetadataModel::Metadata).data.should eq "handler"
+      MetadataModel.__klass.definitions.terminators["--"].metadata.as(MetadataModel::Metadata).data.should eq "terminator"
     end
   end
 end

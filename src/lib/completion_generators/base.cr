@@ -1,4 +1,4 @@
-class Optarg::CompletionGenerators
+module Optarg::CompletionGenerators
   abstract class Base
     include Completion::TextFormatter
 

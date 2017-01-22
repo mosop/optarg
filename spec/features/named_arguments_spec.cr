@@ -10,7 +10,6 @@ module OptargNamedArgumentsFeature
     result = Model.parse(%w(/path/to/src /path/to/build and more))
     result.src_dir.should eq "/path/to/src"
     result.build_dir.should eq "/path/to/build"
-    result.parsed_args.should eq ["/path/to/src", "/path/to/build", "and", "more"]
     result[String].should eq({"src_dir" => "/path/to/src", "build_dir" => "/path/to/build"})
     result.nameless_args.should eq ["and", "more"]
   end

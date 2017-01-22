@@ -1,4 +1,5 @@
 module Optarg
+  # :nodoc:
   class DefinitionSet
     macro __set(types, list, array = nil)
       {%

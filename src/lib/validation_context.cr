@@ -1,4 +1,5 @@
 module Optarg
+  # :nodoc:
   class ValidationContext
     @parser : Parser
     @definition : Definitions::Base

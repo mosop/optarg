@@ -1,4 +1,5 @@
 module Optarg
+  # The base of model classes.
   abstract class Model
     macro inherited
       {% if @type.superclass == ::Optarg::Model %}
@@ -18,42 +19,23 @@ module Optarg
         %}
       {% end %}
 
-      {%
-        class_id = @type.name.underscore.split("::").join("__").id
-        last_concrete_id = "LastConcrete_#{class_id}".id
-      %}
-
-      {% if @type.abstract? %}
-        {%
-          last_concrete = superlast_concrete
-        %}
-      {% else %}
-        {%
-          last_concrete = @type
-        %}
-      {% end %}
-
-      {% if last_concrete %}
-        alias {{last_concrete_id}} = ::{{last_concrete}}
-      {% end %}
-
       @@__klass = ::Optarg::ModelClass.new(
         supermodel: {{ is_root ? nil : "::#{@type.superclass}.__klass".id }},
         name: {{@type.name.split("::")[-1].underscore}},
         abstract: {{@type.abstract?}}
       )
+      # :nodoc:
       def self.__klass; @@__klass; end
-      def self.klass; @@__klass; end
-
-      def self.__definitions; @@__klass.definitions; end
-      def self.definitions; @@__klass.definitions; end
 
       {% unless is_root %}
-        ::{{@type.superclass}}.__definitions.all.each do |kv|
-          __definitions << kv[1].subclassify(::{{@type}})
+        ::{{@type.superclass}}.__klass.definitions.all.each do |kv|
+          @@__klass.definitions << kv[1].subclassify(::{{@type}})
         end
       {% end %}
 
+      # A dedicated Optarg::Parser subclass for the model class.
+      #
+      # This class is automatically defined by the optarg library.
       {% if @type.abstract? %}
         abstract class Parser < ::{{superparser}}
           inherit_callback_group :validate, ::Proc(::{{@type}}, ::Nil)
@@ -62,7 +44,8 @@ module Optarg
         class Parser < ::{{superparser}}
           inherit_callback_group :validate, ::Proc(::{{@type}}, ::Nil)
 
-          def data
+          # Returns a target model instance.
+          def data : ::{{@type}}
             @data.as(::{{@type}})
           end
         end
@@ -71,6 +54,7 @@ module Optarg
           (@__parser.var ||= Parser.new(self)).as(Parser)
         end
 
+        # :nodoc:
         class DefinitionContext
           @definition : ::Optarg::Definitions::Base
 
@@ -86,74 +70,85 @@ module Optarg
           end
         end
 
+        # :nodoc:
         def self.__with_definition(df)
           yield DefinitionContext.new(df)
         end
       {% end %}
     end
 
+    # :nodoc:
+    def __klass; self.class.__klass; end
+
     @__parser = Util::Var(Parser).new
 
+    # :nodoc:
     getter __argv : Array(String)
 
+    # :nodoc:
     def initialize(@__argv)
     end
 
+    # :nodoc:
     def self.__parse(argv, *args)
       new(argv, *args).tap do |o|
         o.__parse
       end
     end
 
+    # Creates a new model instance and parses the *argv* arguments.
+    #
+    # Returns the created instance.
+    def self.parse(argv : Array(String), *args)
+      __parse(argv, *args)
+    end
+
+    # :nodoc:
     def __parse
       __parser.parse
     end
 
-    def self.klass; __klass; end
-    def self.parse(argv, *args); __parse(argv, *args); end
+    # Returns an array that contains nameless argument values.
+    def nameless_args; __parser.nameless_args; end
 
-    def parse; __parse; end
-    def parser; __parser; end
+    # Returns an array that contains unparsed argument values.
+    def unparsed_args; __parser.unparsed_args; end
 
-    def __nameless_args; __parser.nameless_args; end
-    def nameless_args; __nameless_args; end
-
-    def __parsed_args; __parser.parsed_args; end
-    def parsed_args; __parsed_args; end
-
-    def __unparsed_args; __parser.unparsed_args; end
-    def unparsed_args; __unparsed_args; end
-
-    def __parsed_nodes; __parser.parsed_nodes; end
-
-    def __definitions; self.class.__definitions; end
-
+    # Returns a value hash for String-type options and arguments.
     def [](klass : String.class)
       __parser.args[klass]
     end
 
+    # Returns a value hash for Bool-type options and arguments.
     def [](klass : Bool.class)
       __parser.args[klass]
     end
 
+    # Returns a value hash for Array(String)-type options and arguments.
     def [](klass : Array(String).class)
       __parser.args[klass]
     end
 
+    # Returns an argument value at the *index*.
     def [](index : Int32)
       __parser.parsed_args[index]
     end
 
+    # Returns an argument value at the *index*.
+    #
+    # Returns nil if the *index* is out of range.
     def []?(index : Int32)
       __parser.parsed_args[index]?
     end
 
+    # Iterates argument values.
     def each
       __parser.parsed_args.each do |i|
         yield i
       end
     end
 
+    # :nodoc:
     def self.__with_self(*args)
       with self yield *args
     end

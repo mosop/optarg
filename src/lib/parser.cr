@@ -3,28 +3,46 @@ module Optarg
     ::Callback.enable
     define_callback_group :validate, Proc(Model, Nil)
 
+    # :nodoc:
     alias Node = NamedTuple(args: Array(String), definitions: Array(Definitions::Base))
 
+    # Returns a target model instance.
     getter data : Model
 
+    # :nodoc:
     getter parsed_nodes = [] of Node
-    getter! args : ValueContainer
+
+    # :nodoc:
     getter nameless_args = %w()
+
+    # :nodoc:
     getter parsed_args = %w()
+
+    # :nodoc:
     getter unparsed_args = %w()
 
     @argument_index = 0
+    # :nodoc:
     getter index = 0
 
+    # :nodoc:
     def initialize(data)
       @data = data
       @args = ValueContainer.new(self)
     end
 
+    @args : ValueContainer?
+    # :nodoc:
+    def args
+      @args.not_nil!
+    end
+
+    # :nodoc:
     def input_args
       data.__argv
     end
 
+    # :nodoc:
     def self.new_node(args = %w(), *definitions)
       node = {args: args, definitions: [] of Definitions::Base}
       definitions.each do |df|
@@ -34,10 +52,12 @@ module Optarg
     end
 
     @definitions : DefinitionSet?
+    # :nodoc:
     def definitions
-      @definitions ||= data.__definitions
+      @definitions ||= data.__klass.definitions
     end
 
+    # :nodoc:
     def stopped?
       return false if parsed_nodes.size == 0
       return parsed_nodes.last[:definitions].any?{|i| i.stops? || i.terminates?}
@@ -49,6 +69,7 @@ module Optarg
       end
     end
 
+    # :nodoc:
     def parse
       definitions.all.each do |kv|
         kv[1].initialize_before_parse(self)
@@ -61,10 +82,12 @@ module Optarg
       end
     end
 
+    # :nodoc:
     def eol?
       @index == input_args.size
     end
 
+    # :nodoc:
     def resume
       until eol? || stopped?
         visit
@@ -74,6 +97,7 @@ module Optarg
       @index = input_args.size
     end
 
+    # :nodoc:
     def visit
       arg = self[0]
       if visit_terminator
@@ -86,6 +110,7 @@ module Optarg
       end
     end
 
+    # :nodoc:
     def visit_terminator
       name = self[0]
       if node = find_with_def(definitions.terminators, self[0]){|df| df.visit(self)}
@@ -94,6 +119,7 @@ module Optarg
       end
     end
 
+    # :nodoc:
     def find_with_def(dfs, name)
       dfs.each do |kv|
         next unless kv[1].matches?(name)
@@ -103,6 +129,7 @@ module Optarg
       nil
     end
 
+    # :nodoc:
     def visit_concatenated_options
       names = self[0][1..-1].split("").map{|i| "-#{i}"}
       node = Parser.new_node([self[0]])
@@ -117,6 +144,7 @@ module Optarg
       @index += 1
     end
 
+    # :nodoc:
     def visit_option
       name = self[0]
       if node = find_with_def(definitions.options, name){|df| df.visit(self)}
@@ -127,6 +155,7 @@ module Optarg
       end
     end
 
+    # :nodoc:
     def visit_argument
       while @argument_index < definitions.arguments.size
         df = definitions.argument_list[@argument_index]
@@ -146,18 +175,22 @@ module Optarg
       @index += 1
     end
 
+    # :nodoc:
     def [](*args)
       input_args[@index..-1][*args]
     end
 
+    # :nodoc:
     def left
       input_args.size - @index
     end
 
+    # Creates and raises a new `ValidationError` with the *message*.
     def invalidate!(message : String)
       invalidate! ValidationError.new(self, message)
     end
 
+    # :nodoc:
     def invalidate!(ex : ValidationError)
       raise ex
     end

@@ -1,4 +1,5 @@
 module Optarg
+  # :nodoc:
   class Metadata
     @definition : Definitions::Base?
     def definition=(value)

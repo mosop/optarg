@@ -1,4 +1,5 @@
 module Optarg
+  # :nodoc:
   abstract class Value(T)
     include ::Comparable(Value(T))
 

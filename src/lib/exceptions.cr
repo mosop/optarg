@@ -1,18 +1,22 @@
 module Optarg
   class ParsingError < Exception
+    # :nodoc:
     getter parser : Parser
 
+    # :nodoc:
     def initialize(@parser, message)
       super message
     end
   end
 
+  # :nodoc:
   class UnknownOption < ParsingError
     def initialize(parser, name)
       super parser, "The #{name} option is unknown."
     end
   end
 
+  # :nodoc:
   class MissingValue < ParsingError
     getter option : DefinitionMixins::Option
 
@@ -21,6 +25,7 @@ module Optarg
     end
   end
 
+  # :nodoc:
   class UnsupportedConcatenation < ParsingError
     getter option : DefinitionMixins::Option
 
@@ -31,6 +36,7 @@ module Optarg
   end
 
   class ValidationError < ParsingError
+    # :nodoc:
     def initialize(parser, message)
       super parser, message
     end

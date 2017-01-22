@@ -1,6 +1,7 @@
 module Optarg
   class Model
-    macro define_static_value(kind, access_type, metaclass, names, value_key, _mixin, &block)
+    # :nodoc:
+    macro __define_static_value(kind, access_type, metaclass, names, value_key, _mixin, &block)
       {%
         kind = kind.id
         metaclass = metaclass.resolve
@@ -16,11 +17,13 @@ module Optarg
 
       {% if kind == :argument %}
         {%
+          value_name = key.upcase
           container_method = "self".id
           df_getter = "#{method_names[0]}_arg".id
         %}
       {% else %}
         {%
+          value_name = key
           container_method = "self".id
           df_getter = "#{method_names[0]}_option".id
         %}
@@ -29,18 +32,29 @@ module Optarg
       {% for method_name, index in method_names %}
         {% if access_type == :predicate %}
           {% unless model_reserved.includes?("#{method_name}?".id) %}
+            # Returns the {{value_name}} {{kind.id}} value.
+            #
+            # This method is automatically defined by the optarg library.
             def {{method_name}}?
               !!{{container_method}}[::{{metaclass}}::Typed::Type][{{value_key}}]?
             end
           {% end %}
         {% elsif access_type == :nilable %}
           {% unless model_reserved.includes?(method_name) %}
+            # Returns the {{value_name}} {{kind.id}} value.
+            #
+            # This method is automatically defined by the optarg library.
             def {{method_name}}
               {{container_method}}[::{{metaclass}}::Typed::Type][{{value_key}}]
             end
           {% end %}
 
           {% unless model_reserved.includes?("#{method_name}?".id) %}
+            # Returns the {{value_name}} {{kind.id}} value.
+            #
+            # Returns nil, if the value is undefined.
+            #
+            # This method is automatically defined by the optarg library.
             def {{method_name}}?
               {{container_method}}[::{{metaclass}}::Typed::Type][{{value_key}}]?
             end
