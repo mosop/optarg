@@ -157,5 +157,4 @@ module Optarg
   end
 end
 
-require "./model/macros/*"
-require "./model/dsl/*"
+require "./model/*"

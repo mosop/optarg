@@ -26,3 +26,6 @@ module Optarg
     end
   end
 end
+
+require "./completion/text_formatter"
+require "./completion/*"
