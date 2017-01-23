@@ -12,3 +12,6 @@ dependencies:
   callback:
     github: mosop/callback
     version: ~> 0.6.1
+  string_inflection:
+    github: mosop/string_inflection
+    version: ~> 0.2.0

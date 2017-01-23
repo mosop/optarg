@@ -48,7 +48,7 @@ module Optarg::CompletionGenerators
 
     @entry_point : String?
     def entry_point
-      @entry_point ||= first? ? @base_prefix : "#{@base_prefix}__#{model.name}"
+      @entry_point ||= StringInflection.snake(first? ? @base_prefix : "#{@base_prefix}__#{model.name}")
     end
 
     @prefix : String?

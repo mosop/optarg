@@ -1,4 +1,5 @@
 require "callback"
+require "string_inflection/snake"
 require "./version"
 require "./lib/exceptions"
 require "./lib/value"
