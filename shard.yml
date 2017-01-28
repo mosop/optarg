@@ -1,5 +1,5 @@
 name: optarg
-version: 0.5.3
+version: 0.5.4
 
 authors:
   - mosop
@@ -11,7 +11,7 @@ crystal: 0.20.5
 dependencies:
   callback:
     github: mosop/callback
-    version: ~> 0.6.1
+    version: ~> 0.6.2
   string_inflection:
     github: mosop/string_inflection
     version: ~> 0.2.0
