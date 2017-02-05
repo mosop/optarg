@@ -7,7 +7,7 @@ module Optarg::Definitions
     getter names : Array(String)
     getter metadata : Metadata
 
-    def initialize(names : String | Array(String), metadata : Metadata? = nil, stop : Bool? = nil, terminate : Bool? = nil, complete : String | Symbol | Array(String) | Nil = nil)
+    def initialize(names : String | Array(String), metadata : Metadata? = nil, stop : Bool? = nil, terminate : Bool? = nil, complete : String | Symbol | Array(String) | Nil = nil, unknown : Bool? = nil)
       @names = case names
       when String
         [names]
@@ -18,6 +18,7 @@ module Optarg::Definitions
       @metadata.definition = self
       @stops = !!stop
       @terminates = !!terminate
+      @unknown = !!unknown
       initialize_completion complete: (complete || "")
     end
 
@@ -29,6 +30,11 @@ module Optarg::Definitions
     @terminates : Bool?
     def terminates?
       @terminates.as(Bool)
+    end
+
+    @unknown : Bool?
+    def unknown?
+      @unknown.as(Bool)
     end
 
     def key

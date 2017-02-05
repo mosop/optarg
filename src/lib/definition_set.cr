@@ -36,6 +36,7 @@ module Optarg
       __set Definitions::Terminator, terminators
       __set DefinitionMixins::Value, values
       __set Definitions::StringArrayArgument, string_array_arguments
+      __set Definitions::Unknown, unknowns
     end
 
     getter all = {} of String => Definitions::Base
@@ -44,6 +45,7 @@ module Optarg
     getter value_options = {} of String => DefinitionMixins::ValueOption
     getter handlers = {} of String => Definitions::Handler
     getter terminators = {} of String => Definitions::Terminator
+    getter unknowns = {} of String => Definitions::Unknown
     getter values = {} of String => DefinitionMixins::Value
     getter string_array_arguments = {} of String => Definitions::StringArrayArgument
 

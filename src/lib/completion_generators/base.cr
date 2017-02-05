@@ -100,6 +100,7 @@ module Optarg::CompletionGenerators
     end
 
     def make_definition(df)
+      return if df.is_a?(Definitions::Unknown)
       @keymap[df.key] = @keymap.size
       add_key df
       add_act df

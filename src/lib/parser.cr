@@ -60,7 +60,7 @@ module Optarg
     # :nodoc:
     def stopped?
       return false if parsed_nodes.size == 0
-      return parsed_nodes.last[:definitions].any?{|i| i.stops? || i.terminates?}
+      return parsed_nodes.last[:definitions].any?{|i| i.stops? || i.terminates? || i.unknown?}
     end
 
     on_validate do |o|
@@ -101,13 +101,21 @@ module Optarg
     def visit
       arg = self[0]
       if visit_terminator
-      elsif arg =~ /^-\w\w/
-        visit_concatenated_options
-      elsif arg =~ /^-/
-        visit_option
-      else
-        visit_argument
+        return
       end
+      if arg =~ /^-\w\w/
+        visit_concatenated_options
+        return
+      end
+      if arg =~ /^-/
+        begin
+          visit_option
+          return
+        rescue ex : UnknownOption
+          raise ex if definitions.unknowns.empty?
+        end
+      end
+      visit_argument
     end
 
     # :nodoc:
@@ -157,6 +165,15 @@ module Optarg
 
     # :nodoc:
     def visit_argument
+      if definitions.unknowns.empty?
+        visit_argument2
+      else
+        visit_unknown
+      end
+    end
+
+    # :nodoc:
+    def visit_argument2
       while @argument_index < definitions.arguments.size
         df = definitions.argument_list[@argument_index]
         unless df.visitable?(self)
@@ -173,6 +190,12 @@ module Optarg
       @parsed_args << arg
       @parsed_nodes << Parser.new_node([arg])
       @index += 1
+    end
+
+    # :nodoc:
+    def visit_unknown
+      node = Parser.new_node(%w(), definitions.unknowns.first[1])
+      @parsed_nodes << node
     end
 
     # :nodoc:
