@@ -39,7 +39,8 @@ module Optarg
               !!{{container_method}}[::{{metaclass}}::Typed::Type][{{value_key}}]?
             end
           {% end %}
-        {% elsif access_type == :nilable %}
+        {% end %}
+        {% if access_type == :nilable || access_type == :array %}
           {% unless model_reserved.includes?(method_name) %}
             # Returns the {{value_name}} {{kind.id}} value.
             #
@@ -48,7 +49,8 @@ module Optarg
               {{container_method}}[::{{metaclass}}::Typed::Type][{{value_key}}]
             end
           {% end %}
-
+        {% end %}
+        {% if access_type == :nilable %}
           {% unless model_reserved.includes?("#{method_name}?".id) %}
             # Returns the {{value_name}} {{kind.id}} value.
             #
@@ -61,7 +63,6 @@ module Optarg
           {% end %}
         {% end %}
       {% end %}
-
 
       ::{{@type}}.__with_self(::{{metaclass}}) {{block}}
     end
