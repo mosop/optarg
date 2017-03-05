@@ -15,7 +15,7 @@ module Optarg::Definitions
     end
 
     def completion_length(gen)
-      1
+      2
     end
   end
 end
