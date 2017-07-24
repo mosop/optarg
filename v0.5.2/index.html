@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta id="repository-name" content="github.com/mosop/optarg">
+  <link href="css/style.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="js/doc.js"></script>
+  <title>README - github.com/mosop/optarg</title>
+</head>
+<body>
+
+<div id="types-list">
+  <div id="search-box">
+    <input type="search" id="search-input" placeholder="Search...">
+  </div>
+
+  <ul>
+    <li class="current"><a href="index.html">README</a></li>
+  </ul>
+
+  <ul>
+  
+  <li class="parent " data-id="github.com/mosop/optarg/Optarg" data-name="optarg">
+      <a href="Optarg.html">Optarg</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/mosop/optarg/Optarg/Model" data-name="optarg::model">
+      <a href="Optarg/Model.html">Model</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/mosop/optarg/Optarg/Parser" data-name="optarg::parser">
+      <a href="Optarg/Parser.html">Parser</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/mosop/optarg/Optarg/ParsingError" data-name="optarg::parsingerror">
+      <a href="Optarg/ParsingError.html">ParsingError</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/mosop/optarg/Optarg/ValidationError" data-name="optarg::validationerror">
+      <a href="Optarg/ValidationError.html">ValidationError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+</div>
+
+<div id="main-content">
+<h1>optarg</h1>
+
+<p>Yet another Crystal library for parsing command-line options and arguments.</p>
+
+<p>optarg is good enough for parsing options. However there's no feature for formatting help, subcommands... etc. If you prefer a more feature-rich library, try <a href="https://github.com/mosop/cli" target="_blank">cli</a>.</p>
+
+<p><a href="https://travis-ci.org/mosop/optarg" target="_blank"><img src="https://travis-ci.org/mosop/optarg.svg?branch=master" alt="Build Status"/></a></p>
+
+<h2>Installation</h2>
+
+<p>Add this to your application's <code>shard.yml</code>:</p>
+
+<pre><code class='language-yaml'>dependencies:
+optarg:
+  github: mosop/optarg</code></pre>
+
+<p>&lt;a name="code_samples">&lt;/a></p>
+
+<h2>Code Samples</h2>
+
+<h3>Accessor</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  string <span class="s">&quot;--foo&quot;</span>
+<span class="k">end</span>
+
+result <span class="o">=</span> <span class="t">Model</span>.parse(<span class="s">%w(--foo bar)</span>)
+result.foo <span class="c"># &#61;&gt; &quot;bar&quot;</span></code></pre>
+
+<h3>Nilable Accessor</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  string <span class="s">&quot;--foo&quot;</span>
+<span class="k">end</span>
+
+result <span class="o">=</span> <span class="t">Model</span>.parse(<span class="s">%w()</span>)
+result.foo? <span class="c"># &#61;&gt; nil</span>
+result.foo <span class="c"># raises KeyError</span></code></pre>
+
+<h3>Synonyms</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  string <span class="s">%w(-f --file)</span>
+<span class="k">end</span>
+
+result <span class="o">=</span> <span class="t">Model</span>.parse(<span class="s">%w(-f foo.cr)</span>)
+result.f <span class="c"># &#61;&gt; &quot;foo.cr&quot;</span>
+result.file <span class="c"># &#61;&gt; &quot;foo.cr&quot;</span></code></pre>
+
+<h3>Boolean</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  bool <span class="s">&quot;-b&quot;</span>
+<span class="k">end</span>
+
+result <span class="o">=</span> <span class="t">Model</span>.parse(<span class="s">%w(-b)</span>)
+result.b? <span class="c"># &#61;&gt; true</span></code></pre>
+
+<h3>Array</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  array <span class="s">&quot;-e&quot;</span>
+<span class="k">end</span>
+
+result <span class="o">=</span> <span class="t">Model</span>.parse(<span class="s">%w(-e foo -e bar -e baz)</span>)
+result.e <span class="c"># &#61;&gt; &#91;&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;&#93;</span></code></pre>
+
+<h3>Concatenation</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  bool <span class="s">&quot;-a&quot;</span>
+  bool <span class="s">&quot;-b&quot;</span>
+<span class="k">end</span>
+
+result <span class="o">=</span> <span class="t">Model</span>.parse(<span class="s">%w(-ab)</span>)
+result.a? <span class="c"># &#61;&gt; true</span>
+result.b? <span class="c"># &#61;&gt; true</span></code></pre>
+
+<h3>Default Value</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  string <span class="s">&quot;-s&quot;</span>, default: <span class="s">&quot;string&quot;</span>
+  bool <span class="s">&quot;-b&quot;</span>, default: <span class="n">true</span>
+  array <span class="s">&quot;-a&quot;</span>, default: <span class="s">%w(1 2 3)</span>
+<span class="k">end</span>
+
+result <span class="o">=</span> <span class="t">Model</span>.parse(<span class="s">%w()</span>)
+result.s  <span class="c"># &#61;&gt; &quot;string&quot;</span>
+result.b? <span class="c"># &#61;&gt; true</span>
+result.a  <span class="c"># &#61;&gt; &#91;&quot;1&quot;, &quot;2&quot;, &quot;3&quot;&#93;</span></code></pre>
+
+<h3>Negation</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  bool <span class="s">&quot;-b&quot;</span>, default: <span class="n">true</span>, not: <span class="s">&quot;-B&quot;</span>
+<span class="k">end</span>
+
+result <span class="o">=</span> <span class="t">Model</span>.parse(<span class="s">%w(-B)</span>)
+result.b? <span class="c"># &#61;&gt; false</span></code></pre>
+
+<h3>Arguments</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  string <span class="s">&quot;-s&quot;</span>
+  bool <span class="s">&quot;-b&quot;</span>
+<span class="k">end</span>
+
+result <span class="o">=</span> <span class="t">Model</span>.parse(<span class="s">%w(foo -s string bar -b baz)</span>)
+result.args <span class="c"># &#61;&gt; &#91;&quot;foo&quot;, &quot;bar&quot;, &quot;baz&quot;&#93;</span></code></pre>
+
+<h3>Named Arguments</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  arg <span class="s">&quot;src_dir&quot;</span>
+  arg <span class="s">&quot;build_dir&quot;</span>
+<span class="k">end</span>
+
+result <span class="o">=</span> <span class="t">Model</span>.parse(<span class="s">%w(/path/to/src /path/to/build and more)</span>)
+result.args.src_dir <span class="c"># &#61;&gt; &quot;/path/to/src&quot;</span>
+result.args.build_dir <span class="c"># &#61;&gt; &quot;/path/to/build&quot;</span>
+result.args <span class="c"># &#61;&gt; &#91;&quot;/path/to/src&quot;, &quot;/path/to/build&quot;, &quot;and&quot;, &quot;more&quot;&#93;</span>
+result.named_args <span class="c"># &#61;&gt; &#123;&quot;src_dir&quot; &#61;&gt; &quot;/path/to/src&quot;, &quot;build_dir&quot; &#61;&gt; &quot;/path/to/build&quot;&#125;</span>
+result.nameless_args <span class="c"># &#61;&gt; &#91;&quot;and&quot;, &quot;more&quot;&#93;</span></code></pre>
+
+<h3>Argument Array</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  arg <span class="s">&quot;arg&quot;</span>
+  arg_array <span class="s">&quot;item&quot;</span>
+<span class="k">end</span>
+
+result <span class="o">=</span> <span class="t">Model</span>.parse(<span class="s">%w(foo bar baz)</span>)
+result.arg <span class="c"># &#61;&gt; &quot;foo&quot;</span>
+result.item <span class="c"># &#61;&gt; &#91;&quot;bar&quot;, &quot;baz&quot;&#93;</span></code></pre>
+
+<h3>Inheritance (Reusing Models)</h3>
+
+<pre><code class='language-crystal'><span class="k">abstract</span> <span class="k">class</span> <span class="t">Animal</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  bool <span class="s">&quot;--sleep&quot;</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="t">Cat</span> <span class="o"><</span> <span class="t">Animal</span>
+  bool <span class="s">&quot;--mew&quot;</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="t">Dog</span> <span class="o"><</span> <span class="t">Animal</span>
+  bool <span class="s">&quot;--woof&quot;</span>
+<span class="k">end</span>
+
+<span class="t">Cat</span>.parse(<span class="s">%w()</span>).responds_to?(<span class="n">:&quot;sleep?&quot;</span>) <span class="c"># &#61;&gt; true</span>
+<span class="t">Dog</span>.parse(<span class="s">%w()</span>).responds_to?(<span class="n">:&quot;sleep?&quot;</span>) <span class="c"># &#61;&gt; true</span></code></pre>
+
+<h3>Handler</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  on(<span class="s">&quot;--goodbye&quot;</span>) { goodbye! }
+
+  <span class="k">def</span> <span class="m">goodbye!</span>
+    raise <span class="s">&quot;Goodbye, world&#33;&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="t">Model</span>.parse <span class="s">%w(--goodbye)</span> <span class="c"># raises &quot;Goodbye, world&#33;&quot;</span></code></pre>
+
+<h3>Required Arguments and Options</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Profile</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  string <span class="s">&quot;--birthday&quot;</span>, required: <span class="n">true</span>
+<span class="k">end</span>
+
+<span class="t">Profile</span>.parse <span class="s">%w()</span> <span class="c"># raises a RequiredOptionError exception.</span></code></pre>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Compile</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  arg <span class="s">&quot;source_file&quot;</span>, required: <span class="n">true</span>
+<span class="k">end</span>
+
+<span class="t">Compile</span>.parse <span class="s">%w()</span> <span class="c"># raises a RequiredArgumentError exception.</span></code></pre>
+
+<h3>Minimum Length of Array</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Multiply</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  array <span class="s">&quot;-n&quot;</span>, min: <span class="n">2</span>
+
+  <span class="k">def</span> <span class="m">run</span>
+    puts options.n.reduce{<span class="o">|</span>n1, n2<span class="o">|</span> n1 <span class="o">*</span> n2}
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="t">Multiply</span>.parse <span class="s">%w(-n 794)</span> <span class="c"># raises a MinimumLengthError exception.</span></code></pre>
+
+<h3>Custom Initializer</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">The</span>
+  <span class="k">def</span> <span class="m">message</span>
+    <span class="s">&quot;Someday again&#33;&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  <span class="k">def</span> <span class="m">initialize</span>(argv, @the : <span class="t">The</span>)
+    <span class="k">super</span> argv
+  <span class="k">end</span>
+
+  on(<span class="s">&quot;--goodbye&quot;</span>) { raise @the.message }
+<span class="k">end</span>
+
+<span class="t">Model</span>.parse(<span class="s">%w(--goodbye)</span>, <span class="t">The</span>.<span class="k">new</span>) <span class="c"># raises &quot;Someday again&#33;&quot;</span></code></pre>
+
+<h3>Stop and Termination</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  bool <span class="s">&quot;-b&quot;</span>, stop: <span class="n">true</span>
+<span class="k">end</span>
+
+result <span class="o">=</span> <span class="t">Model</span>.parse(<span class="s">%w(foo -b bar)</span>)
+result.b? <span class="c"># &#61;&gt; true</span>
+result.args <span class="c"># &#61;&gt; &#91;&quot;foo&quot;&#93;</span>
+result.unparsed_args <span class="c"># &#61;&gt; &#91;&quot;bar&quot;&#93;</span></code></pre>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Model</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  terminator <span class="s">&quot;--&quot;</span>
+<span class="k">end</span>
+
+result <span class="o">=</span> <span class="t">Model</span>.parse(<span class="s">%w(foo -- bar)</span>)
+result.args <span class="c"># &#61;&gt; &#91;&quot;foo&quot;&#93;</span>
+result.unparsed_args <span class="c"># &#61;&gt; &#91;&quot;bar&quot;&#93;</span></code></pre>
+
+<h3>Validating Inclusion</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Trip</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  arg <span class="s">&quot;somewhere_warm&quot;</span>, any_of: <span class="s">%w(tahiti okinawa hawaii)</span>
+<span class="k">end</span>
+
+<span class="t">Trip</span>.parse(<span class="s">%w(gotland)</span>) <span class="c"># &#61;&gt; raises an error</span></code></pre>
+
+<h3>Custom Validation</h3>
+
+<pre><code class='language-crystal'><span class="k">class</span> <span class="t">Hello</span> <span class="o"><</span> <span class="t">Optarg</span><span class="t">::</span><span class="t">Model</span>
+  arg <span class="s">&quot;smiley&quot;</span>
+
+  <span class="t">Parser</span>.on_validate <span class="k">do</span> <span class="o">|</span>parser<span class="o">|</span>
+    parser.invalidate! <span class="s">&quot;That&#39;s not a smile.&quot;</span> <span class="k">if</span> parser.args.smiley <span class="o">!=</span> <span class="s">&quot;:&#41;&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="t">Hello</span>.parse <span class="s">%w(:P)</span> <span class="c"># &#61;&gt; raises &quot;That&#39;s not a smile.&quot;</span></code></pre>
+
+<h2>Usage</h2>
+
+<pre><code class='language-crystal'><span class="k">require</span> <span class="s">&quot;optarg&quot;</span></code></pre>
+
+<p>and see:</p>
+
+<ul><li><a href="#code_samples" target="_blank">Code Samples</a></li><li><a href="https://github.com/mosop/optarg/wiki" target="_blank">Wiki</a></li><li><a href="http://mosop.me/optarg/Optarg.html" target="_blank">API Document</a></li></ul>
+
+<h2>Release Notes</h2>
+
+<p>See <a href="https://github.com/mosop/optarg/releases" target="_blank">Releases</a>.</p>
+</div>
+</body>
+</html>

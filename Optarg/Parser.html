@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta id="repository-name" content="github.com/mosop/optarg">
+  <link href="../css/style.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="../js/doc.js"></script>
+  <title>Optarg::Parser - github.com/mosop/optarg</title>
+</head>
+<body>
+
+<div id="types-list">
+  <div id="search-box">
+    <input type="search" id="search-input" placeholder="Search...">
+  </div>
+
+  <ul>
+    <li><a href="../index.html">README</a></li>
+  </ul>
+
+  <ul>
+  
+  <li class="parent open current" data-id="github.com/mosop/optarg/Optarg" data-name="optarg">
+      <a href="../Optarg.html">Optarg</a>
+      
+        <ul>
+  
+  <li class=" " data-id="github.com/mosop/optarg/Optarg/Model" data-name="optarg::model">
+      <a href="../Optarg/Model.html">Model</a>
+      
+    </li>
+  
+  <li class=" current" data-id="github.com/mosop/optarg/Optarg/Parser" data-name="optarg::parser">
+      <a href="../Optarg/Parser.html">Parser</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/mosop/optarg/Optarg/ParsingError" data-name="optarg::parsingerror">
+      <a href="../Optarg/ParsingError.html">ParsingError</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/mosop/optarg/Optarg/ValidationError" data-name="optarg::validationerror">
+      <a href="../Optarg/ValidationError.html">ValidationError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+</div>
+
+<div id="main-content">
+<h1 class="type-name">
+
+  <span class="kind">abstract class</span> Optarg::Parser
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Optarg/Parser.html">Optarg::Parser</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>Defined in:</h2>
+  
+    
+      <a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/parser.cr#L2" target="_blank">lib/parser.cr</a>
+    
+    <br/>
+  
+
+
+
+
+
+
+
+  <h2>Class Method Summary</h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#after_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method" class="signature"><strong>.after_validate</strong>(name, proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#after_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method" class="signature"><strong>.after_validate</strong>(proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#after_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-class-method" class="signature"><strong>.after_validate</strong>(name = <span class="n">nil</span>, &block : Optarg::Parser, Model -> Nil)</a>
+        
+          <div class="summary"><p>Registers a callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#around_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method" class="signature"><strong>.around_validate</strong>(name, proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#around_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method" class="signature"><strong>.around_validate</strong>(proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#around_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-class-method" class="signature"><strong>.around_validate</strong>(name = <span class="n">nil</span>, &block : Optarg::Parser, Model -> Nil)</a>
+        
+          <div class="summary"><p>Registers a callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#before_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method" class="signature"><strong>.before_validate</strong>(name, proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#before_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method" class="signature"><strong>.before_validate</strong>(proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#before_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-class-method" class="signature"><strong>.before_validate</strong>(name = <span class="n">nil</span>, &block : Optarg::Parser, Model -> Nil)</a>
+        
+          <div class="summary"><p>Registers a callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#on_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method" class="signature"><strong>.on_validate</strong>(name, proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#on_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method" class="signature"><strong>.on_validate</strong>(proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#on_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-class-method" class="signature"><strong>.on_validate</strong>(name = <span class="n">nil</span>, &block : Optarg::Parser, Model -> Nil)</a>
+        
+          <div class="summary"><p>Registers a callback for the validate group.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <h2>Instance Method Summary</h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#after_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-instance-method" class="signature"><strong>#after_validate</strong>(name = <span class="n">nil</span>, &block : Optarg::Parser, Model -> Nil)</a>
+        
+          <div class="summary"><p>Registers a dynamic callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#after_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method" class="signature"><strong>#after_validate</strong>(proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a dynamic callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#after_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method" class="signature"><strong>#after_validate</strong>(name, proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a dynamic callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#around_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-instance-method" class="signature"><strong>#around_validate</strong>(name = <span class="n">nil</span>, &block : Optarg::Parser, Model -> Nil)</a>
+        
+          <div class="summary"><p>Registers a dynamic callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#around_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method" class="signature"><strong>#around_validate</strong>(name, proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a dynamic callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#around_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method" class="signature"><strong>#around_validate</strong>(proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a dynamic callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#before_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method" class="signature"><strong>#before_validate</strong>(name, proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a dynamic callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#before_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method" class="signature"><strong>#before_validate</strong>(proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a dynamic callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#before_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-instance-method" class="signature"><strong>#before_validate</strong>(name = <span class="n">nil</span>, &block : Optarg::Parser, Model -> Nil)</a>
+        
+          <div class="summary"><p>Registers a dynamic callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#callback_results%3AHash%28String%2CCallback%3A%3AResultSet%28Nil%29%29-instance-method" class="signature"><strong>#callback_results</strong> : Hash(String, Callback::ResultSet(Nil))</a>
+        
+          <div class="summary"><p>Returns callback results.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#callback_results_for_validate-instance-method" class="signature"><strong>#callback_results_for_validate</strong></a>
+        
+          <div class="summary"><p>Returns callback results of the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#data%3AModel-instance-method" class="signature"><strong>#data</strong> : Model</a>
+        
+          <div class="summary"><p>Returns a target model instance.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#invalidate%21%28message%3AString%29-instance-method" class="signature"><strong>#invalidate!</strong>(message : String)</a>
+        
+          <div class="summary"><p>Creates and raises a new <code><a href="../Optarg/ValidationError.html">ValidationError</a></code> with the <em>message</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#on_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method" class="signature"><strong>#on_validate</strong>(name, proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a dynamic callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#on_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method" class="signature"><strong>#on_validate</strong>(proc : ::Proc(Optarg::Parser, Model, Nil))</a>
+        
+          <div class="summary"><p>Registers a dynamic callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#on_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-instance-method" class="signature"><strong>#on_validate</strong>(name = <span class="n">nil</span>, &block : Optarg::Parser, Model -> Nil)</a>
+        
+          <div class="summary"><p>Registers a dynamic callback for the validate group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#run_callbacks_for_validate%28%2Aargs%2C%26block%29-instance-method" class="signature"><strong>#run_callbacks_for_validate</strong>(*args, &block)</a>
+        
+          <div class="summary"><p>Invokes all callbacks of the validate group.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <h2>Macro Summary</h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#define_callback_group%28name%2Cproc_type%3D%3A%3AProc%28%3A%3ANil%29%29-macro" class="signature"><strong>define_callback_group</strong>(name, proc_type = ::Proc(::Nil))</a>
+        
+          <div class="summary"><p>Defines a new callback group.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#inherit_callback_group%28name%2Cproc_type%3D%3A%3AProc%28%3A%3ANil%29%29-macro" class="signature"><strong>inherit_callback_group</strong>(name, proc_type = ::Proc(::Nil))</a>
+        
+          <div class="summary"><p>Inherits an existing callback group that is defined in its ancestor class.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+
+
+  <h2>Class Method Detail</h2>
+  
+    <div class="entry-detail" id="after_validate&#40;name,proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>after_validate</strong>(name, proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#after_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="after_validate&#40;proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>after_validate</strong>(proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#after_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="after_validate&#40;name&#61;nil,&amp;block:Optarg::Parser,Model-&gt;Nil&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>after_validate</strong>(name = <span class="n">nil</span>, &block : <a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a> -> Nil)
+
+        <a class="method-permalink" href="#after_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-class-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="around_validate&#40;name,proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>around_validate</strong>(name, proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#around_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="around_validate&#40;proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>around_validate</strong>(proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#around_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="around_validate&#40;name&#61;nil,&amp;block:Optarg::Parser,Model-&gt;Nil&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>around_validate</strong>(name = <span class="n">nil</span>, &block : <a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a> -> Nil)
+
+        <a class="method-permalink" href="#around_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-class-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="before_validate&#40;name,proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>before_validate</strong>(name, proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#before_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="before_validate&#40;proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>before_validate</strong>(proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#before_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="before_validate&#40;name&#61;nil,&amp;block:Optarg::Parser,Model-&gt;Nil&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>before_validate</strong>(name = <span class="n">nil</span>, &block : <a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a> -> Nil)
+
+        <a class="method-permalink" href="#before_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-class-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on_validate&#40;name,proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>on_validate</strong>(name, proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#on_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on_validate&#40;proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>on_validate</strong>(proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#on_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-class-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on_validate&#40;name&#61;nil,&amp;block:Optarg::Parser,Model-&gt;Nil&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>on_validate</strong>(name = <span class="n">nil</span>, &block : <a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a> -> Nil)
+
+        <a class="method-permalink" href="#on_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-class-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+
+  <h2>Instance Method Detail</h2>
+  
+    <div class="entry-detail" id="after_validate&#40;name&#61;nil,&amp;block:Optarg::Parser,Model-&gt;Nil&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>after_validate</strong>(name = <span class="n">nil</span>, &block : <a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a> -> Nil)
+
+        <a class="method-permalink" href="#after_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a dynamic callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="after_validate&#40;proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>after_validate</strong>(proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#after_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a dynamic callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="after_validate&#40;name,proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>after_validate</strong>(name, proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#after_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a dynamic callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="around_validate&#40;name&#61;nil,&amp;block:Optarg::Parser,Model-&gt;Nil&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>around_validate</strong>(name = <span class="n">nil</span>, &block : <a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a> -> Nil)
+
+        <a class="method-permalink" href="#around_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a dynamic callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="around_validate&#40;name,proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>around_validate</strong>(name, proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#around_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a dynamic callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="around_validate&#40;proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>around_validate</strong>(proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#around_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a dynamic callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="before_validate&#40;name,proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>before_validate</strong>(name, proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#before_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a dynamic callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="before_validate&#40;proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>before_validate</strong>(proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#before_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a dynamic callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="before_validate&#40;name&#61;nil,&amp;block:Optarg::Parser,Model-&gt;Nil&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>before_validate</strong>(name = <span class="n">nil</span>, &block : <a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a> -> Nil)
+
+        <a class="method-permalink" href="#before_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a dynamic callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="callback_results:Hash&#40;String,Callback::ResultSet&#40;Nil&#41;&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>callback_results</strong> : Hash(String, Callback::ResultSet(Nil))
+
+        <a class="method-permalink" href="#callback_results%3AHash%28String%2CCallback%3A%3AResultSet%28Nil%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Returns callback results.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="callback_results_for_validate-instance-method">
+      <div class="signature">
+        
+        def <strong>callback_results_for_validate</strong>
+
+        <a class="method-permalink" href="#callback_results_for_validate-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Returns callback results of the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="data:Model-instance-method">
+      <div class="signature">
+        
+        def <strong>data</strong> : <a href="../Optarg/Model.html">Model</a>
+
+        <a class="method-permalink" href="#data%3AModel-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Returns a target model instance.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/parser.cr#L10" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="invalidate&#33;&#40;message:String&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>invalidate!</strong>(message : String)
+
+        <a class="method-permalink" href="#invalidate%21%28message%3AString%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Creates and raises a new <code><a href="../Optarg/ValidationError.html">ValidationError</a></code> with the <em>message</em>.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/parser.cr#L212" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on_validate&#40;name,proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>on_validate</strong>(name, proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#on_validate%28name%2Cproc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a dynamic callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on_validate&#40;proc:::Proc&#40;Optarg::Parser,Model,Nil&#41;&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>on_validate</strong>(proc : ::Proc(<a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a>, Nil))
+
+        <a class="method-permalink" href="#on_validate%28proc%3A%3A%3AProc%28Optarg%3A%3AParser%2CModel%2CNil%29%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a dynamic callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on_validate&#40;name&#61;nil,&amp;block:Optarg::Parser,Model-&gt;Nil&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>on_validate</strong>(name = <span class="n">nil</span>, &block : <a href="../Optarg/Parser.html">Optarg::Parser</a>, <a href="../Optarg/Model.html">Model</a> -> Nil)
+
+        <a class="method-permalink" href="#on_validate%28name%3Dnil%2C%26block%3AOptarg%3A%3AParser%2CModel-%3ENil%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Registers a dynamic callback for the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="run_callbacks_for_validate&#40;*args,&amp;block&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>run_callbacks_for_validate</strong>(*args, &block)
+
+        <a class="method-permalink" href="#run_callbacks_for_validate%28%2Aargs%2C%26block%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Invokes all callbacks of the validate group.</p>
+
+<p>This method is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+      </div>
+    </div>
+  
+
+
+
+  <h2>Macro Detail</h2>
+  
+    <div class="entry-detail" id="define_callback_group&#40;name,proc_type&#61;::Proc&#40;::Nil&#41;&#41;-macro">
+      <div class="signature">
+        
+        macro <strong>define_callback_group</strong>(name, proc_type = ::Proc(::Nil))
+
+        <a class="method-permalink" href="#define_callback_group%28name%2Cproc_type%3D%3A%3AProc%28%3A%3ANil%29%29-macro">#</a>
+      </div>
+      
+        <div class="doc"><p>Defines a new callback group.</p>
+
+<p>This macro is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/parser.cr#L3" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="inherit_callback_group&#40;name,proc_type&#61;::Proc&#40;::Nil&#41;&#41;-macro">
+      <div class="signature">
+        
+        macro <strong>inherit_callback_group</strong>(name, proc_type = ::Proc(::Nil))
+
+        <a class="method-permalink" href="#inherit_callback_group%28name%2Cproc_type%3D%3A%3AProc%28%3A%3ANil%29%29-macro">#</a>
+      </div>
+      
+        <div class="doc"><p>Inherits an existing callback group that is defined in its ancestor class.</p>
+
+<p>This macro is automatically defined by the Crystal Callback library.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/parser.cr#L3" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+</div>
+
+</body>
+</html>

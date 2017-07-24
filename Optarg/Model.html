@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta id="repository-name" content="github.com/mosop/optarg">
+  <link href="../css/style.css" rel="stylesheet" type="text/css" />
+  <script type="text/javascript" src="../js/doc.js"></script>
+  <title>Optarg::Model - github.com/mosop/optarg</title>
+</head>
+<body>
+
+<div id="types-list">
+  <div id="search-box">
+    <input type="search" id="search-input" placeholder="Search...">
+  </div>
+
+  <ul>
+    <li><a href="../index.html">README</a></li>
+  </ul>
+
+  <ul>
+  
+  <li class="parent open current" data-id="github.com/mosop/optarg/Optarg" data-name="optarg">
+      <a href="../Optarg.html">Optarg</a>
+      
+        <ul>
+  
+  <li class=" current" data-id="github.com/mosop/optarg/Optarg/Model" data-name="optarg::model">
+      <a href="../Optarg/Model.html">Model</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/mosop/optarg/Optarg/Parser" data-name="optarg::parser">
+      <a href="../Optarg/Parser.html">Parser</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/mosop/optarg/Optarg/ParsingError" data-name="optarg::parsingerror">
+      <a href="../Optarg/ParsingError.html">ParsingError</a>
+      
+    </li>
+  
+  <li class=" " data-id="github.com/mosop/optarg/Optarg/ValidationError" data-name="optarg::validationerror">
+      <a href="../Optarg/ValidationError.html">ValidationError</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+</div>
+
+<div id="main-content">
+<h1 class="type-name">
+
+  <span class="kind">abstract class</span> Optarg::Model
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../Optarg/Model.html">Optarg::Model</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>Overview</h2>
+
+  <p>The base of model classes.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>Defined in:</h2>
+  
+    
+      <a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model.cr#L3" target="_blank">lib/model.cr</a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/arg.cr#L2" target="_blank">lib/model/dsl/arg.cr</a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/arg_array.cr#L2" target="_blank">lib/model/dsl/arg_array.cr</a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/array.cr#L2" target="_blank">lib/model/dsl/array.cr</a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/bool.cr#L2" target="_blank">lib/model/dsl/bool.cr</a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/handler.cr#L2" target="_blank">lib/model/dsl/handler.cr</a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/string.cr#L2" target="_blank">lib/model/dsl/string.cr</a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/terminator.cr#L2" target="_blank">lib/model/dsl/terminator.cr</a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/unknown.cr#L2" target="_blank">lib/model/dsl/unknown.cr</a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/macros/handler.cr#L2" target="_blank">lib/model/macros/handler.cr</a>
+    
+    <br/>
+  
+    
+      <a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/macros/value.cr#L2" target="_blank">lib/model/macros/value.cr</a>
+    
+    <br/>
+  
+
+
+
+
+
+
+
+  <h2>Class Method Summary</h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#parse%28argv%3AArray%28String%29%2C%2Aargs%29-class-method" class="signature"><strong>.parse</strong>(argv : Array(String), *args)</a>
+        
+          <div class="summary"><p>Creates a new model instance and parses the <em>argv</em> arguments.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <h2>Instance Method Summary</h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%28klass%3AString.class%29-instance-method" class="signature"><strong>#[]</strong>(klass : String.class)</a>
+        
+          <div class="summary"><p>Returns a value hash for String-type options and arguments.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%28klass%3ABool.class%29-instance-method" class="signature"><strong>#[]</strong>(klass : Bool.class)</a>
+        
+          <div class="summary"><p>Returns a value hash for Bool-type options and arguments.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%28klass%3AArray%28String%29.class%29-instance-method" class="signature"><strong>#[]</strong>(klass : Array(String).class)</a>
+        
+          <div class="summary"><p>Returns a value hash for Array(String)-type options and arguments.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%28index%3AInt32%29-instance-method" class="signature"><strong>#[]</strong>(index : Int32)</a>
+        
+          <div class="summary"><p>Returns an argument value at the <em>index</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#%5B%5D%3F%28index%3AInt32%29-instance-method" class="signature"><strong>#[]?</strong>(index : Int32)</a>
+        
+          <div class="summary"><p>Returns an argument value at the <em>index</em>.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#each%28%26block%29-instance-method" class="signature"><strong>#each</strong>(&block)</a>
+        
+          <div class="summary"><p>Iterates argument values.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#nameless_args-instance-method" class="signature"><strong>#nameless_args</strong></a>
+        
+          <div class="summary"><p>Returns an array that contains nameless argument values.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#unparsed_args-instance-method" class="signature"><strong>#unparsed_args</strong></a>
+        
+          <div class="summary"><p>Returns an array that contains unparsed argument values.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <h2>Macro Summary</h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#arg%28names%2Cmetadata%3Dnil%2Cstop%3Dnil%2Cdefault%3Dnil%2Crequired%3Dnil%2Cany_of%3Dnil%2Ccomplete%3Dnil%2C_mixin%3Dnil%29-macro" class="signature"><strong>arg</strong>(names, metadata = nil, stop = nil, default = nil, required = nil, any_of = nil, complete = nil, _mixin = nil)</a>
+        
+          <div class="summary"><p>Defines a String argument model item.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#arg_array%28names%2Cmetadata%3Dnil%2Cdefault%3Dnil%2Cmin%3Dnil%2Cany_item_of%3Dnil%2Ccomplete%3Dnil%2C_mixin%3Dnil%29-macro" class="signature"><strong>arg_array</strong>(names, metadata = nil, default = nil, min = nil, any_item_of = nil, complete = nil, _mixin = nil)</a>
+        
+          <div class="summary"><p>Defines an Array(String) argument model item.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#array%28names%2Cmetadata%3Dnil%2Cdefault%3Dnil%2Cmin%3Dnil%2Cany_item_of%3Dnil%2Ccomplete%3Dnil%2C_mixin%3Dnil%29-macro" class="signature"><strong>array</strong>(names, metadata = nil, default = nil, min = nil, any_item_of = nil, complete = nil, _mixin = nil)</a>
+        
+          <div class="summary"><p>Defines an Array(String) option model item.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#bool%28names%2Cmetadata%3Dnil%2Cstop%3Dnil%2Cdefault%3Dnil%2Cnot%3Dnil%2C_mixin%3Dnil%29-macro" class="signature"><strong>bool</strong>(names, metadata = nil, stop = nil, default = nil, not = nil, _mixin = nil)</a>
+        
+          <div class="summary"><p>Defines a Bool option model item.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#on%28names%2Cmetadata%3Dnil%2Cstop%3Dnil%29-macro" class="signature"><strong>on</strong>(names, metadata = nil, stop = nil)</a>
+        
+          <div class="summary"><p>Defines a handler model item.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#string%28names%2Cmetadata%3Dnil%2Cstop%3Dnil%2Cdefault%3Dnil%2Crequired%3Dnil%2Cany_of%3Dnil%2Ccomplete%3Dnil%2C_mixin%3Dnil%29-macro" class="signature"><strong>string</strong>(names, metadata = nil, stop = nil, default = nil, required = nil, any_of = nil, complete = nil, _mixin = nil)</a>
+        
+          <div class="summary"><p>Defines a String option model item.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#terminator%28names%2Cmetadata%3Dnil%29-macro" class="signature"><strong>terminator</strong>(names, metadata = nil)</a>
+        
+          <div class="summary"><p>Defines a terminator model item.</p></div>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#unknown%28metadata%3Dnil%29-macro" class="signature"><strong>unknown</strong>(metadata = nil)</a>
+        
+          <div class="summary"><p>Defines an unknown model item.</p></div>
+        
+      </li>
+    
+  </ul>
+
+
+
+<div class="methods-inherited">
+  
+    
+
+
+    
+
+
+    
+
+
+  
+    
+
+
+    
+
+
+    
+
+
+  
+</div>
+
+
+
+
+  <h2>Class Method Detail</h2>
+  
+    <div class="entry-detail" id="parse&#40;argv:Array&#40;String&#41;,*args&#41;-class-method">
+      <div class="signature">
+        
+        def self.<strong>parse</strong>(argv : Array(String), *args)
+
+        <a class="method-permalink" href="#parse%28argv%3AArray%28String%29%2C%2Aargs%29-class-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Creates a new model instance and parses the <em>argv</em> arguments.</p>
+
+<p>Returns the created instance.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model.cr#L106" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+  <h2>Instance Method Detail</h2>
+  
+    <div class="entry-detail" id="&#91;&#93;&#40;klass:String.class&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>[]</strong>(klass : String.class)
+
+        <a class="method-permalink" href="#%5B%5D%28klass%3AString.class%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Returns a value hash for String-type options and arguments.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model.cr#L122" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="&#91;&#93;&#40;klass:Bool.class&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>[]</strong>(klass : Bool.class)
+
+        <a class="method-permalink" href="#%5B%5D%28klass%3ABool.class%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Returns a value hash for Bool-type options and arguments.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model.cr#L127" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="&#91;&#93;&#40;klass:Array&#40;String&#41;.class&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>[]</strong>(klass : Array(String).class)
+
+        <a class="method-permalink" href="#%5B%5D%28klass%3AArray%28String%29.class%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Returns a value hash for Array(String)-type options and arguments.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model.cr#L132" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="&#91;&#93;&#40;index:Int32&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>[]</strong>(index : Int32)
+
+        <a class="method-permalink" href="#%5B%5D%28index%3AInt32%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Returns an argument value at the <em>index</em>.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model.cr#L137" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="&#91;&#93;?&#40;index:Int32&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>[]?</strong>(index : Int32)
+
+        <a class="method-permalink" href="#%5B%5D%3F%28index%3AInt32%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Returns an argument value at the <em>index</em>.</p>
+
+<p>Returns nil if the <em>index</em> is out of range.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model.cr#L144" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="each&#40;&amp;block&#41;-instance-method">
+      <div class="signature">
+        
+        def <strong>each</strong>(&block)
+
+        <a class="method-permalink" href="#each%28%26block%29-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Iterates argument values.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model.cr#L149" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="nameless_args-instance-method">
+      <div class="signature">
+        
+        def <strong>nameless_args</strong>
+
+        <a class="method-permalink" href="#nameless_args-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Returns an array that contains nameless argument values.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model.cr#L116" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="unparsed_args-instance-method">
+      <div class="signature">
+        
+        def <strong>unparsed_args</strong>
+
+        <a class="method-permalink" href="#unparsed_args-instance-method">#</a>
+      </div>
+      
+        <div class="doc"><p>Returns an array that contains unparsed argument values.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model.cr#L119" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+  <h2>Macro Detail</h2>
+  
+    <div class="entry-detail" id="arg&#40;names,metadata&#61;nil,stop&#61;nil,default&#61;nil,required&#61;nil,any_of&#61;nil,complete&#61;nil,_mixin&#61;nil&#41;-macro">
+      <div class="signature">
+        
+        macro <strong>arg</strong>(names, metadata = nil, stop = nil, default = nil, required = nil, any_of = nil, complete = nil, _mixin = nil)
+
+        <a class="method-permalink" href="#arg%28names%2Cmetadata%3Dnil%2Cstop%3Dnil%2Cdefault%3Dnil%2Crequired%3Dnil%2Cany_of%3Dnil%2Ccomplete%3Dnil%2C_mixin%3Dnil%29-macro">#</a>
+      </div>
+      
+        <div class="doc"><p>Defines a String argument model item.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/arg.cr#L4" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="arg_array&#40;names,metadata&#61;nil,default&#61;nil,min&#61;nil,any_item_of&#61;nil,complete&#61;nil,_mixin&#61;nil&#41;-macro">
+      <div class="signature">
+        
+        macro <strong>arg_array</strong>(names, metadata = nil, default = nil, min = nil, any_item_of = nil, complete = nil, _mixin = nil)
+
+        <a class="method-permalink" href="#arg_array%28names%2Cmetadata%3Dnil%2Cdefault%3Dnil%2Cmin%3Dnil%2Cany_item_of%3Dnil%2Ccomplete%3Dnil%2C_mixin%3Dnil%29-macro">#</a>
+      </div>
+      
+        <div class="doc"><p>Defines an Array(String) argument model item.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/arg_array.cr#L4" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="array&#40;names,metadata&#61;nil,default&#61;nil,min&#61;nil,any_item_of&#61;nil,complete&#61;nil,_mixin&#61;nil&#41;-macro">
+      <div class="signature">
+        
+        macro <strong>array</strong>(names, metadata = nil, default = nil, min = nil, any_item_of = nil, complete = nil, _mixin = nil)
+
+        <a class="method-permalink" href="#array%28names%2Cmetadata%3Dnil%2Cdefault%3Dnil%2Cmin%3Dnil%2Cany_item_of%3Dnil%2Ccomplete%3Dnil%2C_mixin%3Dnil%29-macro">#</a>
+      </div>
+      
+        <div class="doc"><p>Defines an Array(String) option model item.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/array.cr#L4" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="bool&#40;names,metadata&#61;nil,stop&#61;nil,default&#61;nil,not&#61;nil,_mixin&#61;nil&#41;-macro">
+      <div class="signature">
+        
+        macro <strong>bool</strong>(names, metadata = nil, stop = nil, default = nil, not = nil, _mixin = nil)
+
+        <a class="method-permalink" href="#bool%28names%2Cmetadata%3Dnil%2Cstop%3Dnil%2Cdefault%3Dnil%2Cnot%3Dnil%2C_mixin%3Dnil%29-macro">#</a>
+      </div>
+      
+        <div class="doc"><p>Defines a Bool option model item.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/bool.cr#L4" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="on&#40;names,metadata&#61;nil,stop&#61;nil&#41;-macro">
+      <div class="signature">
+        
+        macro <strong>on</strong>(names, metadata = nil, stop = nil)
+
+        <a class="method-permalink" href="#on%28names%2Cmetadata%3Dnil%2Cstop%3Dnil%29-macro">#</a>
+      </div>
+      
+        <div class="doc"><p>Defines a handler model item.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/handler.cr#L4" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="string&#40;names,metadata&#61;nil,stop&#61;nil,default&#61;nil,required&#61;nil,any_of&#61;nil,complete&#61;nil,_mixin&#61;nil&#41;-macro">
+      <div class="signature">
+        
+        macro <strong>string</strong>(names, metadata = nil, stop = nil, default = nil, required = nil, any_of = nil, complete = nil, _mixin = nil)
+
+        <a class="method-permalink" href="#string%28names%2Cmetadata%3Dnil%2Cstop%3Dnil%2Cdefault%3Dnil%2Crequired%3Dnil%2Cany_of%3Dnil%2Ccomplete%3Dnil%2C_mixin%3Dnil%29-macro">#</a>
+      </div>
+      
+        <div class="doc"><p>Defines a String option model item.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/string.cr#L4" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="terminator&#40;names,metadata&#61;nil&#41;-macro">
+      <div class="signature">
+        
+        macro <strong>terminator</strong>(names, metadata = nil)
+
+        <a class="method-permalink" href="#terminator%28names%2Cmetadata%3Dnil%29-macro">#</a>
+      </div>
+      
+        <div class="doc"><p>Defines a terminator model item.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/terminator.cr#L4" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="unknown&#40;metadata&#61;nil&#41;-macro">
+      <div class="signature">
+        
+        macro <strong>unknown</strong>(metadata = nil)
+
+        <a class="method-permalink" href="#unknown%28metadata%3Dnil%29-macro">#</a>
+      </div>
+      
+        <div class="doc"><p>Defines an unknown model item.</p></div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/mosop/optarg/blob/b4acd1f2ab3428e7b1d3d894a6e5d718083474f1/src/lib/model/dsl/unknown.cr#L4" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+</div>
+
+</body>
+</html>
