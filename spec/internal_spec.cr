@@ -48,7 +48,7 @@ module OptargInternalFeature
   end
 
   class Supermodel2 < Optarg::Model
-    arg "arg"
+    arg "arg1"
   end
 
   class Submodel2 < Supermodel2
@@ -77,7 +77,7 @@ module OptargInternalFeature
     it "inherits arguments" do
       argv = %w(foo bar)
       result = Submodel2.parse(argv)
-      result.arg.should eq "foo"
+      result.arg1.should eq "foo"
       result.argument.should eq "bar"
     end
 
