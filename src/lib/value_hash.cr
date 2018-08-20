@@ -1,25 +1,31 @@
 module Optarg
   # :nodoc:
-  abstract class ValueHash(V) < Hash(String, V)
+  abstract class ValueHash(V)
+    @raw = {} of String => V
+    forward_missing_to @raw
+
     @fallbacked = {} of String => Bool
     @parser : Parser
 
     def initialize(@parser)
-      super()
+    end
+
+    def ==(other : Hash)
+      @raw == other
     end
 
     def [](key)
       fallback key
-      super
+      @raw[key]
     end
 
     def []?(key)
       fallback key
-      super
+      @raw[key]?
     end
 
     def fallback(key)
-      return if has_key?(key)
+      return if @raw.has_key?(key)
       return if @fallbacked.has_key?(key)
       @fallbacked[key] = true
       if fb = @parser.definitions.values[key]?
