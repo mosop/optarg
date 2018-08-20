@@ -1,12 +1,12 @@
 name: optarg
-version: 0.5.8
+version: 0.6.0
 
 authors:
   - mosop
 
 license: MIT
 
-crystal: 0.23.1
+crystal: 0.26.0
 
 dependencies:
   callback:

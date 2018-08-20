@@ -4,7 +4,7 @@ Yet another Crystal library for parsing command-line options and arguments.
 
 optarg is good enough for parsing options. However there's no feature for formatting help, subcommands... etc. If you prefer a more feature-rich library, try [cli](https://github.com/mosop/cli).
 
-[![Build Status](https://travis-ci.org/mosop/optarg.svg?branch=master)](https://travis-ci.org/mosop/optarg)
+[![CircleCI](https://circleci.com/gh/mosop/optarg.svg?style=shield)](https://circleci.com/gh/mosop/optarg)
 
 ## Installation
 
