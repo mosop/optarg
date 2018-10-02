@@ -99,12 +99,18 @@ module OptargInternalFeature
 
   class MissingModel < Optarg::Model
     string "-s"
+    array "-a"
   end
 
   describe "Missing Value" do
     it "-s" do
       argv = %w(-s)
-      expect_raises(Optarg::MissingValue) { MissingModel.parse(argv) }
+      expect_raises(Optarg::MissingValue, "The -s option has no value") { MissingModel.parse(argv) }
+    end
+
+    it "-a" do
+      argv = %w(-a)
+      expect_raises(Optarg::MissingValue, "The -a option has no value") { MissingModel.parse(argv) }
     end
   end
 
