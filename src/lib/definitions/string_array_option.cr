@@ -9,7 +9,7 @@ module Optarg::Definitions
     end
 
     def visit(parser)
-      raise MissingValue.new(parser, self, self) if parser.left < 2
+      raise MissingValue.new(parser, self, parser[0]) if parser.left < 2
       parser.args[Typed::Type][value_key] << parser[1]
       Parser.new_node(parser[0..1], self)
     end
