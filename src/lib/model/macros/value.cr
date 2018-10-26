@@ -6,7 +6,7 @@ module Optarg
         kind = kind.id
         metaclass = metaclass.resolve
         names = [names] unless names.class_name == "ArrayLiteral"
-        method_names = names.map{|i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_").id}
+        method_names = names.map { |i| i.split("=")[0].gsub(/^-*/, "").gsub(/-/, "_").id }.reject { |n| n =~ /\A[A-Z]/ }
         value_key = value_key || names[0]
         key = names[0].id
         model_reserved = (::Optarg::Model.methods + ::Reference.methods + ::Object.methods).map{|i| i.name}

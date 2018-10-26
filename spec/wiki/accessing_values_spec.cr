@@ -100,6 +100,19 @@ module OptargAccessingValuesWikiFeature
         result[String]["--class"].should eq "foo"
       end
     end
+
+    module AllowCapitalLetters
+      class Model < Optarg::Model
+        bool %w(-V --version)
+      end
+
+      it name do
+        result = Model.parse(%w(-V))
+        result.class.should eq Model
+        result.version?.should be_true
+        result[Bool]["-V"].should be_true
+      end
+    end
   end
 
   module AccessingNamelessArguments
