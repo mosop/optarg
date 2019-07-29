@@ -18,7 +18,7 @@ module Optarg::Definitions
       raise UnsupportedConcatenation.new(parser, self)
     end
 
-    def completion_length(gen)
+    def completion_length(gen) : Int32
       2
     end
   end

@@ -9,7 +9,7 @@ module Optarg::Definitions
       initialize_completion complete
     end
 
-    def visitable?(parser)
+    def visitable?(parser) : Bool
       true
     end
 

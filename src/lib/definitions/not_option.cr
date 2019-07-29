@@ -23,11 +23,11 @@ module Optarg::Definitions
       visit parser, name
     end
 
-    def completion_length(gen)
+    def completion_length(gen) : Int32
       1
     end
 
-    def completion_max_occurs(gen)
+    def completion_max_occurs(gen) : Int32
       bool.default_value.get? == true ? 1 : 0
     end
   end
