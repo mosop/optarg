@@ -8,7 +8,7 @@ module Optarg::Definitions
       initialize_scalar_value_argument default: default, required: required, any_of: any_of
     end
 
-    def visitable?(parser)
+    def visitable?(parser) : Bool
       !parser.args[Typed::Type].has_key?(value_key)
     end
 

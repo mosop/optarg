@@ -14,7 +14,7 @@ module Optarg::Definitions
       Parser.new_node(parser[0..1], self)
     end
 
-    def completion_length(gen)
+    def completion_length(gen) : Int32
       2
     end
   end

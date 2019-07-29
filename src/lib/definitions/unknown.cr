@@ -4,11 +4,11 @@ module Optarg::Definitions
       super "@unknown", metadata: metadata, unknown: true
     end
 
-    def completion_length(gen)
+    def completion_length(gen) : Int32
       1
     end
 
-    def completion_max_occurs(gen)
+    def completion_max_occurs(gen) : Int32
       1
     end
   end

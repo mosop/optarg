@@ -8,7 +8,7 @@ module Optarg::DefinitionMixins
       include ::Optarg::DefinitionMixins::VisitConcatenated
 
       module OptionModule
-        def completion_max_occurs(gen)
+        def completion_max_occurs(gen) : Int32
           1
         end
       end

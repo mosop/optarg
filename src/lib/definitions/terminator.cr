@@ -10,11 +10,11 @@ module Optarg::Definitions
       Parser.new_node(parser[0..0], self)
     end
 
-    def completion_length(gen)
+    def completion_length(gen) : Int32
       1
     end
 
-    def completion_max_occurs(gen)
+    def completion_max_occurs(gen) : Int32
       1
     end
   end

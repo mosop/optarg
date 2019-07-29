@@ -6,11 +6,11 @@ module Optarg::DefinitionMixins
       module ArgumentModule
         abstract def visitable?(parser) : Bool
 
-        def completion_length(gen)
+        def completion_length(gen) : Int32
           1
         end
 
-        def completion_max_occurs(gen)
+        def completion_max_occurs(gen) : Int32
           1
         end
       end
