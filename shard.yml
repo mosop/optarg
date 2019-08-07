@@ -10,8 +10,8 @@ crystal: 0.26.0
 
 dependencies:
   callback:
-    github: mosop/callback
-    version: ~> 0.6.3
+    github: drujensen/callback
+    version: ~> 0.7.0
   string_inflection:
     github: mosop/string_inflection
     version: ~> 0.2.1
